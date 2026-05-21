@@ -1,0 +1,40 @@
+# Local config
+**/skills/_shared/user-config.local.json
+
+# Runtime state and logs
+**/logs/
+**/state/
+**/.history.json
+**/.conference-state.json
+
+# Generated or local vault data
+**/markdown-vault/
+**/vault/
+**/assets/__pycache__/
+
+# Personal Zotero collection mapping
+**/skills/paper-reader/assets/collection_mapping.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS and editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
+
+# Temporary files
+*.tmp
+*.bak

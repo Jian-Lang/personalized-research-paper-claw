@@ -1,0 +1,19 @@
+# Personal Zotero collection mapping (AI auto-generated)
+skills/paper-reader/assets/collection_mapping.json
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local deployment
+skills/_shared/user-config.local.json
+markdown-vault/
+logs/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
