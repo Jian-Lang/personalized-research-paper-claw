@@ -1,6 +1,6 @@
-# Research-Paper-Claw
+# research-paper-claw
 
-Research-Paper-Claw is a Codex-powered research paper workflow toolkit for discovering, reading, organizing, and maintaining paper notes in Obsidian.
+research-paper-claw is a Codex-powered research paper workflow toolkit for discovering, reading, organizing, and maintaining paper notes in Obsidian.
 
 The project currently packages two working systems:
 
