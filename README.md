@@ -113,9 +113,9 @@ cd paper-note
 
 ### Daily Recommendations
 
-`daily-paper-recommender` fetches configured conference paper lists, filters papers by title and abstract, generates a daily recommendation page, and writes it into the configured Obsidian vault.
+`daily-paper-recommender` reads configured conference paper-list snapshots, filters papers by title and abstract, generates a daily recommendation page, and writes it into the configured Obsidian vault.
 
-Current conference adapters include ICML and ICLR. See `daily-paper-recommender/README.md` for details.
+Current conference snapshots include ICML 2026, ICLR 2026, and CVPR 2026. See `daily-paper-recommender/README.md` for details.
 
 ### Paper Notes
 

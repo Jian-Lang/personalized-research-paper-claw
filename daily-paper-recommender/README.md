@@ -58,7 +58,7 @@ ObsidianVault/
 ./bin/paper-read.sh /path/to/titles.txt
 ```
 
-如果是按某个 domain 长期整理 related work，用 domain 入口。它会写入配置里的独立 domain vault；结构是 `{domain}/paper` 和 `{domain}/content`。`paper` 是完整详细笔记，`content` 复用 manual 的汇总条目结构，按你给的子类别维护，并按论文年份排序。
+如果是按某个 domain 长期整理 related work，用 domain 入口。它会写入独立 vault，默认是 `/Users/jianlang/Documents/domain-paper`；结构是 `{domain}/paper` 和 `{domain}/content`。`paper` 是完整详细笔记，`content` 复用 manual 的汇总条目结构，按你给的子类别维护，并按论文年份排序。
 
 ```bash
 ./bin/domain-paper-add.sh "TTA" "multimodal TTA" "Paper title or arXiv URL"
@@ -101,13 +101,7 @@ mkdir -p "$VAULT/DailyPapers" \
 
 ## ⚙️ 配置
 
-安装完之后建议创建本地配置。没有本地配置时会使用代码内置默认值，但正式使用时应该从示例复制一份再改：
-
-```bash
-cp skills/_shared/user-config.example.json skills/_shared/user-config.local.json
-```
-
-配置文件是 `skills/_shared/user-config.local.json`，可以自己改，也可以直接让 Codex 按你的需求帮你改。
+安装完之后需要改一下配置。配置文件是 `skills/_shared/user-config.local.json`，可以自己改，也可以直接让 Codex 按你的需求帮你改。
 
 里面主要改这几项：
 
@@ -120,7 +114,7 @@ cp skills/_shared/user-config.example.json skills/_shared/user-config.local.json
 | `paths.domain_content_folder` | domain 内分类汇总目录，默认 `content` |
 | `paths.zotero_db` | Zotero 数据库路径（不用 Zotero 可以不填） |
 | `paths.zotero_storage` | Zotero 附件存储路径 |
-| `daily_papers.conferences` | 每日推荐的会议和年份列表，例如 `[{ "name": "ICML", "year": 2026 }, { "name": "ICLR", "year": 2026 }]`；抓取源由代码内 registry 自动匹配 |
+| `daily_papers.conferences` | 每日推荐的会议和年份列表，例如 `[{ "name": "ICML", "year": 2026 }, { "name": "ICLR", "year": 2026 }, { "name": "CVPR", "year": 2026 }]`；数据源由代码内 registry 自动匹配 |
 | `daily_papers.daily_take` | 每个会议每天最多推荐几篇论文，默认 5 |
 | `daily_papers.conference_preferences.keywords` | 你关心的关键词，只在论文 title + abstract 中匹配 |
 | `daily_papers.conference_preferences.negative_keywords` | 排除关键词；title 或 abstract 命中一个就扣 100 分，通常不会进入推荐 |
@@ -140,10 +134,18 @@ cp skills/_shared/user-config.example.json skills/_shared/user-config.local.json
 
 ## 🐾 大概怎么跑的
 
-**每日推荐**现在走会议接收列表，两步生成摘要式推荐：
+**每日推荐**现在走本地会议接收 JSONL snapshot，两步生成摘要式推荐：
 
-1. **抓取**：Python 脚本读取 `conferences`，用代码内 registry 匹配会议源。当前支持 ICML 和 ICLR：ICML 解析 `https://icml.cc/Downloads/{year}`，ICLR 解析 `https://papers.cool/venue/ICLR.{year}`。每个会议都有独立 cursor，会分别从各自会议列表 cursor 位置继续往下扫，读取 title、authors、abstract，并按 `conference_preferences` 计分。title 命中一个正向关键词加 2 分，abstract 命中一个正向关键词加 1 分；title 或 abstract 命中一个 negative keyword 扣 100 分。分数达到 `min_score` 才推荐。默认每个会议每天最多推荐 `daily_take` 篇、最多扫描 120 篇；凑满就立刻停止，cursor 推进到实际停止位置；如果扫描 120 篇后仍不足，就按实际数量输出，并把 cursor 推进到当天扫描边界。
+1. **抓取**：Python 脚本读取 `conferences`，用代码内 registry 匹配 `data/paperlist` 下同步自 `ronpay/paperlist` 的 JSONL 文件。当前支持 ICML、ICLR、CVPR，默认都可配置到 2026。每个会议都有独立 cursor，会分别从各自 JSONL 顺序继续往下扫，读取 title、authors、abstract，并按 `conference_preferences` 计分。title 命中一个正向关键词加 2 分，abstract 命中一个正向关键词加 1 分；title 或 abstract 命中一个 negative keyword 扣 100 分。分数达到 `min_score` 才推荐。默认每个会议每天最多推荐 `daily_take` 篇、最多扫描 1000 篇；ICML、ICLR、CVPR 都开启时每天共 15 篇。state 同时记录 title key，源顺序变化时不会重复推荐已经推过的论文。
 2. **点评**：Codex 读候选列表，按 必读 / 值得看 / 可跳过 分流，基于摘要写推荐，保存到 Obsidian 的 `DailyPapers/` 目录，同时更新 `.history.json`。
+
+刷新 accepted-paper snapshot 时运行：
+
+```bash
+python3 scripts/sync_paperlist.py
+```
+
+这个脚本只负责从 `ronpay/paperlist` 同步当前配置里的会议 JSONL；每日推荐本身不依赖网络。
 
 默认不会为每日推荐生成细粒度论文笔记。只有候选里抓到了 PDF / OpenReview / arXiv 等 paper 链接，并且你明确说“读一下这篇”，才走 paper-reader。
 

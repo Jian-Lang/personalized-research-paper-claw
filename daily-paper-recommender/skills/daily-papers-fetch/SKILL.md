@@ -1,7 +1,7 @@
 ---
 name: daily-papers-fetch
 description: |
-  论文抓取（会议推荐流水线的第 1 步）。从用户配置的顶会接收列表抓取论文，按 title + abstract
+  论文抓取（会议推荐流水线的第 1 步）。从 ronpay/paperlist 的顶会接收 JSONL 获取论文，按 title + abstract
   的关键词偏好打分筛选，富化信息，
   输出到 /tmp/daily_papers_enriched.json 供后续 skill 使用。
 
@@ -36,13 +36,13 @@ description: |
 
 - `DAILY_PROJECT_PATH = {VAULT_PATH}/{daily_papers_folder}`
 - `DAILY_MOCS_PATH = {DAILY_PROJECT_PATH}/{project_mocs_folder}`
-- 所有关键词、阈值都以共享配置为准；`ARXIV_CATEGORIES` 为空时不按 arXiv category 硬筛，改用关键词/领域词查询 arXiv
-- 当前项目只抓取会议入口，由 `daily_papers.conferences` 控制，抓取源由代码内 registry 自动匹配。
+- 所有关键词、阈值都以共享配置为准。
+- 当前项目只读取本仓库 `data/paperlist` 中同步自 ronpay/paperlist 的会议接收 JSONL，由 `daily_papers.conferences` 控制，数据源由代码内 registry 自动匹配。
 - 关键词写在 `daily_papers.conference_preferences.keywords`，只匹配论文 `title + abstract`。
 - 排除关键词写在 `daily_papers.conference_preferences.negative_keywords`，只要论文 `title + abstract` 命中一个就扣 100 分，通常不会进入推荐。
 - 计分规则：关键词出现在 title 中加 2 分，出现在 abstract 中加 1 分。
 - 推荐阈值写在 `daily_papers.conference_preferences.min_score`。默认是 2，表示总分大于 1 才推荐。
-- 会议和年份写在 `daily_papers.conferences`，例如 `[{ "name": "ICML", "year": 2026 }, { "name": "ICLR", "year": 2026 }]`。用户不需要配置 adapter 类型或 URL。
+- 会议和年份写在 `daily_papers.conferences`，例如 `[{ "name": "ICML", "year": 2026 }, { "name": "ICLR", "year": 2026 }, { "name": "CVPR", "year": 2026 }]`。用户不需要配置 adapter 类型或 URL。
 - 每个会议每天最多推荐数量写在 `daily_papers.daily_take`，默认 5。
 
 后续统一以共享配置和上面的变量为准。
@@ -66,7 +66,7 @@ description: |
 
 ### Phase 1+2: 抓取 + 打分 + cursor 去重（纯 Python 脚本）
 
-用 `fetch_and_score.py` 一步完成会议列表抓取、详情页摘要解析、关键词打分、cursor 去重、选取每日候选。**零 token 消耗。**
+用 `fetch_and_score.py` 一步完成会议 JSONL 获取、关键词打分、cursor + 标题去重、选取每日候选。**零 token 消耗。**
 
 ```bash
 # 默认：当天
@@ -80,13 +80,13 @@ python3 ../daily-papers/fetch_and_score.py --days N > /tmp/daily_papers_top30.js
 
 脚本自动完成：
 - 读取 `daily_papers.conferences`，通过 registry 解析为具体会议源
-- 当前支持 ICML 和 ICLR：ICML 从 `https://icml.cc/Downloads/{year}` 解析 poster 列表；ICLR 从 `https://papers.cool/venue/ICLR.{year}` 解析论文列表
-- 每个会议按各自 source cursor 从上往下扫描会议论文列表，默认每个会议每天最多扫描 120 篇
-- 进入每篇 poster 详情页，只基于 title + abstract 做关键词打分
+- 当前支持 ICML、ICLR、CVPR，统一读取 `data/paperlist/<CONF>/<conf>_<year>.jsonl`
+- 每个会议按各自 source cursor 从上往下扫描 JSONL 顺序，默认每个会议每天最多扫描 1000 篇
+- 只基于 JSONL 中的 title + abstract 做关键词打分
 - 命中 `daily_papers.conference_preferences.negative_keywords` 中任一排除词时扣 100 分
 - 分数达到 `daily_papers.conference_preferences.min_score` 才推荐；默认每个会议每天最多推荐 `daily_papers.daily_take` 篇
-- 凑满 5 篇就立刻停止，cursor 推进到实际停止位置；如果扫描 120 篇后仍不足 5 篇，就按实际数量输出，并把 cursor 推进到当天扫描边界
-- 用仓库内 `state/conference-state.json` 记录每个会议源的 cursor 和已推荐 paper id，避免每天重复；旧版 `{DAILY_PROJECT_PATH}/.conference-state.json` 只作为兼容读取路径
+- 每个会议凑满 5 篇就立刻停止；ICML、ICLR、CVPR 都开启时每天共 15 篇
+- 用仓库内 `state/conference-state.json` 记录每个会议源的 cursor、已推荐 paper id 和标题 key，避免 JSONL 顺序变化或源切换后重复推荐；旧版 `{DAILY_PROJECT_PATH}/.conference-state.json` 只作为兼容读取路径
 - 同一天重复运行默认复用当天缓存，不会继续推进 cursor；需要强制推进时手动加 `--force`
 
 进度日志输出到 stderr，JSON 结果输出到 stdout。
@@ -95,7 +95,7 @@ python3 ../daily-papers/fetch_and_score.py --days N > /tmp/daily_papers_top30.js
 
 ### Phase 3: 批量富化（enrich_papers.py 脚本）
 
-用 `enrich_papers.py` 脚本一次性整理所有论文字段。会议 adapter 已经提供 title / authors / abstract / url；如果没有 arXiv id，富化脚本不会再去抓 arXiv，只补齐空的结构化字段。
+用 `enrich_papers.py` 脚本一次性整理所有论文字段。JSONL 已经提供 title / authors / abstract / url / pdf；如果没有 arXiv id，富化脚本不会再去抓 arXiv，只补齐空的结构化字段。
 
 **先把 Phase 2 的 Top 30 结果保存到临时文件**，然后运行：
 
@@ -106,7 +106,7 @@ cat /tmp/daily_papers_top30.json | python3 ../daily-papers/enrich_papers.py /tmp
 注意：使用**文件路径参数**（而非 stdout 重定向），避免 sandbox 环境下 stdout/stderr 混淆。
 
 脚本自动完成以下工作：
-- 对会议论文：保留 adapter 抓到的 title、authors、abstract、conference、venue、source_rank、has_paper、paper_url、pdf
+- 对会议论文：保留 JSONL 提供的 title、authors、abstract、conference、venue、source_rank、has_paper、paper_url、pdf
 - 对带 arXiv id 的论文：继续按旧逻辑补充 arXiv HTML / PDF 信息
 
 **输出格式**：与输入相同的 JSON 数组，每篇论文增加以下字段：

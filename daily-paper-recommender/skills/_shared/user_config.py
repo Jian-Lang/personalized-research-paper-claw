@@ -28,6 +28,14 @@ DEFAULT_CONFIG = {
             {
                 "name": "ICML",
                 "year": 2026,
+            },
+            {
+                "name": "ICLR",
+                "year": 2026,
+            },
+            {
+                "name": "CVPR",
+                "year": 2026,
             }
         ],
         "daily_take": 5,
