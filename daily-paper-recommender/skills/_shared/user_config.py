@@ -44,6 +44,11 @@ DEFAULT_CONFIG = {
             "negative_keywords": [],
             "min_score": 2,
         },
+        "review_profile": {
+            "research_interests": [],
+            "topic_categories": [],
+            "frontmatter_keywords": [],
+        },
     },
     "automation": {
         "auto_refresh_indexes": True,

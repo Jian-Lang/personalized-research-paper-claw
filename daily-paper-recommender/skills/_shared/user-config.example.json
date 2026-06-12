@@ -40,6 +40,45 @@
         "finance"
       ],
       "min_score": 2
+    },
+    "review_profile": {
+      "research_interests": [
+        "multimodal large language model personalization",
+        "personalized MLLM",
+        "personalized VLM",
+        "LLM personalization",
+        "LLM abstention",
+        "test-time adaptation",
+        "incomplete multimodal learning",
+        "GRPO",
+        "on-policy distillation",
+        "unified multimodal model",
+        "self-evolving agent"
+      ],
+      "topic_categories": [
+        "MLLM Personalization",
+        "VLM Personalization",
+        "LLM Personalization",
+        "LLM Abstention",
+        "Test-Time Adaptation",
+        "Incomplete Multimodal Learning",
+        "GRPO / RL for LLMs",
+        "On-Policy Distillation",
+        "Unified Multimodal Models",
+        "Self-Evolving Agents"
+      ],
+      "frontmatter_keywords": [
+        "mllm personalization",
+        "vlm personalization",
+        "llm personalization",
+        "llm abstention",
+        "test-time adaptation",
+        "incomplete multimodal learning",
+        "grpo",
+        "on-policy distillation",
+        "unified multimodal model",
+        "self-evolving agent"
+      ]
     }
   },
   "automation": {
