@@ -1,16 +1,23 @@
 # dailypaper-skills
 
-我平时读论文用的一套 Codex skills。直接跟 Codex 说一句话，就能筛论文、读论文、写笔记，最后自动存进 Obsidian。
+每日论文推荐子项目。它负责从本地会议接收列表 snapshot 里筛论文、生成推荐页，并把结果写进 Obsidian。
 
 > 📺 [论文流水线效果演示（旧视频）](http://xhslink.com/o/1dhQCn40EWY) — 展示的是同一套工作流的早期版本
+
+## 最新变更
+
+- 会议推荐配置改为每个会议显式配置 `daily_take`，配比直接写在 `daily_papers.conferences` 里。
+- 已纳入 ACL 2026；默认会议源为 ICML 2026、ICLR 2026、CVPR 2026、ACL 2026。
+- 推荐配比直接由各会议项里的 `daily_take` 决定；要调整配比，只改对应会议的 `daily_take`。
+- ACL 默认开启 `shuffle: true`，同步本地 JSONL snapshot 时会把 poster / finding 做稳定随机混排，避免先推荐完整主会再推荐 Findings。
 
 ## 🦴 这套东西会帮我做什么
 
 - 每天抓一批新论文，做一轮初筛，生成推荐列表。
-- 对单篇论文做完整解析、快速摘要或批判性分析。
-- 把论文里的术语顺手沉成概念笔记，方便后面继续连。
-- 把内容写进 Obsidian，顺带维护目录页 / 导航页。
-- 能接 Zotero，所以不用一篇篇复制链接。
+- 按 `daily_papers.conferences` 的会议配置和 `daily_take` 配比控制推荐来源。
+- 用 title + abstract 的关键词偏好打分，并保留会议来源、列表顺序、paper/pdf 链接等元信息。
+- 把推荐页写进 Obsidian，顺带维护目录页 / 导航页。
+- 可选地为推荐论文生成详细笔记。
 
 最终生成结果在 Obsidian 里大概会长这样：
 
@@ -31,39 +38,22 @@ ObsidianVault/
 
 ```text
 今日论文推荐
-读一下这篇论文 https://arxiv.org/abs/2509.24527
+过去3天论文推荐
 ```
 
 其他常见说法：
 
 ```text
-过去3天论文推荐
 过去一周论文推荐
-
-读一下这篇论文 ~/Downloads/paper.pdf
-快速看一下这篇论文 https://arxiv.org/abs/2509.24527
-批判性分析这篇论文 ~/Downloads/paper.pdf
-
-读一下 Zotero 里的 Diffusion Policy
-批量读一下 Zotero 里 VLA 分类下的论文
+跑一下论文抓取
+跑一下论文点评
+跑一下论文笔记
 ```
 
-`今日论文推荐` 会跑完整流程，`读一下这篇论文 ...` 用来读单篇。
-
-如果是你主动收集的一批论文，可以用手动阅读入口。它会复用同一套详细笔记模板，并把论文追加到 `PersonalizedPaper/mocs/PersonalizedPaperContent.md`；这个汇总只按主题累计论文，不包含每日推荐里的「今日锐评」和「分流表」。
+`今日论文推荐` 会跑完整流程。如果要读单篇论文、维护 personalized/domain 论文库，使用同级的 `../paper-note` 子项目。
 
 ```bash
-./bin/paper-read.sh "Paper title or arXiv URL"
-./bin/paper-read.sh "Title 1" "Title 2"
-./bin/paper-read.sh /path/to/titles.txt
-```
-
-如果是按某个 domain 长期整理 related work，用 domain 入口。它会写入独立 vault，默认是 `/Users/jianlang/Documents/domain-paper`；结构是 `{domain}/paper` 和 `{domain}/content`。`paper` 是完整详细笔记，`content` 复用 manual 的汇总条目结构，按你给的子类别维护，并按论文年份排序。
-
-```bash
-./bin/domain-paper-add.sh "TTA" "multimodal TTA" "Paper title or arXiv URL"
-./bin/domain-paper-add.sh "TTA" "VLM TTA" "Title 1" "Title 2"
-./bin/domain-paper-add.sh "TTA" "multimodal TTA" /path/to/titles.txt
+./bin/daily-paper-recommend.sh
 ```
 
 目录页一般会自动更新；如果你手动改过结构，或者怀疑没同步，再补一句：
@@ -86,7 +76,7 @@ ObsidianVault/
 
 如果你是在自己的本地机器上日常使用，通常直接用 `codex --full-auto` 会顺手很多；如果你明确已经在外部沙箱里，也可以用 `codex --dangerously-bypass-approvals-and-sandbox`，但风险更高，不建议在不熟悉的机器上直接这么跑。
 
-在仓库根目录运行：
+在 `daily-paper-recommender` 目录运行：
 
 ```bash
 mkdir -p ~/.codex/skills
@@ -108,19 +98,28 @@ mkdir -p "$VAULT/DailyPapers" \
 | 配置项 | 说明 |
 | --- | --- |
 | `paths.obsidian_vault` | 你的 Obsidian 库在哪 |
-| `paths.manual_papers_folder` | 手动阅读累计汇总目录，默认 `PersonalizedPaper` |
-| `paths.domain_papers_vault` | domain 论文独立 Obsidian 库路径 |
-| `paths.domain_paper_folder` | domain 内详细笔记目录，默认 `paper` |
-| `paths.domain_content_folder` | domain 内分类汇总目录，默认 `content` |
 | `paths.zotero_db` | Zotero 数据库路径（不用 Zotero 可以不填） |
 | `paths.zotero_storage` | Zotero 附件存储路径 |
-| `daily_papers.conferences` | 每日推荐的会议和年份列表，例如 `[{ "name": "ICML", "year": 2026 }, { "name": "ICLR", "year": 2026 }, { "name": "CVPR", "year": 2026 }]`；数据源由代码内 registry 自动匹配 |
-| `daily_papers.daily_take` | 每个会议每天最多推荐几篇论文，默认 5 |
+| `daily_papers.conferences` | 每日推荐的会议、年份和单会议推荐数量列表，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "ICLR", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }]`；数据源由代码内 registry 自动匹配 |
+| `daily_papers.conferences[].daily_take` | 该会议每天最多推荐几篇论文；这是当前推荐的配比配置入口 |
+| `daily_papers.conferences[].shuffle` | 是否在同步本地 JSONL snapshot 时做稳定随机混排；ACL 默认开启，用来混合 poster / finding |
+| `daily_papers.daily_take` | 旧版全局 fallback；新配置建议不用它，优先写到每个会议项里 |
 | `daily_papers.conference_preferences.keywords` | 你关心的关键词，只在论文 title + abstract 中匹配 |
 | `daily_papers.conference_preferences.negative_keywords` | 排除关键词；title 或 abstract 命中一个就扣 100 分，通常不会进入推荐 |
 | `daily_papers.conference_preferences.min_score` | 推荐阈值；title 命中一个关键词加 2 分，abstract 命中一个关键词加 1 分，默认 2 |
 
-`批量读一下 Zotero 里 XXX 分类下的论文` 不需要额外的映射文件；只要 `paths.zotero_db` 和 `paths.zotero_storage` 配对，脚本会直接从你的 Zotero 分类树里查。
+会议配比直接改这里：
+
+```json
+"conferences": [
+  { "name": "ICML", "year": 2026, "daily_take": 5 },
+  { "name": "ICLR", "year": 2026, "daily_take": 5 },
+  { "name": "CVPR", "year": 2026, "daily_take": 5 },
+  { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }
+]
+```
+
+Zotero 配置主要用于后续详细笔记生成；只跑每日推荐时可以不填。
 
 ## 🦮 默认行为
 
@@ -136,7 +135,7 @@ mkdir -p "$VAULT/DailyPapers" \
 
 **每日推荐**现在走本地会议接收 JSONL snapshot，两步生成摘要式推荐：
 
-1. **抓取**：Python 脚本读取 `conferences`，用代码内 registry 匹配 `data/paperlist` 下同步自 `ronpay/paperlist` 的 JSONL 文件。当前支持 ICML、ICLR、CVPR，默认都可配置到 2026。每个会议都有独立 cursor，会分别从各自 JSONL 顺序继续往下扫，读取 title、authors、abstract，并按 `conference_preferences` 计分。title 命中一个正向关键词加 2 分，abstract 命中一个正向关键词加 1 分；title 或 abstract 命中一个 negative keyword 扣 100 分。分数达到 `min_score` 才推荐。默认每个会议每天最多推荐 `daily_take` 篇、最多扫描 1000 篇；ICML、ICLR、CVPR 都开启时每天共 15 篇。state 同时记录 title key，源顺序变化时不会重复推荐已经推过的论文。
+1. **抓取**：Python 脚本读取 `conferences`，用代码内 registry 匹配 `data/paperlist` 下同步自 `ronpay/paperlist` 的 JSONL 文件。当前支持 ICML、ICLR、CVPR、ACL，默认都可配置到 2026。每个会议都有独立 cursor，会分别从各自本地 JSONL snapshot 顺序继续往下扫；如果会议项配置了 `shuffle: true`，`scripts/sync_paperlist.py` 会在同步 snapshot 时先做稳定随机混排。脚本读取 title、authors、abstract，并按 `conference_preferences` 计分。title 命中一个正向关键词加 2 分，abstract 命中一个正向关键词加 1 分；title 或 abstract 命中一个 negative keyword 扣 100 分。分数达到 `min_score` 才推荐。每个会议每天最多推荐该会议项里的 `daily_take` 篇、最多扫描 1000 篇；单日推荐总量由启用会议的 `daily_take` 加总决定。state 同时记录 title key，源顺序变化时不会重复推荐已经推过的论文。
 2. **点评**：Codex 读候选列表，按 必读 / 值得看 / 可跳过 分流，基于摘要写推荐，保存到 Obsidian 的 `DailyPapers/` 目录，同时更新 `.history.json`。
 
 刷新 accepted-paper snapshot 时运行：
@@ -147,9 +146,7 @@ python3 scripts/sync_paperlist.py
 
 这个脚本只负责从 `ronpay/paperlist` 同步当前配置里的会议 JSONL；每日推荐本身不依赖网络。
 
-默认不会为每日推荐生成细粒度论文笔记。只有候选里抓到了 PDF / OpenReview / arXiv 等 paper 链接，并且你明确说“读一下这篇”，才走 paper-reader。
-
-**读单篇**走 paper-reader：支持 arXiv 链接、本地 PDF、Zotero 搜索。会从 arXiv HTML / 项目主页 / PDF 多路取图，按模板生成结构化笔记，自动归类到 Obsidian 对应目录。
+默认不会为每日推荐生成细粒度论文笔记。需要给推荐论文补详细笔记时，再运行论文笔记步骤或使用 `../paper-note`。
 
 **目录页**由 `generate-mocs` 维护：递归扫描论文笔记和概念库目录，自动生成带 wikilink 的索引页。
 
@@ -157,18 +154,14 @@ python3 scripts/sync_paperlist.py
 
 ## 🏠 仓库里有什么
 
-平时真正常用的是前 2 个，后 1 个偏维护：
+平时真正常用的是每日推荐全流程；其他 skill 主要给调试、补笔记和目录维护用：
 
 - `daily-papers`：每日推荐全流程
-- `paper-reader`：读单篇论文
-- `domain-papers`：按领域和子类别长期整理论文笔记
-- `generate-mocs`：手动补刷目录页
-
-另外还有 3 个内部 skill，主要给调试和重跑单步用：
-
 - `daily-papers-fetch`
 - `daily-papers-review`
 - `daily-papers-notes`
+- `paper-reader`：给推荐论文补详细笔记
+- `generate-mocs`：手动补刷目录页
 
 ## 🎾 进阶用法
 
@@ -190,11 +183,11 @@ python3 scripts/sync_paperlist.py
 
 **目录页会自动刷新吗？**
 
-默认会。读单篇论文和跑完整的每日推荐流程时，结束后通常都会自动刷新一次。`更新索引` 更像是手动补刷入口。
+默认会。跑完整的每日推荐流程或论文笔记步骤时，结束后通常都会自动刷新一次。`更新索引` 更像是手动补刷入口。
 
 **不用 Zotero 可以吗？**
 
-可以。每日推荐不依赖 Zotero，单篇阅读也支持直接输入 arXiv 链接或本地 PDF。Zotero 主要用于已有文献库的搜索、归类和批量处理。
+可以。每日推荐不依赖 Zotero；Zotero 主要用于后续详细笔记和已有文献库检索。
 
 **不用 Obsidian 可以吗？**
 

@@ -42,6 +42,7 @@ CONFERENCE_REGISTRY = {
     "icml": {"name": "ICML", "type": "paperlist_jsonl"},
     "iclr": {"name": "ICLR", "type": "paperlist_jsonl"},
     "cvpr": {"name": "CVPR", "type": "paperlist_jsonl"},
+    "acl": {"name": "ACL", "type": "paperlist_jsonl"},
 }
 
 

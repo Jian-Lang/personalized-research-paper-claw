@@ -5,7 +5,7 @@
 - **Personalized 笔记**：用户主动给一篇或多篇论文，由 agent 调用 `paper-reader` 生成详细笔记，并追加到 `PersonalizedPaperContent.md`。
 - **Domain 笔记**：按领域和子类别维护 related work，详细笔记写入 `{domain}/paper`，分类汇总写入 `{domain}/content`。
 
-这个项目不包含每日论文推荐流水线；每日抓取、筛选和推送在 `../daily-paper`。
+这个项目不包含每日论文推荐流水线；每日抓取、筛选和推送在 `../daily-paper-recommender`。
 
 ## 使用
 

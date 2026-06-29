@@ -12,6 +12,7 @@ import json
 import re
 import sys
 import xml.etree.ElementTree as ET
+from http.client import IncompleteRead
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urljoin
 from urllib.request import Request, urlopen
@@ -75,6 +76,9 @@ def fetch_url(url: str, timeout: int = 30) -> str:
     try:
         with urlopen(req, timeout=timeout) as resp:
             return resp.read().decode("utf-8", errors="replace")
+    except IncompleteRead as e:
+        print(f"  [WARN] fetch incomplete {url}: {e}", file=sys.stderr)
+        return e.partial.decode("utf-8", errors="replace") if e.partial else ""
     except (HTTPError, URLError, TimeoutError, OSError) as e:
         print(f"  [WARN] fetch failed {url}: {e}", file=sys.stderr)
     return ""

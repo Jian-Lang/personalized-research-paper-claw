@@ -42,8 +42,9 @@ description: |
 - 排除关键词写在 `daily_papers.conference_preferences.negative_keywords`，只要论文 `title + abstract` 命中一个就扣 100 分，通常不会进入推荐。
 - 计分规则：关键词出现在 title 中加 2 分，出现在 abstract 中加 1 分。
 - 推荐阈值写在 `daily_papers.conference_preferences.min_score`。默认是 2，表示总分大于 1 才推荐。
-- 会议和年份写在 `daily_papers.conferences`，例如 `[{ "name": "ICML", "year": 2026 }, { "name": "ICLR", "year": 2026 }, { "name": "CVPR", "year": 2026 }]`。用户不需要配置 adapter 类型或 URL。
-- 每个会议每天最多推荐数量写在 `daily_papers.daily_take`，默认 5。
+- 会议、年份和每个会议每天最多推荐数量写在 `daily_papers.conferences`，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "ICLR", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }]`。用户不需要配置 adapter 类型或 URL。
+- `daily_take` 优先写在每个会议项里；旧版全局 `daily_papers.daily_take` 只作为兼容 fallback。
+- `shuffle: true` 表示同步本地 JSONL snapshot 时做稳定随机混排；ACL 默认开启，用来混合 poster / finding，避免主会先跑完再跑 Findings。
 
 后续统一以共享配置和上面的变量为准。
 
@@ -80,12 +81,12 @@ python3 ../daily-papers/fetch_and_score.py --days N > /tmp/daily_papers_top30.js
 
 脚本自动完成：
 - 读取 `daily_papers.conferences`，通过 registry 解析为具体会议源
-- 当前支持 ICML、ICLR、CVPR，统一读取 `data/paperlist/<CONF>/<conf>_<year>.jsonl`
-- 每个会议按各自 source cursor 从上往下扫描 JSONL 顺序，默认每个会议每天最多扫描 1000 篇
+- 当前支持 ICML、ICLR、CVPR、ACL，统一读取 `data/paperlist/<CONF>/<conf>_<year>.jsonl`
+- 每个会议按各自 source cursor 扫描本地 JSONL snapshot，默认每个会议每天最多扫描 1000 篇；`shuffle: true` 的会议在同步 snapshot 时已经完成稳定随机混排
 - 只基于 JSONL 中的 title + abstract 做关键词打分
 - 命中 `daily_papers.conference_preferences.negative_keywords` 中任一排除词时扣 100 分
-- 分数达到 `daily_papers.conference_preferences.min_score` 才推荐；默认每个会议每天最多推荐 `daily_papers.daily_take` 篇
-- 每个会议凑满 5 篇就立刻停止；ICML、ICLR、CVPR 都开启时每天共 15 篇
+- 分数达到 `daily_papers.conference_preferences.min_score` 才推荐；每个会议每天最多推荐该会议配置的 `daily_take` 篇
+- 每个会议凑满自己的 `daily_take` 就立刻停止；单日推荐总量由启用会议的 `daily_take` 加总决定
 - 用仓库内 `state/conference-state.json` 记录每个会议源的 cursor、已推荐 paper id 和标题 key，避免 JSONL 顺序变化或源切换后重复推荐；旧版 `{DAILY_PROJECT_PATH}/.conference-state.json` 只作为兼容读取路径
 - 同一天重复运行默认复用当天缓存，不会继续推进 cursor；需要强制推进时手动加 `--force`
 
@@ -137,5 +138,5 @@ cat /tmp/daily_papers_top30.json | python3 ../daily-papers/enrich_papers.py /tmp
 - Phase 1+2 使用 `fetch_and_score.py` 脚本，由当前 Codex 会话直接执行，零 token 消耗
 - Phase 3 使用 `enrich_papers.py` 脚本，同样由当前 Codex 会话直接执行
 - 如果脚本执行失败，检查 stderr 输出诊断问题
-- 如果总论文数不足 20 篇，有多少处理多少
+- 如果总论文数不足配置目标，有多少处理多少
 - **不做 git 操作**，不生成推荐文件，只输出临时 JSON

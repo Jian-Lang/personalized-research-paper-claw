@@ -10,6 +10,8 @@ accepted-paper source.
 from __future__ import annotations
 
 import json
+import hashlib
+import random
 import shutil
 import subprocess
 import sys
@@ -28,9 +30,10 @@ def load_conferences() -> list[dict]:
         conferences = config.get("daily_papers", {}).get("conferences", [])
     else:
         conferences = [
-            {"name": "ICML", "year": 2026},
-            {"name": "ICLR", "year": 2026},
-            {"name": "CVPR", "year": 2026},
+            {"name": "ICML", "year": 2026, "daily_take": 5},
+            {"name": "ICLR", "year": 2026, "daily_take": 5},
+            {"name": "CVPR", "year": 2026, "daily_take": 5},
+            {"name": "ACL", "year": 2026, "daily_take": 5},
         ]
     if isinstance(conferences, dict):
         conferences = [conferences]
@@ -57,14 +60,31 @@ def ensure_repo(repo_url: str, cache_dir: Path) -> None:
     run(["git", "clone", "--depth", "1", repo_url, str(cache_dir)])
 
 
-def sync_file(cache_dir: Path, conference: str, year: int) -> Path:
-    rel_path = Path(conference.upper()) / f"{conference.lower()}_{year}.jsonl"
+def shuffled_jsonl(raw: str, conference: str, year: int) -> str:
+    lines = [line for line in raw.splitlines() if line.strip()]
+    seed_text = f"{conference.upper()}-{year}-paperlist-jsonl-v1"
+    seed = int(hashlib.sha256(seed_text.encode("utf-8")).hexdigest(), 16)
+    random.Random(seed).shuffle(lines)
+    return "\n".join(lines) + "\n"
+
+
+def sync_file(cache_dir: Path, conference: dict) -> Path:
+    name = str(conference.get("name", "")).strip().upper()
+    year = int(conference.get("year", 0) or 0)
+    if not name or not year:
+        raise SystemExit(f"Invalid conference config: {conference}")
+
+    rel_path = Path(name) / f"{name.lower()}_{year}.jsonl"
     source_path = cache_dir / rel_path
     if not source_path.exists():
         raise SystemExit(f"Missing upstream file: {source_path}")
     target_path = DATA_DIR / rel_path
     target_path.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source_path, target_path)
+    if conference.get("shuffle"):
+        raw = source_path.read_text(encoding="utf-8")
+        target_path.write_text(shuffled_jsonl(raw, name, year), encoding="utf-8")
+    else:
+        shutil.copy2(source_path, target_path)
     return target_path
 
 
@@ -74,11 +94,7 @@ def main() -> int:
     ensure_repo(repo_url, cache_dir)
     synced = []
     for conference in load_conferences():
-        name = str(conference.get("name", "")).strip().upper()
-        year = int(conference.get("year", 0) or 0)
-        if not name or not year:
-            continue
-        synced.append(sync_file(cache_dir, name, year))
+        synced.append(sync_file(cache_dir, conference))
     for path in synced:
         print(path.relative_to(PROJECT_DIR))
     return 0

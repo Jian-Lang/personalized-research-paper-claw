@@ -64,10 +64,10 @@ cp paper-note/skills/_shared/user-config.example.json \
 Common settings for `daily-paper-recommender` include:
 
 - `paths.obsidian_vault`
-- `paths.domain_papers_vault`
 - `paths.zotero_db`
 - `paths.zotero_storage`
 - `daily_papers.conferences`
+- `daily_papers.conferences[].daily_take`
 - `daily_papers.conference_preferences.keywords`
 - `daily_papers.conference_preferences.negative_keywords`
 
@@ -115,7 +115,7 @@ cd paper-note
 
 `daily-paper-recommender` reads configured conference paper-list snapshots, filters papers by title and abstract, generates a daily recommendation page, and writes it into the configured Obsidian vault.
 
-Current conference snapshots include ICML 2026, ICLR 2026, and CVPR 2026. See `daily-paper-recommender/README.md` for details.
+Current conference snapshots include ICML 2026, ICLR 2026, CVPR 2026, and ACL 2026. Each configured conference has its own `daily_take`, so recommendation mix is controlled directly in `daily_papers.conferences`. See `daily-paper-recommender/README.md` for details.
 
 ### Paper Notes
 

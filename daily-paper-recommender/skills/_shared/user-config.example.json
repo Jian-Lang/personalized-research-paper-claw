@@ -17,18 +17,26 @@
     "conferences": [
       {
         "name": "ICML",
-        "year": 2026
+        "year": 2026,
+        "daily_take": 5
       },
       {
         "name": "ICLR",
-        "year": 2026
+        "year": 2026,
+        "daily_take": 5
       },
       {
         "name": "CVPR",
-        "year": 2026
+        "year": 2026,
+        "daily_take": 5
+      },
+      {
+        "name": "ACL",
+        "year": 2026,
+        "daily_take": 5,
+        "shuffle": true
       }
     ],
-    "daily_take": 5,
     "conference_preferences": {
       "keywords": [
         "multimodal learning",
