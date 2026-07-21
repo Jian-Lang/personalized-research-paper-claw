@@ -1,0 +1,49 @@
+{
+  "daily_papers": {
+    "conferences": [
+      {
+        "name": "ICML",
+        "year": 2026,
+        "daily_take": 5
+      },
+      {
+        "name": "ICLR",
+        "year": 2026,
+        "daily_take": 5
+      },
+      {
+        "name": "CVPR",
+        "year": 2026,
+        "daily_take": 5
+      },
+      {
+        "name": "ACL",
+        "year": 2026,
+        "daily_take": 5,
+        "shuffle": true
+      }
+    ],
+    "scan_limit": 1000,
+    "topics": [
+      "MLLM Personalization",
+      "LLM Abstention",
+      "Test-Time Adaptation"
+    ],
+    "keywords": [
+      "personalized mllm",
+      "llm abstention",
+      "test-time adaptation"
+    ],
+    "exclude_keywords": [
+      "medical",
+      "robotic"
+    ],
+    "min_score": 2
+  },
+  "automation": {
+    "auto_refresh_indexes": true,
+    "git_commit": false,
+    "git_push": false,
+    "daily_run_time": "08:00"
+  }
+}

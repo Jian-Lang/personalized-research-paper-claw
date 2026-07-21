@@ -1,8 +1,0 @@
-interface:
-  display_name: "Domain Papers"
-  short_description: "整理按领域维护的论文笔记库"
-  brand_color: "#25635A"
-  default_prompt: "Use $domain-papers to add these papers to a domain vault under the provided domain and category."
-
-policy:
-  allow_implicit_invocation: true

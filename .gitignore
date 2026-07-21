@@ -1,5 +1,6 @@
 # Local config
 **/skills/_shared/user-config.local.json
+/config/user-config.local.json
 
 # Runtime state and logs
 **/logs/
