@@ -16,7 +16,8 @@
                               ├─ 调用 paper-reader 写入 {domain}/paper
                               ├─ update_domain_content.py 构建 category Gallery
                               ├─ 记录新工作与已有工作的关系
-                              └─ 更新 domain 索引，按年份和发布日期排序、去重
+                              ├─ 更新 domain 索引，按年份和发布日期排序、去重
+                              └─ 可显式重建全部或指定 category Gallery
 ```
 
 ## Skills
@@ -32,6 +33,8 @@
 `paper-reader/assets/download_note_images.py` 负责检查笔记里的外链图片。可访问的外链保持不动，不可访问的图片会下载到本地 `assets/` 并替换为 Obsidian wikilink。
 
 `domain-papers/scripts/update_domain_content.py` 负责 Domain Research Gallery 的自动管理区块：将首图、摘要、方法、评估、借鉴意义和 `related_work` 渲染到 category 页，完成排序、去重与落盘，并保留用户手写内容。每次更新还会重建 `content/_index.md`，作为整个 domain 的 Gallery 入口。
+
+`domain-papers/scripts/rebuild_domain_gallery.py` 负责显式重建：扫描当前 `{domain}/paper/*.md` 以确认论文集合、分类与基础元信息，保留 sidecar 中已有的人工整理字段，再批量刷新全部 category 或只刷新指定 category，最后更新 domain 索引。它不会创建外层聚合 Gallery；`content/_index.md` 仍是 category 导航。该流程不调用 `paper-reader`，也不导出 HTML 或运行 git 自动化。
 
 ## Storage
 

@@ -4,11 +4,11 @@
 
 **Top Conference Papers, Delivered Daily. In-Depth Research Notes, Built to Last.**
 
-持续为您推送与研究方向相关的顶会论文，并按您自己的知识结构沉淀长期笔记。
+持续为您推送贴合个人研究脉络的顶会论文，并按您自己的知识结构沉淀长期笔记。
 
 一个由 **Research Agent** 主动推进论文发现、筛选、阅读与组织，以 **Human-in-the-loop** 融入您的**个性化偏好与关键判断**，并在本地沉淀长期知识资产的论文研究系统。
 
-[🧩 核心功能](#features) · [🎯 推荐逻辑](#scoring) · [📦 安装](#installation) · [🚀 使用方式](#usage)
+[🧩 核心功能](#features) · [🎯 推荐逻辑](#scoring) · [📦 安装](#installation) · [🚀 使用方式](#usage) · [🖼️ Domain Research Gallery 展示（完全由本 Skill 产生）](https://jianlang.org/html/mllm-personalized-understanding.html) · [🖥️ 项目交互式主页](#interactive-homepage)
 
 </div>
 
@@ -38,11 +38,17 @@ Personalized Research Paper Claw 就从这两个时刻开始工作：
 | **📬 Daily Conf Paper Delivery** | 会议、topics、keywords、排除词与阈值 | 读取会议接收列表，按 title + abstract 计分筛选并去重，为每篇生成摘要式笔记，再按阅读优先级和 topic 汇总 | 一张包含今日锐评、阅读分流和全部论文摘要式笔记的每日推荐页 `DailyPaperContent-YYYY-MM-DD.md` |
 | **📝 Research Paper Noter** | 标题、arXiv、DOI、本地 PDF、Zotero 条目或标题列表 | 生成或复用详细笔记，维护 Personalized 汇总，或构建带工作关系的 Domain Research Gallery | 结构化论文笔记、Personalized 汇总与可浏览的领域论文 Gallery（包括便于分享的 HTML 格式） |
 
-### 📬 Daily Conf Paper Delivery
+---
 
-Daily Conf Paper Delivery 负责“把值得读的工作送到您面前”。它从上到下扫描仓库随附的本地会议接收论文列表，无需在运行时联网抓取会议数据；系统按您的偏好对 title + abstract 计分，每个会议维护独立 cursor（上次扫描到列表第几篇的进度记录），每一天都从上一次记录的位置继续筛选并生成每日推荐页。
+![每日推荐、单论文精读与 Domain Research Gallery 在 Obsidian 中的效果](assets/readme/research-workflows-overview.png)
 
-当前仓库提供 ICML 2026、ICLR 2026、CVPR 2026 和 ACL 2026。本项目会持续为每一个新的重要会议提供经过整理的接收论文列表更新。
+## 📬 Daily Conf Paper Delivery
+
+Daily Conf Paper Delivery 负责“把值得读的工作送到您面前”。它从上到下扫描仓库随附的人工智能顶会论文列表（例如 NeurIPS、ICML、ICLR、CVPR），无需在运行时联网抓取会议数据；系统按您的偏好对 title + abstract 计分，每个会议维护独立 cursor（上次扫描到列表第几篇的进度记录），每一天都从上一次记录的位置继续筛选并生成每日推荐页。
+
+当前仓库提供 **ICML 2026、ICLR 2026、CVPR 2026 和 ACL 2026**。本项目会持续为每一个新的重要会议提供经过整理的接收论文列表更新。
+
+您也可以按照[下方的自定义指南](#custom-conference-journal-lists)，接入其他领域的会议或期刊列表。
 
 默认流程包含两步：
 
@@ -53,14 +59,14 @@ Daily Conf Paper Delivery 负责“把值得读的工作送到您面前”。它
 
 <a id="scoring"></a>
 
-#### 🎯 推荐逻辑
+### 🎯 推荐逻辑
 
 Daily Conf Paper Delivery 只有两个正向偏好入口：
 
 - `topics`：较宽的研究方向，同时用于推荐页分类。
 - `keywords`：具体方法名、任务名和需要精确关注的表达。
 
-##### 🧮 分数如何计算
+#### 🧮 分数如何计算
 
 | 命中位置 | 分数 | 说明 |
 | --- | ---: | --- |
@@ -75,10 +81,12 @@ Daily Conf Paper Delivery 只有两个正向偏好入口：
 
 每个会议每天最多推荐 `daily_take` 篇，并从当前 cursor 向后最多扫描 `scan_limit` 篇（默认 1000）；选满、达到扫描上限或走到列表末尾都会停止，因此实际推荐数可能更少。`shuffle` 只控制会议列表的稳定混排，不改变单篇论文的相关性分数。
 
-<details>
-<summary><strong>➕ 自行加入仓库尚未覆盖的会议</strong></summary>
+<a id="custom-conference-journal-lists"></a>
 
-您也可以直接对 Codex 说：`为 Daily Conf Paper Delivery 加入 <会议> <年份>，按照仓库现有 JSONL 格式整理接收论文并完成配置。`
+<details>
+<summary><strong>➕ 自行加入其他领域的会议或期刊列表</strong></summary>
+
+您也可以直接对 Codex 说：`为 Daily Conf Paper Delivery 加入 <会议或期刊> <年份>，按照仓库现有 JSONL 格式整理论文列表并完成配置。`
 
 准备与仓库相同格式的 JSONL，并放到：
 
@@ -109,18 +117,18 @@ python3 scripts/sync_paperlist.py --source-dir /path/to/local/paperlist
 
 </details>
 
-### 📝 Research Paper Noter
+## 📝 Research Paper Noter
 
 Research Paper Noter 负责“把确定要读的论文长期留下来”。输入可以是论文标题、arXiv、DOI、本地 PDF、Zotero 条目或标题列表。
 
-> **🖼️ Highlight — Domain Research Gallery**：它不只是把 Markdown 放进文件夹，而是把一个 domain 下的论文按 category 与年份组织成可持续扩展的领域研究画廊。每项新加入的工作都带有首图、核心信息、详细笔记入口，以及它与本批或同领域已有工作的承接、对比和互补关系。除了作为长期知识源的 Markdown Gallery，还可以一键导出为精心排版、响应式的静态 HTML 阅读页：年份导航、论文卡片、首图、摘要、核心方法、评估与工作关系完整保留，无需 Obsidian 即可直接打开、托管和分享。
+> **🖼️ Highlight — Domain Research Gallery**：它不只是把 Markdown 放进文件夹，而是把一个 domain 下的论文按 category 与年份组织成可持续扩展的领域研究画廊。每项新加入的工作都带有首图、核心信息、详细笔记入口，以及它与本批或同领域已有工作的承接、对比和互补关系。除了作为长期知识源的 Markdown Gallery，还可以一键导出为精心排版、响应式的静态 **HTML 阅读页**：年份导航、论文卡片、首图、摘要、核心方法、评估与工作关系完整保留，无需 Obsidian 即可直接打开、托管和分享。
 
 它提供两种长期组织模式：
 
 | 模式 | 适合什么场景 | 输出 |
 | --- | --- | --- |
 | **Personalized** | 维护“我主动选择并读过的论文” | 详细笔记 + `PersonalizedPaperContent.md` |
-| **Domain Research Gallery** | 围绕某个研究领域和子类别维护可浏览的 related work | 详细笔记、category Gallery、domain 索引与按需导出的 HTML 阅读页 |
+| **Domain Research Gallery** | 围绕某个研究领域和子类别维护可浏览的 related work | 详细的单论文笔记 + 领域概览页 (Domain Research Gallery) + 按需导出的 Gallery HTML 阅读页 |
 
 Personalized 模式按主题持续追加并去重；Domain Research Gallery 模式把详细笔记与分类 Gallery 分开维护。每个 category 页按年份和发布日期排序，展示论文首图、一句话总结、双语摘要、方法、评估、借鉴意义与“与其他工作的关系”；domain 索引则连接所有 category，同时保留 content 页中的手写内容。
 
@@ -178,7 +186,7 @@ ln -s "$PWD/research-paper-noter/skills/generate-mocs" "$SKILLS_DIR/generate-moc
 
 ## 🚀 使用方式
 
-### 📁 第一步：配置全局 Markdown 根目录
+### 📁 预备：配置全局 Markdown 根目录
 
 所有推荐页、详细笔记和领域 Gallery 都会以普通 Markdown 文件留在您的本地；显式导出的 HTML 也会保存在对应 domain 内。您只需要配置一个全局可写目录；第一次运行对应 Skill 时，Daily、Personalized 和 Domain 会自然形成各自的子目录，无需提前准备任何 Markdown 文件。
 
@@ -212,6 +220,8 @@ cp config/user-config.example.json config/user-config.local.json
 ```
 
 > 强烈推荐使用 Obsidian 阅读这些 Markdown。它不是运行依赖，也不要求购买或开启 Obsidian Sync；具体打开方式见本节末尾。
+
+---
 
 ### ⚡ Quick Start：完成第一次 Daily 推荐
 
@@ -319,6 +329,8 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
 
 `daily-papers` Skill 会修改 `automation.daily_run_time`、重新加载本地定时任务并核验状态。这个步骤是可选的；开启或修改时间时不会额外运行一次推荐，系统会从下一个设定时间开始每天自动执行。查看状态和关闭方式见下面的 Daily 使用说明。
 
+---
+
 ### 📬 Daily Conf Paper Delivery 的使用
 
 #### 💬 常用入口
@@ -371,7 +383,9 @@ cd daily-conf-paper-delivery
 ./bin/configure-schedule.sh --remove
 ```
 
-定时任务会调用非交互推荐脚本，适合受信任的个人机器。详细说明见[本地部署文档](daily-conf-paper-delivery/LOCAL_DEPLOY.md)。默认会刷新索引，但不会自动 commit 或 push。
+定时任务会调用非交互推荐脚本，适合受信任的个人机器。
+
+---
 
 ### 📝 Research Paper Noter 的使用
 
@@ -407,6 +421,12 @@ cd research-paper-noter
 ./bin/paper-read.sh "Paper title or arXiv URL"
 ```
 
+只想阅读单篇论文、不维护 Personalized 或 Domain 汇总时，可以直接说：
+
+```text
+读一下这篇论文 <arXiv URL、标题或本地 PDF>
+```
+
 #### 🖼️ Domain Research Gallery：把 related work 变成可浏览的领域画廊
 
 对 Codex 明确提供 domain、category 和论文：
@@ -418,7 +438,7 @@ Category: Personalized Understanding / Long-Context Personalization
 Paper: TAMEing Long Contexts in Personalization: Towards Training-Free and State-Aware MLLM Personalized Assistant
 ```
 
-添加论文时，`Domain` 和 `Category` 都是必填项。在 `MLLM Personalization` 这个 Domain 下，`Category` 可以只写一层，例如 `Personalized Understanding`；也可以用 `/` 或 `>` 写成多级路径，例如 `Personalized Understanding / Long-Context Personalization`。如果自然语言输入缺少其中一项，Skill 只会追问缺少的内容，并保留已经提供的分类与论文。
+添加论文时，`Domain` 和 `Category` 都是必填项。在 `MLLM Personalization` 这个 Domain 下，`Category` 可以只写一层，例如 `Personalized Understanding`；也可以用 `/` 或 `>` 写成多级路径，例如 `Personalized Understanding / Long-Context Personalization`。
 
 或使用 shell：
 
@@ -445,13 +465,35 @@ cd research-paper-noter
 
 每次加入论文，Noter 会更新对应 category Gallery：按年份与发布日期组织条目，展示首图、核心方法、评估和借鉴意义，并用“与其他工作的关系”说明这项工作继承了什么、与谁对比、又能和哪些工作互补。详细笔记通过 Obsidian 双链与 Gallery 条目相连，因此它既适合快速横向浏览，也能随时下钻到单篇论文。
 
-只想阅读单篇论文、不维护 Personalized 或 Domain 汇总时，可以直接说：
+> **`Note`**：多级 category 中，前面的层级形成目录，最深一级形成实际的 Gallery 文件。
+>
+> - 两级：`LLM-based Recommendation / Conversational Recommendation` → `content/LLM-based Recommendation/Conversational Recommendation.md`
+> - 三级：`LLM-based Recommendation / Conversational Recommendation / User Profiles` → `content/LLM-based Recommendation/Conversational Recommendation/User Profiles.md`
+>
+> 父级不会自动生成额外的聚合 Gallery。
+
+#### ♻️ 批量重建 category Galleries：让领域概览跟上笔记更新
+
+当一个 domain 的论文集合、category 或基础元信息经过批量调整后，可以明确要求从当前 `paper/*.md` 重建该 domain 下的全部 category Galleries，也可以只重建其中一个子领域：
 
 ```text
-读一下这篇论文 <arXiv URL、标题或本地 PDF>
+重新生成 Recommendation Systems domain 下的全部 category Galleries
+重新生成 Recommendation Systems domain 下 LLM-based Recommendation 子领域的 Gallery
 ```
 
-#### ✨ 一键导出 HTML：把 Research Gallery 变成分享即用的阅读页面
+也可以直接运行脚本；第一个命令批量重建所有内层 Gallery，第二个命令只重建指定子领域：
+
+```bash
+cd research-paper-noter
+./bin/domain-paper-gallery-rebuild.sh "Recommendation Systems"
+./bin/domain-paper-gallery-rebuild.sh \
+  "Recommendation Systems" \
+  "LLM-based Recommendation"
+```
+
+首次添加论文时仍必须提供 `domain + category`，因为系统需要知道论文应进入哪张内层 Gallery；批量重建只需要 domain，是因为现有笔记已经记录了各自的 category。重建以详细笔记确认论文集合、分类与基础元信息，同时保留 sidecar 中已经整理好的 Gallery 摘要和工作关系，再刷新 category Gallery 与 domain 索引；它不会新增一张外层聚合 Gallery，`content/_index.md` 仍只是连接各 category 的导航入口。重建也不会重新生成论文笔记、导出 HTML、commit 或 push，正常添加论文时不会自动触发批量重建。
+
+#### 🌐 一键导出 HTML：把 Research Gallery 变成分享即用的阅读页面
 
 当一套 Domain Research Gallery 已经整理成熟，可以把它一键转换成独立的静态 HTML 阅读页。页面沿用 Gallery 的信息密度与研究脉络，保留论文首图、年份与 Venue、摘要、核心方法、评估、借鉴意义和工作关系；同时提供清晰的论文导航与响应式排版，无需安装 Obsidian，浏览器打开即可阅读，也可以直接托管到个人主页或静态网站。
 
@@ -479,6 +521,8 @@ cd research-paper-noter
 
 HTML 默认写入 `{markdown_root}/DomainPapers/{domain}/html/`。这是一个完全按需的分享出口：正常添加 domain 论文时不会自动导出 HTML，也不会修改已有笔记、content Gallery 或索引。
 
+---
+
 ### 🔮 强烈推荐：用 Obsidian 阅读生成的笔记
 
 Obsidian 把本地文件夹当作 vault 使用，不需要导入或转换 Markdown：
@@ -489,6 +533,7 @@ Obsidian 把本地文件夹当作 vault 使用，不需要导入或转换 Markdo
 4. Obsidian 会自动显示 `DailyPapers`、`PersonalizedPaper` 和 `DomainPapers`，并识别项目生成的 `[[双向链接]]`、图片和索引页。
 
 Obsidian 会自行创建 `.obsidian` 配置目录；本项目不会创建或修改它。Obsidian Sync 完全可选，不开启也能在本机正常阅读。以后 Skill 新增的 Markdown 会直接出现在同一个 vault 中。
+
 
 ## 🗂️ 输出结构
 
@@ -512,6 +557,7 @@ ResearchNotes/
 ```
 
 三类产物不会互相混写：Daily 用于发现，Personalized 用于主动阅读，Domain Research Gallery 用于浏览、比较并长期维护 related work。
+
 
 ## 🏗️ 仓库结构
 
@@ -538,7 +584,8 @@ Personalized-Research-Paper-Claw/
     ├── bin/
     │   ├── paper-read.sh             # Personalized 入口
     │   ├── domain-paper-add.sh       # Domain 论文添加入口
-    │   └── domain-paper-gallery-html.sh # Domain Gallery HTML 导出入口
+    │   ├── domain-paper-gallery-rebuild.sh # Domain Gallery 重建入口
+    │   └── domain-paper-gallery-html.sh    # Domain Gallery HTML 导出入口
     ├── skills/
     │   ├── manual-papers/
     │   ├── domain-papers/
@@ -548,6 +595,7 @@ Personalized-Research-Paper-Claw/
     ├── README.md
     └── ARCHITECTURE.md
 ```
+
 
 ## ⚠️ 项目边界
 

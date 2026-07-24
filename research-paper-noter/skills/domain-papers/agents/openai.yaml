@@ -1,8 +1,8 @@
 interface:
   display_name: "Domain Papers"
-  short_description: "管理领域论文笔记，并按需导出可分享的 Gallery HTML"
+  short_description: "管理领域论文笔记，重建分类 Gallery 并按需导出 HTML"
   brand_color: "#25635A"
-  default_prompt: "Use $domain-papers to add domain papers or explicitly export a domain or category Gallery to HTML."
+  default_prompt: "Use $domain-papers to add domain papers, rebuild all category Galleries in a domain or one selected category, or explicitly export a Gallery to HTML."
 
 policy:
   allow_implicit_invocation: true

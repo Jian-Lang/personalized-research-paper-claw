@@ -5,10 +5,14 @@ description: |
   and category/subcategory, and wants notes saved into a separate domain Obsidian vault with
   domain/{paper,content} structure. Reuses paper-reader/manual note style, supports incremental
   additions, and updates content pages sorted by paper year. Also use when the user explicitly asks
-  to export a domain Research Gallery, or one optional category/subcategory, as a shareable HTML page.
+  to rebuild every category Gallery in a domain from its current notes, or one selected
+  category/subcategory, or to export that Gallery as a shareable HTML page.
 
   触发词："domain论文"、"领域论文整理"、"加入domain"、"domain-paper-add.sh"、
-  "导出 XXX domain 的 HTML"、"导出 XXX domain 的 XXX 子领域 HTML"、"导出 domain Gallery 分享页"
+  "重新生成 XXX domain 下的全部 category Galleries"、"重建 XXX domain 下 XXX 子领域的 Gallery"、
+  "刷新 domain 下全部 category Galleries"、
+  "domain-paper-gallery-rebuild.sh"、"导出 XXX domain 的 HTML"、"导出 XXX domain 的 XXX 子领域 HTML"、
+  "导出 domain Gallery 分享页"
 ---
 
 # Domain Paper Notes
@@ -46,7 +50,7 @@ description: |
 - 只有 `domain` 和论文时，只追问 `category_path`，保留已有 domain 与论文。
 - 只有论文时，一次询问 `domain` 和 `category_path`。不要自行推断分类，也不要创建 `Uncategorized`。
 
-上面的缺少分类规则只适用于添加 domain 论文。HTML 导出模式允许只提供 `domain`，此时导出该 domain 的所有 category/subcategory。
+上面的缺少分类规则只适用于添加 domain 论文。Gallery 重建和 HTML 导出模式都允许只提供 `domain`，此时处理该 domain 的所有 category/subcategory。
 
 ## Step 1: 创建目录
 
@@ -128,6 +132,32 @@ cd {DOMAIN_VAULT_PATH} && git add -A && git commit -m "domain papers: {domain} Y
 
 只有在 `GIT_PUSH_ENABLED=true` 且仓库已配置远端时才 push。
 
+## 按需重建 category Galleries
+
+只有当用户明确要求“重新生成”“重建”或“刷新” Gallery 时才运行。正常添加 domain 论文时，只按 Step 3 增量更新对应 category，禁止自动触发整库重建。
+
+调用包装脚本，不要让 agent 自己重写 Gallery：
+
+```bash
+# 从当前详细笔记重建 domain 下全部 category Galleries
+./bin/domain-paper-gallery-rebuild.sh "{domain}"
+
+# 只重建一个 category/subcategory Gallery
+./bin/domain-paper-gallery-rebuild.sh "{domain}" "{category_path}"
+```
+
+路由规则：
+
+- `domain` 必填；`category_path` 可选，并沿用 content 的 `/` 递归层级
+- 省略 `category_path` 时，扫描 `{DOMAIN_PAPERS_PATH}/*.md` 并批量重建所有当前及既有 category Gallery；提供时只写入对应 category Gallery
+- domain-only 重建不会创建外层聚合 Gallery；`{DOMAIN_CONTENT_PATH}/_index.md` 仍只作为各 category Gallery 的导航入口
+- 添加新论文时 `domain` 和 `category_path` 仍然都必填；重建时可以省略 category，是因为现有笔记已通过 frontmatter 记录所属 category
+- 论文集合、分类、标题、年份、Venue 和链接以当前详细笔记为准；分类依次读取 frontmatter 中的 `category_path`、`category` 或 `zotero_collection`，旧 sidecar 仅为缺失基础字段提供兼容回退
+- sidecar 中已由 agent 二次整理的摘要、背景、方法、评估、借鉴意义和 `related_work` 必须保留；只有新笔记或缺失字段才允许从详细笔记确定性抽取，禁止用原始长 section 覆盖已有 Gallery 文案
+- 新增笔记会进入 Gallery，已删除笔记的旧条目会移除，修改分类后的笔记会移动到新 category；不再包含论文的既有 category 页面保留并显示为空
+- 只替换 category 页的自动管理区块，保留其余手写内容；同时刷新 `.domain-papers.json` 和 `content/_index.md`
+- 重建不调用 `paper-reader`，不重新生成或修改详细笔记，不导出 HTML，也不自动 commit 或 push
+
 ## 按需导出 Gallery HTML
 
 只有当用户明确要求导出 HTML 时才运行。正常添加 domain 论文时，禁止自动导出 HTML。
@@ -161,5 +191,7 @@ cd {DOMAIN_VAULT_PATH} && git add -A && git commit -m "domain papers: {domain} Y
 - 更新了哪些 domain/category content 页
 - 哪些论文已存在、失败或缺少年份
 - domain vault 的实际写入路径
+
+如果执行的是 Gallery 重建，则改为告知用户：domain、可选 category、重建页数、论文数量、content 页与索引路径。
 
 如果执行的是 HTML 导出，则改为告知用户：domain、可选 category、论文数量、HTML 路径和复制的图片数量。

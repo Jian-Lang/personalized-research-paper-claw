@@ -424,14 +424,17 @@ def load_note_extract(domain: str, entry: dict[str, Any]) -> dict[str, str]:
 
 def extract_one_sentence(content: str) -> str:
     text = extract_section(content, "一句话总结")
-    text = re.sub(r"^>\s*", "", text.strip(), flags=re.MULTILINE)
-    return clean_excerpt(text, 260)
+    blockquote = re.search(r"^>\s*(.+)$", text, flags=re.MULTILINE)
+    if blockquote:
+        return clean_excerpt(blockquote.group(1), 260)
+    first_paragraph = re.split(r"\n\s*\n|!\[", text.strip(), maxsplit=1)[0]
+    return clean_excerpt(first_paragraph, 260)
 
 
 def extract_label_value(content: str, label: str) -> str:
     pattern = re.compile(rf"- \*\*{re.escape(label)}\*\*:\s*(.+)")
     match = pattern.search(content)
-    return clean_excerpt(match.group(1), 900) if match else ""
+    return clean_excerpt(match.group(1), 10000) if match else ""
 
 
 def extract_section(content: str, heading: str) -> str:
@@ -546,7 +549,9 @@ def vault_wikilink(path: Path) -> str:
         relative = path.relative_to(markdown_root_path())
     except ValueError:
         relative = path.relative_to(domain_vault_path())
-    return relative.with_suffix("").as_posix()
+    if relative.suffix == ".md":
+        relative = relative.with_suffix("")
+    return relative.as_posix()
 
 
 if __name__ == "__main__":

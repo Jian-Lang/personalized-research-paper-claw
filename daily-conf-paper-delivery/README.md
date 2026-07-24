@@ -149,14 +149,14 @@ Zotero 配置主要用于后续详细笔记生成；只跑每日推荐时不需�
 
 ## 🐾 大概怎么跑的
 
-**每日推荐**现在读取本地会议接收 JSONL 列表，两步生成一页式每日论文推荐：
+**每日推荐**现在读取本地人工智能顶会 JSONL 列表，两步生成一页式每日论文推荐：
 
 1. **抓取**：Python 脚本读取 `conferences`，按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的约定匹配仓库内会议接收列表。当前仓库提供 ICML、ICLR、CVPR、ACL。每个会议都有独立 cursor（上次扫描到列表第几篇的进度记录）；`shuffle: true` 只在导入列表时做稳定随机混排。topic 在 title 或 abstract 中完整命中加 1 分；keyword 在 title 中完整命中加 3 分，否则在 abstract 中完整命中加 1 分；exclude keyword 命中计 -100 分。大小写和标点会规范化，匹配按完整词/短语边界执行，重复项只计一次。分数达到 `min_score` 才推荐。每个会议每天最多推荐自己的 `daily_take` 篇，并从当前 cursor 向后最多扫描 `scan_limit` 篇（默认 1000）；达到任一上限或走到列表末尾即停止。
 2. **汇总与点评**：Codex 读候选列表及 `score_breakdown`，以同一份 `topics` 做阅读分流和主题分类，为每篇生成包含元信息、双语摘要、背景、动机、方法、评估、借鉴意义与锐评的摘要式笔记，再把当天的全部推荐集中写入同一张页面，保存到 Obsidian 的 `DailyPapers/` 目录，同时更新 `.history.json`。推荐页 frontmatter 的 topics / keywords 也直接来自这两项配置。
 
 本项目会为每一个新的重要会议提供接收论文列表更新；更新仓库后即可使用新增数据。
 
-如果要自行维护其他会议，可以直接按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的路径放入兼容 JSONL；每行至少包含 `title` 和 `abstract`，再把会议加入 `daily_papers.conferences`。已有相同目录结构的本地数据时，也可以运行：
+如果要自行维护其他领域的会议或期刊，可以直接按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的路径放入兼容 JSONL；每行至少包含 `title` 和 `abstract`，再把该来源加入 `daily_papers.conferences`。已有相同目录结构的本地数据时，也可以运行：
 
 ```bash
 python3 scripts/sync_paperlist.py --source-dir /path/to/local/paperlist
