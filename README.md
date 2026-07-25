@@ -1,14 +1,16 @@
 <div align="center">
 
-# Personalized Research Paper Claw
+# 🧭 Personalized Research Paper Claw
 
-**Top Conference Papers, Delivered Daily. In-Depth Research Notes, Built to Last.**
+
+一个由 **Research Agent** 主动推进论文发现、筛选、阅读与组织，以 **Human-in-the-loop** 融入您的**个性化偏好与关键判断**，并在本地沉淀长期知识资产的论文研究和学习系统。
+
+
+<img src="assets/readme/cover-logo.png" alt="Personalized Research Paper Claw：个性化论文发现、精读笔记与领域研究画廊" width="100%">
 
 持续为您推送贴合个人研究脉络的顶会论文，并按您自己的知识结构沉淀长期笔记。
 
-一个由 **Research Agent** 主动推进论文发现、筛选、阅读与组织，以 **Human-in-the-loop** 融入您的**个性化偏好与关键判断**，并在本地沉淀长期知识资产的论文研究系统。
-
-[🧩 核心功能](#features) · [🎯 推荐逻辑](#scoring) · [📦 安装](#installation) · [🚀 使用方式](#usage) · [🖼️ Domain Research Gallery 展示（完全由本 Skill 产生）](https://jianlang.org/html/mllm-personalized-understanding.html) · [🖥️ 项目交互式主页](#interactive-homepage)
+[🧩 核心功能](#features) · [🎯 推荐逻辑](#scoring) · [📦 安装](#installation) · [🚀 使用方式](#usage) · [🖼️ Domain Research Gallery 展示（完全由本 Skill 产生）](https://jianlang.org/html/mllm-personalized-understanding.html) · [🖥️ 项目交互式主页](https://jian-lang.github.io/research-paper-claw/)
 
 </div>
 
@@ -88,7 +90,7 @@ Daily Conf Paper Delivery 只有两个正向偏好入口：
 
 您也可以直接对 Codex 说：`为 Daily Conf Paper Delivery 加入 <会议或期刊> <年份>，按照仓库现有 JSONL 格式整理论文列表并完成配置。`
 
-准备与仓库相同格式的 JSONL，并放到：
+如果希望手动接入，请准备与仓库相同格式的 JSONL，并放到：
 
 ```text
 daily-conf-paper-delivery/data/paperlist/<CONF>/<conf>_<year>.jsonl
@@ -221,8 +223,6 @@ cp config/user-config.example.json config/user-config.local.json
 
 > 强烈推荐使用 Obsidian 阅读这些 Markdown。它不是运行依赖，也不要求购买或开启 Obsidian Sync；具体打开方式见本节末尾。
 
----
-
 ### ⚡ Quick Start：完成第一次 Daily 推荐
 
 #### ⚙️ 1. 配置 Daily 推荐偏好
@@ -329,8 +329,6 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
 
 `daily-papers` Skill 会修改 `automation.daily_run_time`、重新加载本地定时任务并核验状态。这个步骤是可选的；开启或修改时间时不会额外运行一次推荐，系统会从下一个设定时间开始每天自动执行。查看状态和关闭方式见下面的 Daily 使用说明。
 
----
-
 ### 📬 Daily Conf Paper Delivery 的使用
 
 #### 💬 常用入口
@@ -384,8 +382,6 @@ cd daily-conf-paper-delivery
 ```
 
 定时任务会调用非交互推荐脚本，适合受信任的个人机器。
-
----
 
 ### 📝 Research Paper Noter 的使用
 
@@ -521,8 +517,6 @@ cd research-paper-noter
 
 HTML 默认写入 `{markdown_root}/DomainPapers/{domain}/html/`。这是一个完全按需的分享出口：正常添加 domain 论文时不会自动导出 HTML，也不会修改已有笔记、content Gallery 或索引。
 
----
-
 ### 🔮 强烈推荐：用 Obsidian 阅读生成的笔记
 
 Obsidian 把本地文件夹当作 vault 使用，不需要导入或转换 Markdown：
@@ -533,7 +527,6 @@ Obsidian 把本地文件夹当作 vault 使用，不需要导入或转换 Markdo
 4. Obsidian 会自动显示 `DailyPapers`、`PersonalizedPaper` 和 `DomainPapers`，并识别项目生成的 `[[双向链接]]`、图片和索引页。
 
 Obsidian 会自行创建 `.obsidian` 配置目录；本项目不会创建或修改它。Obsidian Sync 完全可选，不开启也能在本机正常阅读。以后 Skill 新增的 Markdown 会直接出现在同一个 vault 中。
-
 
 ## 🗂️ 输出结构
 
@@ -557,7 +550,6 @@ ResearchNotes/
 ```
 
 三类产物不会互相混写：Daily 用于发现，Personalized 用于主动阅读，Domain Research Gallery 用于浏览、比较并长期维护 related work。
-
 
 ## 🏗️ 仓库结构
 
@@ -595,7 +587,6 @@ Personalized-Research-Paper-Claw/
     ├── README.md
     └── ARCHITECTURE.md
 ```
-
 
 ## ⚠️ 项目边界
 
