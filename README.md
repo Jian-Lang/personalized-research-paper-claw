@@ -10,7 +10,7 @@
 
 持续为您推送贴合个人研究脉络的顶会论文，并按您自己的知识结构沉淀长期笔记。
 
-[🧩 核心功能](#features) · [🎯 推荐逻辑](#scoring) · [📦 安装](#installation) · [🚀 使用方式](#usage) · [🖼️ Domain Research Gallery 展示（完全由本 Skill 产生）](https://jianlang.org/html/mllm-personalized-understanding.html) · [🖥️ 项目交互式主页](https://jian-lang.github.io/research-paper-claw/)
+[🧩 核心功能](#features) · [🎯 推荐逻辑](#scoring) · [📦 安装](#installation) · [🚀 使用方式](#usage) · [🖼️ Domain Research Gallery 展示（完全由本 Skill 产生）](https://jianlang.org/html/mllm-personalized-understanding.html) · [🖥️ 项目交互式主页](https://jianlang.org/research-paper-claw/)
 
 </div>
 
@@ -157,8 +157,8 @@ brew install poppler
 ### 📥 克隆仓库
 
 ```bash
-git clone https://github.com/Jian-Lang/research-paper-claw.git
-cd research-paper-claw
+git clone https://github.com/Jian-Lang/personalized-research-paper-claw.git
+cd personalized-research-paper-claw
 ```
 
 克隆仓库不会启动任何论文流程，也不会注册后台任务。完成下面的配置并安装 Skills 后，仍需由您明确说“今日论文推荐”才会运行；自动推荐只有在您主动安装定时任务后才会开启。

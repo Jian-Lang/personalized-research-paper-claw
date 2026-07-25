@@ -4,66 +4,66 @@ const papers = [
     status: "Highlight",
     priority: "must",
     priorityLabel: "Must read",
-    title: "Premier: Personalized Preference Modulation with Learnable User Embedding in Text-to-Image Generation",
-    summary: "用可学习 user embedding 和 preference adapter 把用户偏好直接注入生成过程，并通过 dispersion loss 拉开个体风格；比依赖 MLLM 猜提示词更接近可控的长期个性化。",
-    match: "MLLM personalization · preference learning",
-    authors: "Zihao Wang, Yuxiang Wei, Xinpeng Zhou, Tianyu Zhang, Tao Liang, et al.",
-    url: "https://cvpr.thecvf.com/virtual/2026/poster/37526"
+    title: "A Frame is Worth One Token: Efficient Generative World Modeling with Delta Tokens",
+    summary: "DeltaWorld 把相邻帧的 VFM 特征差压成单个连续 delta token，将 512×512 视频缩短 1,024 倍；用 35 倍更少参数和 2,000 倍更少 FLOPs，一次前向就能给出多种未来。",
+    match: "world model · efficient rollout · delta token",
+    authors: "Tommie Kerssies, Gabriele Berton, Ju He, Qihang Yu, Wufei Ma, et al.",
+    url: "https://cvpr.thecvf.com/virtual/2026/poster/38021"
+  },
+  {
+    conference: "ICML",
+    status: "Spotlight",
+    priority: "must",
+    priorityLabel: "Must read",
+    title: "DreamDojo: A Real-Time Robot World Model from Large-Scale Human Videos",
+    summary: "从 4.4 万小时第一视角人类视频学习连续 latent action，再用少量机器人数据后训练；蒸馏后达到 10.93 FPS，可直接服务实时遥操作、策略评估和 model-based planning。",
+    match: "robot world model · latent action · real-time simulation",
+    authors: "Shenyuan Gao, William Liang, Kaiyuan Zheng, Ayaan Malik, Seonghyeon Ye, et al.",
+    url: "https://icml.cc/virtual/2026/poster/65193"
   },
   {
     conference: "ACL",
-    status: "Findings",
+    status: "Poster",
     priority: "must",
     priorityLabel: "Must read",
-    title: "EgoMemory: Memory-Augmented Personalized Retrieval for Long-Context Egocentric Video",
-    summary: "把 45 位用户的长期第一视角视频组织成个性化情景记忆检索任务；training-free EgoRetriever 用反思式 CoT 解释用户意图，并在三项基准上稳定超过现有方法。",
-    match: "personal memory · long-context MLLM",
-    authors: "Yuanmin Tang, Jue Zhang, Xiaoting Qin, Jing Yu, Meikang Qiu, et al.",
-    url: "https://aclanthology.org/2026.findings-acl.362/"
-  },
-  {
-    conference: "ACL",
-    status: "Findings",
-    priority: "must",
-    priorityLabel: "Must read",
-    title: "Beyond Static Profiles: Capturing the Fluidity of User Preferences in Diverse Scenarios",
-    summary: "用 stable preference 与 situational preference 的分层 taxonomy 拆开静态画像和情境偏好，并以 10k 条 S2Pref 检验模型能否优先使用上下文、主动消解歧义。",
-    match: "dynamic preference · user profiling",
-    authors: "Chunyang Gao, Yi Huang, Jingyu Yao, Xiaoting Wu, Junlan Feng",
-    url: "https://aclanthology.org/2026.findings-acl.1033/"
+    title: "From Word to World: Can Large Language Models be Implicit Text-based World Models?",
+    summary: "把语言建模改写成交互中的 next-state prediction，并从 fidelity、scaling 和 agent utility 三层验证 LLM world model；action verification 让 GPT-4o 在 WebShop 提升 5.5%。",
+    match: "text world model · agent utility · next-state prediction",
+    authors: "Yixia Li, Hongru Wang, Jiahao Qiu, Zhenfei Yin, Dongdong Zhang, et al.",
+    url: "https://aclanthology.org/2026.acl-long.366/"
   },
   {
     conference: "CVPR",
     status: "Highlight",
     priority: "worth",
     priorityLabel: "Worth reading",
-    title: "WorldMM: Dynamic Multimodal Memory Agent for Long Video Reasoning",
-    summary: "同时维护 episodic、semantic 与 visual memory，让检索 agent 按问题自适应选择记忆源和时间尺度；长视频问答平均比此前 SOTA 提升 8.4%。",
-    match: "multimodal memory · agentic retrieval",
-    authors: "Woongyeong Yeo, Kangsan Kim, Jaehong Yoon, Sung Ju",
-    url: "https://cvpr.thecvf.com/virtual/2026/poster/39925"
+    title: "Physical Object Understanding with a Physically Controllable World Model",
+    summary: "用概率式 world model 从局部视频观察多个可能未来，再从跨未来的运动相关性涌现出对象和可动子部件；不仅识别物理结构，还能在 3D 中直接操控对象。",
+    match: "physical control · object dynamics · probabilistic futures",
+    authors: "Rahul Venkatesh, Klemen Kotar, Lilian Naing Chen, Wanhee Lee, Gia Ancone, et al.",
+    url: "https://cvpr.thecvf.com/virtual/2026/poster/37466"
   },
   {
     conference: "ICML",
     status: "Poster",
     priority: "worth",
     priorityLabel: "Worth reading",
-    title: "MMKU-Bench: A Multimodal Update Benchmark for Diverse Visual Knowledge",
-    summary: "覆盖 25k 知识实例与 49k 图像，把“未知知识学习”和“已知知识更新”放进同一跨模态评测；结果显示 SFT、RLHF 容易灾难性遗忘，KE 的持续更新仍有限。",
-    match: "multimodal update · continual memory",
-    authors: "Baochen Fu, Yuntao Du, Cheng Chang, Baihao Jin, Wenzhi Deng, et al.",
-    url: "https://icml.cc/virtual/2026/poster/63508"
+    title: "Causal-JEPA: Learning World Models through Object-Level Latent Interventions",
+    summary: "把 JEPA 的遮挡预测从 patch 提升到对象层，通过 latent intervention 迫使模型理解交互而不是走捷径；反事实推理绝对提升约 20%，规划只需 patch world model 约 1% 的 latent 特征。",
+    match: "causal world model · object interaction · JEPA",
+    authors: "Heejeong Nam, Quentin Le Lidec, Lucas Maes, Yann LeCun, Randall Balestriero",
+    url: "https://icml.cc/virtual/2026/poster/63623"
   },
   {
-    conference: "ICML",
+    conference: "ACL",
     status: "Poster",
     priority: "worth",
     priorityLabel: "Worth reading",
-    title: "Optimal Bayesian Stopping for Efficient Inference of Consistent LLM Answers",
-    summary: "为多次采样投票加入 Bayesian stopping，只跟踪高频答案即可提前停止；理论上证明 L=3 足以渐近最优，在维持答案准确率时减少推理采样。",
-    match: "LLM reliability · efficient inference",
-    authors: "Jingkai Huang, Will Ma, Zhengyuan Zhou",
-    url: "https://icml.cc/virtual/2026/poster/64810"
+    title: "Current Agents Fail to Leverage World Model as Tool for Foresight",
+    summary: "直接检验 agent 会不会把生成式 world model 当外部模拟器：部分 agent 调用率低于 1%，约 15% 会误用 rollout，强制模拟甚至让性能下降 5%，瓶颈在何时模拟和如何解释未来。",
+    match: "agent foresight · simulation tool use · calibration",
+    authors: "Cheng Qian, Emre Can Acikgoz, Bingxuan Li, Xiusi Chen, Yuji Zhang, et al.",
+    url: "https://aclanthology.org/2026.acl-long.623/"
   }
 ];
 
@@ -73,7 +73,7 @@ const runConfigs = {
     command: "daily-papers --date 2026-07-25 --conf CVPR,ICML,ACL",
     steps: [
       ["读取三份 2026 接收列表", "3 sources"],
-      ["按个人研究偏好打分与去重", "6 matches"],
+      ["按 World Model topic 与关键词打分", "6 matches"],
       ["生成锐评、分流与摘要式笔记", "ready"]
     ]
   },
@@ -142,7 +142,7 @@ function renderPapers(conference = "all") {
     ? papers
     : papers.filter((paper) => paper.conference === conference);
   feed.innerHTML = selected.map(paperMarkup).join("");
-  filterSummary.textContent = `Showing ${selected.length} personalized match${selected.length === 1 ? "" : "es"}`;
+  filterSummary.textContent = `Showing ${selected.length} World Model match${selected.length === 1 ? "" : "es"}`;
 }
 
 function delay(milliseconds) {

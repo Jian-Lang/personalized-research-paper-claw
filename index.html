@@ -10,111 +10,115 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#home" aria-label="返回研究工作台">
-      <span class="brand-mark" aria-hidden="true">P</span>
       <span class="brand-copy">
+        <span>Personalized</span>
         <strong>Research Paper Claw</strong>
-        <span>Personalized research workspace</span>
       </span>
     </a>
     <div class="topbar-actions">
-      <span class="demo-status"><i aria-hidden="true"></i> Interactive demo</span>
-      <a class="text-link" href="https://github.com/Jian-Lang/research-paper-claw#readme" target="_blank" rel="noopener">README</a>
-      <a class="icon-link" href="https://github.com/Jian-Lang/research-paper-claw" target="_blank" rel="noopener" aria-label="在 GitHub 查看项目" title="GitHub">↗</a>
+      <span class="demo-status"><i aria-hidden="true"></i> Research agent online</span>
+      <a class="text-link" href="https://github.com/Jian-Lang/personalized-research-paper-claw#readme" target="_blank" rel="noopener">README</a>
+      <a class="icon-link" href="https://github.com/Jian-Lang/personalized-research-paper-claw" target="_blank" rel="noopener" aria-label="在 GitHub 查看项目" title="GitHub">↗</a>
     </div>
   </header>
 
   <main>
     <section class="view is-active" id="home-view" data-view="home" aria-labelledby="workspace-title">
-      <div class="workspace-heading">
-        <div>
-          <p class="eyebrow"><span>Research desk</span><time datetime="2026-07-25">2026.07.25</time></p>
-          <h1 id="workspace-title">今天，推进哪一项研究？</h1>
+      <header class="project-intro">
+        <div class="intro-main">
+          <p class="eyebrow"><span>Human-in-the-loop research agent</span><time datetime="2026-07-25">2026.07.25</time></p>
+          <h1 id="workspace-title"><span>Personalized</span> Research Paper Claw</h1>
         </div>
-        <p class="workspace-note">从会议接收列表发现值得读的工作，<br>再把精读沉淀为可持续生长的领域地图。</p>
+        <div class="intro-side">
+          <p>让真正相关的论文主动出现，<br>再沿着你的判断生长为长期研究地图。</p>
+          <dl>
+            <div><dt>Discover</dt><dd>Top conferences</dd></div>
+            <div><dt>Read</dt><dd>Fine-grained notes</dd></div>
+            <div><dt>Browse</dt><dd>Domain gallery</dd></div>
+          </dl>
+        </div>
+      </header>
+
+      <div class="signal-strip" aria-hidden="true">
+        <span>WORLD MODELS</span><i></i><span>PHYSICAL SIMULATION</span><i></i><span>LATENT ACTIONS</span><i></i><span>EMBODIED FORESIGHT</span>
       </div>
 
-      <div class="task-grid">
-        <section class="task-panel daily-task" aria-labelledby="daily-task-title">
+      <section class="daily-task" aria-labelledby="daily-task-title">
+        <div class="task-rail">
+          <span class="task-number">01</span>
+          <span>DAILY<br>DELIVERY</span>
+        </div>
+
+        <div class="daily-workbench">
           <div class="task-header">
             <div>
-              <span class="task-number">01 / DAILY DELIVERY</span>
-              <h2 id="daily-task-title">推送今天的论文</h2>
+              <span class="task-kicker">TODAY'S WORLD MODEL RADAR</span>
+              <h2 id="daily-task-title">World Model</h2>
             </div>
-            <span class="ready-label">Ready</span>
+            <span class="ready-label"><i aria-hidden="true"></i> Ready to deliver</span>
           </div>
 
-          <div class="conference-scan" aria-label="今日扫描会议">
-            <div class="conference-row">
-              <span class="conference-name">CVPR <b>26</b></span>
-              <span class="scan-track"><i style="--scan: 88%"></i></span>
-              <span class="conference-result">2 selected</span>
+          <div class="radar-grid">
+            <div class="world-signal">
+              <span>Topic signal</span>
+              <div class="signal-bars" aria-hidden="true">
+                <i style="--h:28%"></i><i style="--h:54%"></i><i style="--h:86%"></i><i style="--h:46%"></i><i style="--h:72%"></i><i style="--h:100%"></i><i style="--h:62%"></i><i style="--h:38%"></i><i style="--h:79%"></i><i style="--h:48%"></i><i style="--h:91%"></i><i style="--h:66%"></i>
+              </div>
+              <strong>0.94</strong>
+              <small>research-profile match</small>
             </div>
-            <div class="conference-row">
-              <span class="conference-name">ICML <b>26</b></span>
-              <span class="scan-track"><i style="--scan: 72%"></i></span>
-              <span class="conference-result">2 selected</span>
-            </div>
-            <div class="conference-row">
-              <span class="conference-name">ACL <b>26</b></span>
-              <span class="scan-track"><i style="--scan: 81%"></i></span>
-              <span class="conference-result">2 selected</span>
-            </div>
-          </div>
 
-          <div class="preference-strip">
-            <span>Personalized by</span>
-            <strong>MLLM personalization</strong>
-            <strong>Long-term memory</strong>
-            <strong>Preference learning</strong>
+            <div class="conference-scan" aria-label="今日扫描会议">
+              <span class="radar-label">Sources</span>
+              <div class="conference-row"><span class="conference-name">CVPR <b>26</b></span><span>2 selected</span></div>
+              <div class="conference-row"><span class="conference-name">ICML <b>26</b></span><span>2 selected</span></div>
+              <div class="conference-row"><span class="conference-name">ACL <b>26</b></span><span>2 selected</span></div>
+            </div>
+
+            <div class="keyword-field">
+              <span class="radar-label">Active keywords</span>
+              <div>
+                <strong>world simulation</strong>
+                <strong>latent action</strong>
+                <strong>physical consistency</strong>
+                <strong>embodied prediction</strong>
+                <strong>long-horizon rollout</strong>
+              </div>
+            </div>
           </div>
 
           <div class="task-action-row">
-            <p><strong>6</strong> papers waiting<br><span>3 must-read · 3 worth reading</span></p>
-            <button class="primary-action light-action" type="button" data-run="daily">
-              推送今日论文 <span aria-hidden="true">→</span>
-            </button>
+            <p><strong>6</strong><span>papers waiting</span><small>3 must-read · 3 worth reading</small></p>
+            <button class="primary-action" type="button" data-run="daily">推送今日论文 <span aria-hidden="true">→</span></button>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="task-panel gallery-task" aria-labelledby="gallery-task-title">
-          <div class="gallery-preview" aria-hidden="true">
-            <figure class="preview-large">
-              <img src="assets/site/gallery/mllm-personalization-assets/09-omnipersona-fig1-capability-overview.png" alt="">
-            </figure>
-            <figure>
-              <img src="assets/site/gallery/mllm-personalization-assets/12-gdp-fig1-teaser.png" alt="">
-            </figure>
-            <figure>
-              <img src="assets/site/gallery/mllm-personalization-assets/07-m2a-fig1-teaser.png" alt="">
-            </figure>
-            <span class="preview-stamp">23 PAPER NOTES</span>
-          </div>
+      <section class="gallery-task" aria-labelledby="gallery-task-title">
+        <div class="task-rail gallery-rail">
+          <span class="task-number">02</span>
+          <span>DOMAIN<br>GALLERY</span>
+        </div>
 
-          <div class="gallery-task-body">
-            <span class="task-number">02 / DOMAIN GALLERY</span>
-            <h2 id="gallery-task-title">MLLM Personalization</h2>
-            <div class="domain-path" aria-label="领域层级">
-              <span>Domain</span><i aria-hidden="true">/</i><strong>Personalized Understanding</strong>
-            </div>
-            <div class="gallery-meta">
-              <span><b>23</b> papers</span>
-              <span><b>3</b> years</span>
-              <span><b>1</b> category</span>
-            </div>
-            <button class="primary-action dark-action" type="button" data-run="gallery">
-              构建 Research Gallery <span aria-hidden="true">→</span>
-            </button>
-          </div>
-        </section>
-      </div>
+        <div class="gallery-task-body">
+          <span class="task-kicker">A LIVING MAP OF YOUR FIELD</span>
+          <h2 id="gallery-task-title">MLLM<br>Personalization</h2>
+          <div class="domain-path" aria-label="领域层级"><span>Domain</span><i aria-hidden="true">/</i><strong>Personalized Understanding</strong></div>
+          <div class="gallery-meta"><span><b>23</b> papers</span><span><b>3</b> years</span><span><b>1</b> category</span></div>
+        </div>
 
-      <div class="activity-line" aria-label="最近产物">
-        <span class="activity-label">Latest output</span>
-        <span class="activity-dot" aria-hidden="true"></span>
-        <strong>DailyPaperContent-2026-07-25.md</strong>
-        <span>12 notes organized in your local vault</span>
-        <time datetime="2026-07-25T09:42">09:42</time>
-      </div>
+        <div class="gallery-preview" aria-hidden="true">
+          <figure><img src="assets/site/gallery/mllm-personalization-assets/09-omnipersona-fig1-capability-overview.png" alt=""></figure>
+          <figure><img src="assets/site/gallery/mllm-personalization-assets/12-gdp-fig1-teaser.png" alt=""></figure>
+          <figure><img src="assets/site/gallery/mllm-personalization-assets/07-m2a-fig1-teaser.png" alt=""></figure>
+          <span class="preview-stamp">23 CONNECTED WORKS</span>
+        </div>
+
+        <div class="gallery-action">
+          <p>Detailed notes.<br>Relations intact.<br>Share-ready HTML.</p>
+          <button class="primary-action gallery-button" type="button" data-run="gallery" aria-label="构建 MLLM Personalization Research Gallery"><span>构建 Gallery</span><b aria-hidden="true">→</b></button>
+        </div>
+      </section>
     </section>
 
     <section class="view result-view" id="daily-view" data-view="daily" aria-labelledby="daily-result-title" hidden>
@@ -133,7 +137,7 @@
           <h1 id="daily-result-title">今天有 6 篇，<br>真正贴近你的研究脉络。</h1>
         </div>
         <blockquote>
-          个性化正在从静态 user embedding 转向可更新的偏好、长期多模态记忆与跨模态知识维护。今天最值得追的是 <strong>Premier、EgoMemory 与 S2Pref</strong>，三篇刚好构成“生成偏好、个人记忆、情境偏好”的完整切面。
+          今天不是又一批“更清晰的视频生成”。真正的分水岭已经变成：状态能否被极致压缩、物理是否可控，以及 agent 是否真的会使用模拟结果。最值得追的是 <strong>DeltaWorld、DreamDojo 与 From Word to World</strong>。
         </blockquote>
       </div>
 
@@ -144,7 +148,7 @@
           <button type="button" data-conference="ICML" aria-pressed="false">ICML <span>2</span></button>
           <button type="button" data-conference="ACL" aria-pressed="false">ACL <span>2</span></button>
         </div>
-        <span class="filter-summary" id="filter-summary">Showing 6 personalized matches</span>
+        <span class="filter-summary" id="filter-summary">Showing 6 World Model matches</span>
       </div>
 
       <div class="paper-feed" id="paper-feed" aria-live="polite"></div>
