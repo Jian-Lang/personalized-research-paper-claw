@@ -612,3 +612,9 @@ Personalized-Research-Paper-Claw/
 ## 📄 License
 
 Apache License 2.0. See [LICENSE](LICENSE).
+
+## 🙏 致谢
+
+特别感谢 [huangkiki/dailypaper-skills](https://github.com/huangkiki/dailypaper-skills) 的作者。她提供的原始论文笔记模板，为本项目早期的笔记结构提供了重要参考。
+
+如果这个仓库对您的研究工作流有所帮助，欢迎给它一个 [Star](https://github.com/Jian-Lang/personalized-research-paper-claw) ⭐

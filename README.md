@@ -610,3 +610,9 @@ Personalized-Research-Paper-Claw/
 ## 📄 License
 
 Apache License 2.0. See [LICENSE](LICENSE).
+
+## 🙏 Acknowledgements
+
+Special thanks to the author of [huangkiki/dailypaper-skills](https://github.com/huangkiki/dailypaper-skills) for her original paper-note template, which inspired the earliest note structure in this project.
+
+If this repository helps your research workflow, please consider giving it a [Star](https://github.com/Jian-Lang/personalized-research-paper-claw) ⭐
