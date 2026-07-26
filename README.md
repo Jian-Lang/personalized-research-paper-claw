@@ -22,21 +22,20 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ## 💡 Why Personalized Research Paper Claw?
 
-> [!IMPORTANT]
 > **From paper overload to a research memory that keeps growing.**
 >
 > Imagine it is 1 a.m. An experiment has just finished, dozens of paper tabs are still open, and a new conference acceptance list appears in your group chat. Hundreds or thousands of papers form an endless queue. You know only a handful are truly relevant, but the list does not know what you care about and cannot skip work that looks related while being irrelevant in practice.
 >
 > You eventually choose a few papers and promise to read them tomorrow. Days later, the PDFs are buried in Downloads, summaries remain in an old conversation, and scattered judgments live in temporary Markdown files. When it is time to write related work, you only remember that you “read something like this,” not what it solved, how it related to prior work, or why it mattered.
->
-> Personalized Research Paper Claw starts from these two moments:
->
-> - 📬 **Daily Conf Paper Delivery** remembers your topics, keywords, exclusions, and thresholds. It selects genuinely relevant work from continuously updated conference acceptance lists and delivers summaries, match reasons, and reading priorities.
-> - 📝 **Research Paper Noter** takes over the papers you choose to read deeply. It creates detailed notes and, in Domain mode, organizes them into a browsable Research Gallery with one-click HTML export for flexible sharing. It also explains how each paper inherits from, contrasts with, or complements related work.
->
-> One component makes worthwhile papers appear on time; the other prevents what you have read from disappearing. “Personalized” does not mean silently guessing your interests: you explicitly configure recommendation criteria and category structures. The long-term knowledge source consists of ordinary Markdown files in a global notes directory that you own, with HTML generated only when you explicitly request a shareable export. We strongly recommend Obsidian for reading and maintaining these assets.
->
-> **Scope:** Personalized Research Paper Claw does not write papers or run experiments automatically. It focuses on personalized paper discovery, reading, and knowledge organization.
+
+Personalized Research Paper Claw starts from these two moments:
+
+- 📬 **Daily Conf Paper Delivery** remembers your topics, keywords, exclusions, and thresholds. It selects genuinely relevant work from continuously updated conference acceptance lists and delivers summaries, match reasons, and reading priorities.
+- 📝 **Research Paper Noter** takes over the papers you choose to read deeply. It creates detailed notes and, in Domain mode, organizes them into a browsable Research Gallery with one-click HTML export for flexible sharing. It also explains how each paper inherits from, contrasts with, or complements related work.
+
+One component makes worthwhile papers appear on time; the other prevents what you have read from disappearing. “Personalized” does not mean silently guessing your interests: you explicitly configure recommendation criteria and category structures. The long-term knowledge source consists of ordinary Markdown files in a global notes directory that you own, with HTML generated only when you explicitly request a shareable export. We strongly recommend Obsidian for reading and maintaining these assets.
+
+**Scope:** Personalized Research Paper Claw does not write papers or run experiments automatically. It focuses on personalized paper discovery, reading, and knowledge organization.
 
 <a id="features"></a>
 
