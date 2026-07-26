@@ -1,25 +1,27 @@
+**English** · [简体中文](README.zh-CN.md)
+
 # Daily Conf Paper Delivery
 
-每日论文推荐子项目。它负责从本地会议接收列表里筛论文、生成推荐页，并把结果以 Markdown 写入全局笔记目录。
+The daily paper recommendation subproject. It filters papers from local conference acceptance lists, creates a recommendation page, and writes the result as Markdown under the global notes root.
 
-> 📺 [论文流水线效果演示（旧视频）](http://xhslink.com/o/1dhQCn40EWY) — 展示的是同一套工作流的早期版本
+> 📺 [Early pipeline demo video](http://xhslink.com/o/1dhQCn40EWY) — this shows an earlier version of the same workflow.
 
-## 最新变更
+## Latest Changes
 
-- 会议推荐配置改为每个会议显式配置 `daily_take`，配比直接写在 `daily_papers.conferences` 里。
-- 已纳入 ACL 2026；默认会议源为 ICML 2026、ICLR 2026、CVPR 2026、ACL 2026。
-- 推荐配比直接由各会议项里的 `daily_take` 决定；要调整配比，只改对应会议的 `daily_take`。
-- ACL 默认开启 `shuffle: true`，同步本地会议接收列表时会把 poster / finding 做稳定随机混排，避免先推荐完整主会再推荐 Findings。
+- Recommendation quotas are now configured explicitly with `daily_take` inside each entry of `daily_papers.conferences`.
+- ACL 2026 is included. The default sources are ICML 2026, ICLR 2026, CVPR 2026, and ACL 2026.
+- Conference proportions follow each conference entry’s `daily_take`; change that value to adjust the mix.
+- ACL enables `shuffle: true` by default. Importing local acceptance lists performs a stable random mix of posters and Findings, avoiding a sequence in which all main-conference papers appear before Findings.
 
-## 🦴 这套东西会帮我做什么
+## 🦴 What It Does
 
-- 每天抓一批新论文，做一轮初筛，生成推荐列表。
-- 按 `daily_papers.conferences` 的会议配置和 `daily_take` 配比控制推荐来源。
-- 用 title + abstract 的 topic / keyword 偏好打分，并保留命中原因、会议来源、列表顺序、paper/pdf 链接等元信息。
-- 把推荐页写进 Obsidian，顺带维护目录页 / 导航页。
-- 可选地为推荐论文生成详细笔记。
+- Collects a batch of new papers, performs an initial relevance pass, and creates a recommendation list.
+- Controls conference sources and proportions through `daily_papers.conferences` and their `daily_take` values.
+- Scores title + abstract using topic / keyword preferences and preserves match reasons, conference source, list order, paper links, PDF links, and other metadata.
+- Writes the recommendation page into the Obsidian-compatible notes directory and maintains index / navigation pages.
+- Optionally creates detailed notes for recommended papers.
 
-最终生成结果在 Obsidian 里大概会长这样：
+The output is organized approximately as follows:
 
 ```text
 ResearchNotes/
@@ -28,54 +30,54 @@ ResearchNotes/
     └── papers/.../*.md
 ```
 
-可直接看模板：
+Template:
 
-- [Obsidian 模板](obsidian-templates/论文笔记模板.md)
+- [Obsidian note template](obsidian-templates/论文笔记模板.md)
 
-## 🐕 怎么用
+## 🐕 Usage
 
-单次推荐直接说：
-
-```text
-今日论文推荐
-过去3天论文推荐
-过去一周论文推荐
-```
-
-定时推荐也直接说：
+For a one-time recommendation, tell Codex:
 
 ```text
-每天早上 8 点推荐论文
-把每日推荐改到 09:30
-查看每日推荐定时状态
-关闭每日论文推荐
+Recommend today's papers.
+Recommend papers from the past 3 days.
+Recommend papers from the past week.
 ```
 
-`daily-papers` Skill 会在 macOS 上完成定时任务的安装、更新时间、状态检查或关闭，您不需要手动运行调度脚本。`今日论文推荐` 只跑一次，不会改变定时状态。
-
-如果要读单篇论文、维护 personalized/domain 论文库，使用同级的 `../research-paper-noter` 子项目。
-
-目录页一般会自动更新；如果您手动调整过结构，或者觉得内容没有同步，再补一句：
+Scheduling also uses natural language:
 
 ```text
-更新索引
+Recommend papers every day at 8:00 a.m.
+Move the daily recommendation to 09:30.
+Show the daily recommendation schedule.
+Disable daily paper recommendations.
 ```
 
-## 🏡 安装
+On macOS, the `daily-papers` Skill installs, updates, checks, or removes the scheduled task. You do not need to run scheduler scripts manually. “Recommend today’s papers” performs one run and does not change schedule state.
 
-前置环境：
+To read one paper or maintain Personalized / Domain collections, use the sibling `../research-paper-noter` subproject.
+
+Index pages normally refresh automatically. If you manually changed the layout or suspect the index is stale, say:
+
+```text
+Refresh the paper index.
+```
+
+## 🏡 Installation
+
+Requirements:
 
 - Codex CLI
-- [Obsidian](https://obsidian.md/)（强烈推荐，但不是运行依赖）
+- [Obsidian](https://obsidian.md/) (strongly recommended, but not a runtime dependency)
 - [Python 3.8+](https://www.python.org/)
-- [`poppler-utils`](https://poppler.freedesktop.org/)（`apt install poppler-utils` / `brew install poppler`）
-- [Zotero](https://www.zotero.org/)（可选）
+- [`poppler-utils`](https://poppler.freedesktop.org/) (`apt install poppler-utils` / `brew install poppler`)
+- [Zotero](https://www.zotero.org/) (optional)
 
-建议给 Obsidian 库加上 git 版本管理。笔记多了以后有个版本历史会安心很多，也方便多设备同步。
+Git version control is recommended for the Obsidian vault. A history becomes increasingly valuable as the note collection grows and also helps with multi-device synchronization.
 
-如果您是在自己的本地机器上日常使用，通常直接用 `codex --full-auto` 会顺手很多；如果您明确已经在外部沙箱里，也可以用 `codex --dangerously-bypass-approvals-and-sandbox`，但风险更高，不建议在不熟悉的机器上直接这么跑。
+On a trusted local machine, `codex --full-auto` is usually the most convenient mode. `codex --dangerously-bypass-approvals-and-sandbox` may be used inside an external sandbox you explicitly trust, but it carries more risk and is not recommended on unfamiliar machines.
 
-从仓库根目录运行。推荐使用符号链接，让 Skill 始终读取当前 checkout 中的配置、脚本和会议数据，并让自然语言定时管理准确定位调度工具：
+Run the following from the repository root. Symbolic links ensure that Skills always read configuration, scripts, and conference data from the current checkout, and allow natural-language schedule management to locate the scheduler accurately:
 
 ```bash
 SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
@@ -89,41 +91,41 @@ ln -s "$PWD/daily-conf-paper-delivery/skills/daily-papers-notes" "$SKILLS_DIR/da
 ln -s "$PWD/daily-conf-paper-delivery/skills/paper-reader" "$SKILLS_DIR/paper-reader"
 ln -s "$PWD/daily-conf-paper-delivery/skills/generate-mocs" "$SKILLS_DIR/generate-mocs"
 
-# 全局 Markdown 根目录只在仓库根配置一次
+# Configure the global Markdown root once at the repository root.
 cp config/user-config.example.json config/user-config.local.json
 
-# Daily 子项目只保存会议和兴趣偏好
+# The Daily subproject stores only conferences and research preferences.
 cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
   daily-conf-paper-delivery/skills/_shared/user-config.local.json
 ```
 
-编辑根级 `config/user-config.local.json` 中的 `paths.markdown_root`。第一次运行会自动创建 `DailyPapers/mocs` 和 `DailyPapers/papers`，不需要手动 `mkdir`。
+Set `paths.markdown_root` in the root `config/user-config.local.json`. The first run creates `DailyPapers/mocs` and `DailyPapers/papers`; no manual `mkdir` is required.
 
-## ⚙️ 配置
+## ⚙️ Configuration
 
-全局 Markdown 根目录位于仓库根级 `config/user-config.local.json`。本目录下的 `skills/_shared/user-config.local.json` 只保存 Daily 专属配置，您可以自行修改，也可以直接告诉 Codex 您想如何调整。
+The global Markdown root lives in the repository-level `config/user-config.local.json`. This directory’s `skills/_shared/user-config.local.json` contains only Daily-specific settings. Edit it directly or tell Codex how you want it changed.
 
-首次配置可以从 `skills/_shared/user-config.example.json` 复制；运行时只读取 `user-config.local.json`。
+Copy `skills/_shared/user-config.example.json` for first-time setup. Runtime code reads only `user-config.local.json`.
 
-里面主要改这几项：
+Primary settings:
 
-| 配置项 | 说明 |
+| Setting | Description |
 | --- | --- |
-| `daily_papers.conferences` | 每日推荐的会议、年份和单会议推荐数量列表，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "ICLR", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }]`；本地文件按 `<CONF>/<conf>_<year>.jsonl` 自动匹配 |
-| `daily_papers.conferences[].daily_take` | 该会议每天最多推荐几篇论文；这是当前推荐的配比配置入口 |
-| `daily_papers.conferences[].shuffle` | 是否在同步本地会议接收列表时做稳定随机混排；ACL 默认开启，用来混合 poster / finding |
-| `daily_papers.daily_take` | 旧版全局 fallback；新配置建议不用它，优先写到每个会议项里 |
-| `daily_papers.scan_limit` | 每个会议从当前 cursor 向后最多扫描多少篇，默认 1000；达到上限时，即使未选满 `daily_take` 也会停止 |
-| `daily_papers.topics` | 研究方向，同时作为点评页分类；title 或 abstract 完整命中一个 topic 加 1 分 |
-| `daily_papers.keywords` | 具体方法名和同义表达；title 完整命中加 3 分，否则 abstract 完整命中加 1 分 |
-| `daily_papers.exclude_keywords` | 排除词；title 或 abstract 完整命中一个就计 -100 分 |
-| `daily_papers.min_score` | 推荐阈值，默认 2；topic 单独命中不足以入选 |
-| `automation.auto_refresh_indexes` | 本次流程结束后是否刷新目录页；不会自动发起推荐 |
-| `automation.git_commit` | 是否在流程完成后自动 commit；默认关闭 |
-| `automation.git_push` | 是否在自动 commit 后继续 push；默认关闭 |
-| `automation.daily_run_time` | macOS 每日自动运行时间，24 小时制 `HH:MM`；默认 `08:00` |
+| `daily_papers.conferences` | Conference, year, and per-conference quota entries, for example `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "ICLR", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }]`; local files are matched using `<CONF>/<conf>_<year>.jsonl` |
+| `daily_papers.conferences[].daily_take` | Maximum papers recommended from that conference each day; this is the current conference-mix control |
+| `daily_papers.conferences[].shuffle` | Whether to apply stable random mixing when importing a local list; enabled for ACL to mix posters and Findings |
+| `daily_papers.daily_take` | Legacy global fallback; new configurations should prefer per-conference values |
+| `daily_papers.scan_limit` | Maximum entries scanned after the current cursor for each conference; defaults to 1000 and stops even when `daily_take` is not filled |
+| `daily_papers.topics` | Research areas and review-page categories; a full title or abstract match scores +1 |
+| `daily_papers.keywords` | Specific method names and synonymous expressions; a full title match scores +3, otherwise an abstract match scores +1 |
+| `daily_papers.exclude_keywords` | Exclusions; a full title or abstract match scores -100 |
+| `daily_papers.min_score` | Recommendation threshold; defaults to 2, so a topic-only match is insufficient |
+| `automation.auto_refresh_indexes` | Refresh index pages after the current workflow; never starts a recommendation by itself |
+| `automation.git_commit` | Commit automatically after completion; disabled by default |
+| `automation.git_push` | Push after an automatic commit; disabled by default |
+| `automation.daily_run_time` | Automatic daily time on macOS in 24-hour `HH:MM` format; defaults to `08:00` |
 
-会议配比直接改这里：
+Configure conference proportions directly here:
 
 ```json
 "conferences": [
@@ -134,64 +136,64 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
 ]
 ```
 
-Zotero 配置主要用于后续详细笔记生成；只跑每日推荐时不需要配置。
+Zotero configuration is used only by later detailed-note generation and is unnecessary for Daily recommendations alone.
 
-## 🦮 默认行为
+## 🦮 Default Behavior
 
-默认 Obsidian 库管理不会自动commit、push：
+Obsidian-vault git automation is disabled by default:
 
 - `auto_refresh_indexes = true`
 - `git_commit = false`
 - `git_push = false`
 - `daily_run_time = "08:00"`
 
-这些都是 Daily 自己的运行后行为：默认会刷新目录页，但不会改动您的 git，也不会因为配置存在就自动开始推荐。`daily_run_time` 只有在安装调度任务后才会生效；手动触发会立即运行。如果您的 Obsidian 库已经用 git 管理，希望跑完流程后自动提交，把 `git_commit` 打开就行。
+These settings describe Daily’s post-run behavior. Index pages refresh by default, but git is untouched and the presence of configuration does not start recommendations. `daily_run_time` takes effect only after a scheduled task is installed; manual requests run immediately. If your Obsidian vault already uses git and you want automatic commits, enable `git_commit` explicitly.
 
-## 🐾 大概怎么跑的
+## 🐾 Pipeline Overview
 
-**每日推荐**现在读取本地人工智能顶会 JSONL 列表，两步生成一页式每日论文推荐：
+**Daily recommendation** reads local AI-conference JSONL and creates a single daily page in two stages:
 
-1. **抓取**：Python 脚本读取 `conferences`，按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的约定匹配仓库内会议接收列表。当前仓库提供 ICML、ICLR、CVPR、ACL。每个会议都有独立 cursor（上次扫描到列表第几篇的进度记录）；`shuffle: true` 只在导入列表时做稳定随机混排。topic 在 title 或 abstract 中完整命中加 1 分；keyword 在 title 中完整命中加 3 分，否则在 abstract 中完整命中加 1 分；exclude keyword 命中计 -100 分。大小写和标点会规范化，匹配按完整词/短语边界执行，重复项只计一次。分数达到 `min_score` 才推荐。每个会议每天最多推荐自己的 `daily_take` 篇，并从当前 cursor 向后最多扫描 `scan_limit` 篇（默认 1000）；达到任一上限或走到列表末尾即停止。
-2. **汇总与点评**：Codex 读候选列表及 `score_breakdown`，以同一份 `topics` 做阅读分流和主题分类，为每篇生成包含元信息、双语摘要、背景、动机、方法、评估、借鉴意义与锐评的摘要式笔记，再把当天的全部推荐集中写入同一张页面，保存到 Obsidian 的 `DailyPapers/` 目录，同时更新 `.history.json`。推荐页 frontmatter 的 topics / keywords 也直接来自这两项配置。
+1. **Fetch and filter**: a Python script reads `conferences` and matches bundled acceptance lists using `data/paperlist/<CONF>/<conf>_<year>.jsonl`. The repository currently includes ICML, ICLR, CVPR, and ACL. Every conference maintains its own cursor. `shuffle: true` performs stable random mixing only during import. A full topic match in title or abstract scores +1; a full keyword match in title scores +3, otherwise a full abstract match scores +1; an exclusion match scores -100. Case and punctuation are normalized, matching respects complete word or phrase boundaries, and duplicates count once. Papers must reach `min_score`. For each conference, the pipeline recommends at most its own `daily_take` and scans at most `scan_limit` entries after the cursor.
+2. **Summarize and review**: Codex reads candidates and their `score_breakdown`, applies the same `topics` for reading triage and grouping, and creates a summary note for every paper. Notes contain metadata, bilingual abstracts, background, motivation, method, evaluation, takeaways, and a concise critique. All recommendations are collected in one page under `DailyPapers/`, while `.history.json` is updated. Page frontmatter topics and keywords come directly from the configuration.
 
-本项目会为每一个新的重要会议提供接收论文列表更新；更新仓库后即可使用新增数据。
+Curated acceptance-list updates will be provided for important new conferences. Updating the repository makes new bundled data available.
 
-如果要自行维护其他领域的会议或期刊，可以直接按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的路径放入兼容 JSONL；每行至少包含 `title` 和 `abstract`，再把该来源加入 `daily_papers.conferences`。已有相同目录结构的本地数据时，也可以运行：
+To maintain a conference or journal from another field, place compatible JSONL at `data/paperlist/<CONF>/<conf>_<year>.jsonl`. Every line must contain at least `title` and `abstract`, and the source must be listed in `daily_papers.conferences`. If you already have local data with the same layout, run:
 
 ```bash
 python3 scripts/sync_paperlist.py --source-dir /path/to/local/paperlist
 ```
 
-这个脚本只从您指定的本地目录复制当前配置里的会议 JSONL；每日推荐本身不依赖外部论文列表仓库。
+The script copies only configured conference JSONL from the local directory you specify. Daily recommendation itself does not depend on an external paper-list repository.
 
-默认不会为每日推荐生成细粒度论文笔记。需要给推荐论文补详细笔记时，再运行论文笔记步骤或使用 `../research-paper-noter`。
+Fine-grained paper notes are not generated by default. Run the optional paper-notes stage or use `../research-paper-noter` when detailed notes are needed.
 
-**目录页**由 `generate-mocs` 维护：递归扫描论文笔记和概念库目录，自动生成带 wikilink 的索引页。
+`generate-mocs` maintains index pages by recursively scanning paper notes and concept-library directories and generating wikilink-based navigation.
 
-更多实现细节见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+See [ARCHITECTURE.md](ARCHITECTURE.md) for implementation details.
 
-## 🏠 仓库里有什么
+## 🏠 Repository Contents
 
-平时真正常用的是每日推荐全流程；其他 skill 主要给调试、补笔记和目录维护用：
+The complete Daily workflow is the normal entry point. Other Skills mainly support debugging, optional notes, and index maintenance:
 
-- `daily-papers`：每日推荐全流程
-- `daily-papers-fetch`
-- `daily-papers-review`
-- `daily-papers-notes`
-- `paper-reader`：给推荐论文补详细笔记
-- `generate-mocs`：手动补刷目录页
+- `daily-papers`: complete Daily recommendation workflow
+- `daily-papers-fetch`: filtering, scoring, and deduplication
+- `daily-papers-review`: summary review and recommendation page
+- `daily-papers-notes`: optional detailed notes
+- `paper-reader`: detailed notes for recommended papers
+- `generate-mocs`: manual index refresh
 
-## 🎾 进阶用法
+## 🎾 Advanced Usage
 
-如果您只想单独运行流水线的某一步，也可以分别说：
+To run one pipeline stage independently, say:
 
 ```text
-跑一下论文抓取
-跑一下论文点评
-跑一下论文笔记
+Run paper fetching.
+Run paper review.
+Run paper notes.
 ```
 
-如果您需要排障或不经过 Codex，可以直接管理底层调度：
+For troubleshooting or direct scheduler management without Codex:
 
 ```bash
 ./bin/configure-schedule.sh --time 08:00
@@ -199,39 +201,39 @@ python3 scripts/sync_paperlist.py --source-dir /path/to/local/paperlist
 ./bin/configure-schedule.sh --remove
 ```
 
-当前自动调度支持 macOS launchd，并使用系统本地时间。底层脚本不是日常使用的必要入口。
+Automatic scheduling currently supports macOS launchd and uses local system time. The low-level scripts are not required for normal operation.
 
 ## 🐶 FAQ
 
-**可以一步跑完整流程吗？**
+**Can the complete workflow run from one request?**
 
-可以。直接说 `今日论文推荐` 就行。默认内部串联抓取与摘要式点评；详细论文笔记是可选的第三步，不会自动执行。
+Yes. Say `Recommend today's papers`. The default flow chains fetching and abstract-based review. Detailed paper notes are an optional third stage and do not run automatically.
 
-**目录页会自动刷新吗？**
+**Do index pages refresh automatically?**
 
-默认会。跑完整的每日推荐流程或论文笔记步骤时，结束后通常都会自动刷新一次。`更新索引` 更像是手动补刷入口。
+Yes, by default. The complete Daily workflow and the paper-notes stage normally refresh them after completion. `Refresh the paper index` is a manual recovery entry point.
 
-**不用 Zotero 可以吗？**
+**Can I use it without Zotero?**
 
-可以。每日推荐不依赖 Zotero；Zotero 主要用于后续详细笔记和已有文献库检索。
+Yes. Daily recommendations do not depend on Zotero. Zotero is mainly used for later detailed notes and searching an existing library.
 
-**不用 Obsidian 可以吗？**
+**Can I use it without Obsidian?**
 
-可以。输出本质上是 Markdown 文件，不强绑 Obsidian。不过强烈推荐安装 Obsidian，然后选择“Open folder as vault / 打开文件夹作为仓库”，打开根配置中的 `markdown_root`。无需提前创建笔记，也无需开启 Obsidian Sync。
+Yes. Outputs are ordinary Markdown files. Obsidian is strongly recommended: select **Open folder as vault** and open the configured `markdown_root`. No notes or Obsidian Sync subscription need to exist beforehand.
 
-**可以用来辅助论文写作吗？**
+**Can it assist with paper writing?**
 
-可以，比较适合用来整理 related work、维护笔记库和生成阅读提纲。AI 生成的内容建议自己核验后再使用。
+Yes. It is useful for organizing related work, maintaining a note library, and creating reading outlines. Verify AI-generated content before using it.
 
-**默认会动我的 git 仓库吗？**
+**Does it modify my git repository by default?**
 
-不会。`commit / push` 默认关闭，只有您主动打开配置后才会执行。
+No. `commit / push` are disabled unless you explicitly enable them.
 
-## ⚠️ 免责声明
+## ⚠️ Disclaimer
 
-这套工具来自真实的研究工作流。AI 生成的推荐、点评和笔记可能有事实错误或遗漏，因此更适合作为您的研究助手，而不应替代您的研究判断。
+This tool comes from a real research workflow. AI-generated recommendations, reviews, and notes may contain factual errors or omissions. Treat it as a research assistant, not a replacement for your judgment.
 
-另外，这套工具难免会有 bug，平台和环境适配问题也很正常；如果您遇到小问题，最省事的办法通常是直接请 AI 和您一起排查、一起改。
+Bugs and platform-specific issues may occur. When you encounter a small problem, asking an AI coding agent to diagnose it alongside you is often the fastest path.
 
 ## License
 
