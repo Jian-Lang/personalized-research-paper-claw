@@ -16,6 +16,10 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ---
 
+## 💥 News
+
+- **2026-07-26** — Personalized Research Paper Claw is now publicly available. [Explore the repository](https://github.com/Jian-Lang/personalized-research-paper-claw).
+
 ## 💡 Why Personalized Research Paper Claw?
 
 Imagine it is 1 a.m. An experiment has just finished, dozens of paper tabs are still open, and a new conference acceptance list appears in your group chat. Hundreds or thousands of papers form an endless queue. You know only a handful are truly relevant, but the list does not know what you care about and cannot skip work that looks related while being irrelevant in practice.
@@ -606,6 +610,10 @@ Personalized-Research-Paper-Claw/
 - [Research Paper Noter guide](research-paper-noter/README.md)
 - [Research Paper Noter architecture](research-paper-noter/ARCHITECTURE.md)
 - [Local deployment and scheduling](daily-conf-paper-delivery/LOCAL_DEPLOY.md)
+
+## 💬 Community & Contact
+
+Questions, bug reports, feature ideas, and contributions are welcome. Please open an [Issue](https://github.com/Jian-Lang/personalized-research-paper-claw/issues), submit a [Pull Request](https://github.com/Jian-Lang/personalized-research-paper-claw/pulls), or contact us at [jian_lang@std.uestc.edu.cn](mailto:jian_lang@std.uestc.edu.cn).
 
 ## 📄 License
 

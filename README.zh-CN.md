@@ -18,6 +18,10 @@
 
 ---
 
+## 💥 News
+
+- **2026-07-26** — Personalized Research Paper Claw 正式发布。[访问项目仓库](https://github.com/Jian-Lang/personalized-research-paper-claw)。
+
 ## 💡 为什么需要 Personalized Research Paper Claw
 
 想象一下，深夜一点。实验刚刚跑完，浏览器里还开着几十个论文标签，一份新的顶会接收列表又出现在群里。几百上千篇论文排成一条没有尽头的长队；您知道真正贴近自己方向的可能只有几篇，但列表不知道您关心什么，也不会替您跳过那些看似相关、实际无关的工作。
@@ -608,6 +612,10 @@ Personalized-Research-Paper-Claw/
 - [Research Paper Noter 使用说明](research-paper-noter/README.zh-CN.md)
 - [Research Paper Noter 架构](research-paper-noter/ARCHITECTURE.md)
 - [本地部署与定时任务](daily-conf-paper-delivery/LOCAL_DEPLOY.md)
+
+## 💬 交流与联系
+
+如有问题、Bug、功能建议或代码贡献，欢迎提交 [Issue](https://github.com/Jian-Lang/personalized-research-paper-claw/issues)、发起 [Pull Request](https://github.com/Jian-Lang/personalized-research-paper-claw/pulls)，或通过邮箱联系我们：[jian_lang@std.uestc.edu.cn](mailto:jian_lang@std.uestc.edu.cn)。
 
 ## 📄 License
 
