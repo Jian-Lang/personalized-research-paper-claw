@@ -69,8 +69,10 @@ const papers = [
 
 const runConfigs = {
   daily: {
-    title: "正在准备今日推送",
-    command: "daily-papers --date 2026-07-25 --conf CVPR,ICML,ACL",
+    mode: "DAILY PAPER DELIVERY",
+    promptTitle: "告诉 Claw，今天想研究什么。",
+    runningTitle: "正在形成你的今日研究简报。",
+    command: "推送今天来自 CVPR、ICML 与 ACL 2026 的 World Model 相关论文",
     steps: [
       ["读取三份 2026 接收列表", "3 sources"],
       ["按 World Model topic 与关键词打分", "6 matches"],
@@ -78,8 +80,10 @@ const runConfigs = {
     ]
   },
   gallery: {
-    title: "正在构建领域画廊",
-    command: "domain-papers gallery --domain \"MLLM Personalization\"",
+    mode: "DOMAIN RESEARCH GALLERY",
+    promptTitle: "告诉 Claw，想浏览哪个研究领域。",
+    runningTitle: "正在连接领域里的每一项工作。",
+    command: "为 MLLM Personalization 构建可浏览的 Domain Research Gallery",
     steps: [
       ["读取详细论文笔记与 category", "23 notes"],
       ["恢复年份、首图与工作关系", "2024—2026"],
@@ -90,6 +94,7 @@ const runConfigs = {
 
 const views = [...document.querySelectorAll("[data-view]")];
 const dialog = document.querySelector("#run-dialog");
+const runMode = document.querySelector("#run-mode");
 const runTitle = document.querySelector("#run-title");
 const runCommand = document.querySelector("#run-command");
 const runSteps = document.querySelector("#run-steps");
@@ -97,6 +102,7 @@ const progressBar = document.querySelector("#run-progress-bar");
 const feed = document.querySelector("#paper-feed");
 const filterSummary = document.querySelector("#filter-summary");
 let running = false;
+let runSequence = 0;
 
 function activeRoute() {
   const route = window.location.hash.replace("#", "");
@@ -149,18 +155,53 @@ function delay(milliseconds) {
   return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 }
 
+async function typeCommand(command, sequence) {
+  runCommand.value = "";
+  for (const character of Array.from(command)) {
+    if (sequence !== runSequence) return false;
+    runCommand.value += character;
+    runCommand.scrollTop = runCommand.scrollHeight;
+    await delay(character === " " ? 34 : 22);
+  }
+  return true;
+}
+
+function cancelRun() {
+  runSequence += 1;
+  running = false;
+  dialog.dataset.phase = "";
+  if (dialog.open) dialog.close();
+}
+
 async function runDemo(route) {
   if (running) return;
   running = true;
+  const sequence = ++runSequence;
   const config = runConfigs[route];
-  runTitle.textContent = config.title;
-  runCommand.textContent = config.command;
+  runMode.textContent = config.mode;
+  runTitle.textContent = config.promptTitle;
+  runCommand.value = "";
   runSteps.innerHTML = config.steps.map(([label, meta]) => `<li>${label}<span>${meta}</span></li>`).join("");
   progressBar.style.width = "0";
+  dialog.dataset.phase = "opening";
   dialog.showModal();
+  runCommand.focus({ preventScroll: true });
+
+  await delay(280);
+  if (sequence !== runSequence) return;
+  dialog.dataset.phase = "typing";
+  const completedTyping = await typeCommand(config.command, sequence);
+  if (!completedTyping) return;
+  await delay(260);
+  if (sequence !== runSequence) return;
+  if (new URLSearchParams(window.location.search).get("hold") === "typing") return;
+
+  dialog.dataset.phase = "processing";
+  runTitle.textContent = config.runningTitle;
 
   const steps = [...runSteps.children];
   for (let index = 0; index < steps.length; index += 1) {
+    if (sequence !== runSequence) return;
     steps.forEach((step, stepIndex) => {
       step.classList.toggle("is-active", stepIndex === index);
       step.classList.toggle("is-done", stepIndex < index);
@@ -173,8 +214,10 @@ async function runDemo(route) {
     step.classList.remove("is-active");
     step.classList.add("is-done");
   });
-  await delay(260);
+  await delay(360);
+  if (sequence !== runSequence) return;
   dialog.close();
+  dialog.dataset.phase = "";
   running = false;
   window.location.hash = route;
 }
@@ -200,10 +243,18 @@ document.querySelectorAll("[data-conference]").forEach((button) => {
   });
 });
 
+document.querySelector("[data-dialog-close]").addEventListener("click", cancelRun);
+
 dialog.addEventListener("cancel", (event) => {
-  if (running) event.preventDefault();
+  event.preventDefault();
+  cancelRun();
 });
 
 window.addEventListener("hashchange", () => showView(activeRoute()));
 renderPapers();
 showView(activeRoute());
+
+const demoRoute = new URLSearchParams(window.location.search).get("demo");
+if (["daily", "gallery"].includes(demoRoute) && activeRoute() === "home") {
+  window.setTimeout(() => runDemo(demoRoute), 520);
+}
