@@ -1,5 +1,5 @@
 :root {
-  --white: #ffffff;
+  --white: #fcfcf9;
   --paper: #f6f6f2;
   --ink: #111613;
   --muted: #65706a;
@@ -64,7 +64,7 @@ a:focus-visible {
   min-height: 72px;
   padding: 9px max(28px, calc((100vw - 1440px) / 2));
   border-bottom: 1px solid var(--ink);
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(252, 252, 249, 0.96);
   backdrop-filter: blur(14px);
 }
 
@@ -84,13 +84,11 @@ a:focus-visible {
   color: var(--coral);
   font-size: 14px;
   font-weight: 900;
-  text-transform: uppercase;
 }
 
 .brand-copy strong {
   font-size: 15px;
   font-weight: 900;
-  text-transform: uppercase;
 }
 
 .topbar-actions,
@@ -763,7 +761,7 @@ a:focus-visible {
   padding: 13px 0;
   border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--ink);
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(252, 252, 249, 0.96);
   backdrop-filter: blur(12px);
 }
 
