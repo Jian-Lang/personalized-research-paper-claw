@@ -12,7 +12,7 @@
 
 持续为您推送贴合个人研究脉络的顶会论文，并按您自己的知识结构沉淀长期笔记。
 
-[🧩 核心功能](#features) · [🚀 使用方式](#usage) · [🖼️ Domain Research Gallery 展示（由本 Skill 产生）](https://jianlang.org/html/mllm-personalized-understanding.html) · [🖥️ 项目交互式主页](https://jianlang.org/html/research-paper-claw/index.zh-CN.html)
+[🧩 核心功能](#features) · [🚀 使用方式](#usage) · [🖼️ Domain Research Gallery 展示（由 Claw 产生）](https://jianlang.org/html/mllm-personalized-understanding.html) · [🖥️ 项目交互式主页](https://jianlang.org/html/research-paper-claw/index.zh-CN.html)
 
 </div>
 
