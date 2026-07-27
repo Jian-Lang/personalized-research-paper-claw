@@ -50,7 +50,7 @@
 
 ### 1.2 元数据富化（enrich_papers.py）
 
-会议 JSONL 已提供 title、authors、abstract、会议页和 PDF。富化脚本规范化字段；能定位 arXiv 时再补充首图和可读链接。
+会议 JSONL 已提供 title、authors、abstract、会议页和 PDF。富化脚本规范化字段，优先复用已有 arXiv id；缺少 id 时只对入选论文执行严格标题匹配，并从 arXiv HTML 或 ar5iv 提取首图。arXiv API 不可用时回退到网页搜索；每个端点最多尝试 4 次、单次最多 5 秒，同一篇论文共享 20 秒网络预算。成功结果缓存在 `state/arxiv-enrichment-cache.json`，任何网络失败都只降级为无图，不中断推荐。
 
 保留内容：
 - title、authors、abstract、conference、venue、source rank
