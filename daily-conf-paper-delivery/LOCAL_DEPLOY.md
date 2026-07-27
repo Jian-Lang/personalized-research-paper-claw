@@ -59,5 +59,3 @@ Remove the task with:
 - The scheduled task runs the same `daily-conf-paper-delivery.sh` entrypoint.
 - Index refresh follows `automation.auto_refresh_indexes`.
 - Git commit and push remain disabled unless explicitly enabled.
-
-The unattended runner uses Codex without interactive approval prompts and should only be installed on a trusted personal machine.

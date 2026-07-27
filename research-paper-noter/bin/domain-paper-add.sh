@@ -196,7 +196,9 @@ PY
 
 CODEX_ARGS=(
   "${CODEX_BIN:-codex}"
-  --sandbox danger-full-access
+  -c
+  sandbox_workspace_write.network_access=true
+  --sandbox workspace-write
   --ask-for-approval never
   --search
   exec

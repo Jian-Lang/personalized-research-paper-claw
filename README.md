@@ -387,8 +387,6 @@ cd daily-conf-paper-delivery
 ./bin/configure-schedule.sh --remove
 ```
 
-The scheduled task calls the non-interactive recommendation script and is intended for a trusted personal machine.
-
 ### 📝 Using Research Paper Noter
 
 Research Paper Noter reuses the root `config/user-config.local.json`; it does not maintain another notes-root setting.

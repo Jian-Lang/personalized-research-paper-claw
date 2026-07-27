@@ -75,8 +75,6 @@ Requirements:
 
 Git version control is recommended for the Obsidian vault. A history becomes increasingly valuable as the note collection grows and also helps with multi-device synchronization.
 
-On a trusted local machine, `codex --full-auto` is usually the most convenient mode. `codex --dangerously-bypass-approvals-and-sandbox` may be used inside an external sandbox you explicitly trust, but it carries more risk and is not recommended on unfamiliar machines.
-
 Run the following from the repository root. Symbolic links ensure that Skills always read configuration, scripts, and conference data from the current checkout, and allow natural-language schedule management to locate the scheduler accurately:
 
 ```bash

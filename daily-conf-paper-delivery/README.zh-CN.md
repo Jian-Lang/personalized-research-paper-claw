@@ -75,8 +75,6 @@ ResearchNotes/
 
 建议给 Obsidian 库加上 git 版本管理。笔记多了以后有个版本历史会安心很多，也方便多设备同步。
 
-如果您是在自己的本地机器上日常使用，通常直接用 `codex --full-auto` 会顺手很多；如果您明确已经在外部沙箱里，也可以用 `codex --dangerously-bypass-approvals-and-sandbox`，但风险更高，不建议在不熟悉的机器上直接这么跑。
-
 从仓库根目录运行。推荐使用符号链接，让 Skill 始终读取当前 checkout 中的配置、脚本和会议数据，并让自然语言定时管理准确定位调度工具：
 
 ```bash
