@@ -130,6 +130,30 @@ class MarkdownLayoutTest(unittest.TestCase):
         self.assertFalse((self.markdown_root / "DailyPapers").exists())
         self.assertFalse((self.markdown_root / "PersonalizedPaper").exists())
 
+    def test_domain_layout_uses_configured_folder_names(self):
+        project_config = user_config._project_config
+        configured_paths = {
+            **project_config.DEFAULT_CONFIG["paths"],
+            "domain_paper_folder": "notes",
+            "domain_content_folder": "galleries",
+        }
+        with mock.patch.object(project_config, "paths_config", return_value=configured_paths):
+            user_config.ensure_domain_layout("Recommendation Systems")
+
+        domain_root = self.markdown_root / "DomainPapers" / "Recommendation Systems"
+        self.assertTrue((domain_root / "notes").is_dir())
+        self.assertTrue((domain_root / "galleries").is_dir())
+        self.assertFalse((domain_root / "paper").exists())
+        self.assertFalse((domain_root / "content").exists())
+
+    def test_domain_layout_rejects_paths_outside_domain_vault(self):
+        for domain in ("", ".", "..", "../escape", "nested/domain", "/absolute", " trailing"):
+            with self.subTest(domain=domain):
+                with self.assertRaisesRegex(ValueError, "single folder name"):
+                    user_config.ensure_domain_layout(domain)
+
+        self.assertFalse((self.markdown_root / "escape").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

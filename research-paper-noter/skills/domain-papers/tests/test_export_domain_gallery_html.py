@@ -152,6 +152,13 @@ class ExportDomainGalleryHtmlTest(unittest.TestCase):
         self.assertIn("LLM-based Recommendation", result.stderr)
         self.assertIn("Memory / Long-Term", result.stderr)
 
+    def test_rejects_domain_path_traversal(self) -> None:
+        result = self.run_export("--domain", "../escaped-domain")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("single folder name", result.stderr)
+        self.assertFalse((Path(self.temp_dir.name) / "escaped-domain").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -25,21 +25,76 @@ DOMAIN="$1"
 CATEGORY_PATH="$2"
 shift 2
 
-mkdir -p "$LOG_DIR"
 cd "$PROJECT_DIR"
 
-DOMAIN_VAULT_DIR="$(
+normalize_category_path() {
+  CATEGORY_PATH="$(
+  python3 - "$CATEGORY_PATH" <<'PY'
+import sys
+
+raw_category = sys.argv[1]
+category_parts = [
+    part.strip()
+    for part in raw_category.replace(">", "/").split("/")
+    if part.strip()
+]
+if not category_parts:
+    raise SystemExit("category path cannot be empty")
+for part in category_parts:
+    if part in {".", ".."} or "\x00" in part:
+        raise SystemExit(f"invalid category path part: {part!r}")
+print(" / ".join(category_parts))
+PY
+  )"
+}
+
+resolve_paths() {
+  CONFIG_VALUES=()
+  while IFS= read -r value; do
+    CONFIG_VALUES+=("$value")
+  done < <(
   python3 - "$DOMAIN" <<'PY'
 import sys
-from pathlib import Path
 
 sys.path.insert(0, "skills/_shared")
-from user_config import domain_vault_path, ensure_domain_layout
+from user_config import (
+    domain_project_content_dir,
+    domain_project_dir,
+    domain_project_papers_dir,
+    domain_vault_path,
+    ensure_domain_layout,
+)
 
-ensure_domain_layout(sys.argv[1])
-print(domain_vault_path())
+domain = sys.argv[1]
+try:
+    ensure_domain_layout(domain)
+except ValueError as exc:
+    raise SystemExit(str(exc)) from exc
+
+for path in (
+    domain_vault_path(),
+    domain_project_dir(domain),
+    domain_project_papers_dir(domain),
+    domain_project_content_dir(domain),
+):
+    print(path)
 PY
-)"
+  )
+
+  if [[ ${#CONFIG_VALUES[@]} -ne 4 ]]; then
+    echo "Failed to resolve Domain Paper paths." >&2
+    exit 1
+  fi
+
+  DOMAIN_VAULT_DIR="${CONFIG_VALUES[0]}"
+  DOMAIN_PROJECT_DIR="${CONFIG_VALUES[1]}"
+  DOMAIN_PAPERS_DIR="${CONFIG_VALUES[2]}"
+  DOMAIN_CONTENT_DIR="${CONFIG_VALUES[3]}"
+}
+
+normalize_category_path
+resolve_paths
+mkdir -p "$LOG_DIR"
 
 PAPERS=()
 if [[ $# -eq 1 && -f "$1" ]]; then
@@ -69,7 +124,7 @@ format_list() {
 }
 
 list_domain_notes() {
-  local notes_dir="$DOMAIN_VAULT_DIR/$DOMAIN/paper"
+  local notes_dir="$DOMAIN_PAPERS_DIR"
   if [[ ! -d "$notes_dir" ]]; then
     printf -- '- None\n'
     return
@@ -80,20 +135,18 @@ list_domain_notes() {
 }
 
 list_missing_domain_content_notes() {
-  python3 - "$DOMAIN_VAULT_DIR" "$DOMAIN" "$CATEGORY_PATH" <<'PY'
+  python3 - "$DOMAIN_PAPERS_DIR" "$DOMAIN_CONTENT_DIR/.domain-papers.json" "$CATEGORY_PATH" <<'PY'
 import json
 import re
 import sys
 from pathlib import Path
 
-domain_vault_dir = Path(sys.argv[1])
-domain = sys.argv[2]
+paper_dir = Path(sys.argv[1])
+sidecar_path = Path(sys.argv[2])
 raw_category = sys.argv[3]
 category_parts = [part.strip() for part in raw_category.replace(">", "/").split("/") if part.strip()]
 category_path = " / ".join(category_parts)
 page_key = "/".join(category_parts) + ".md"
-paper_dir = domain_vault_dir / domain / "paper"
-sidecar_path = domain_vault_dir / domain / "content" / ".domain-papers.json"
 
 existing_notes = set()
 if sidecar_path.exists():
@@ -171,16 +224,16 @@ fi
 - DOMAIN_VAULT_PATH: $DOMAIN_VAULT_DIR
 - DOMAIN: $DOMAIN
 - CATEGORY_PATH: $CATEGORY_PATH
-- DOMAIN_PROJECT_PATH: $DOMAIN_VAULT_DIR/$DOMAIN
-- DOMAIN_PAPERS_PATH: $DOMAIN_VAULT_DIR/$DOMAIN/paper
-- DOMAIN_CONTENT_PATH: $DOMAIN_VAULT_DIR/$DOMAIN/content
+- DOMAIN_PROJECT_PATH: $DOMAIN_PROJECT_DIR
+- DOMAIN_PAPERS_PATH: $DOMAIN_PAPERS_DIR
+- DOMAIN_CONTENT_PATH: $DOMAIN_CONTENT_DIR
 
 硬性约束：
-- 只允许写入 \`$DOMAIN_VAULT_DIR/$DOMAIN\` 下面
-- 详细论文笔记只能写到 \`$DOMAIN_VAULT_DIR/$DOMAIN/paper\`
-- 不要写入或更新 \`$DOMAIN_VAULT_DIR/$DOMAIN/content\`
+- 只允许写入 \`$DOMAIN_PROJECT_DIR\` 下面
+- 详细论文笔记只能写到 \`$DOMAIN_PAPERS_DIR\`
+- 不要写入或更新 \`$DOMAIN_CONTENT_DIR\`
 - 当前调用来源是 \`domain-papers\`
-- TARGET_NOTES_PATH 必须是 \`$DOMAIN_VAULT_DIR/$DOMAIN/paper\`
+- TARGET_NOTES_PATH 必须是 \`$DOMAIN_PAPERS_DIR\`
 - 如果已有同一论文的合格详细笔记，复用已有笔记，不重复生成
 
 输入论文：
@@ -217,13 +270,13 @@ fi
 - DOMAIN_VAULT_PATH: $DOMAIN_VAULT_DIR
 - DOMAIN: $DOMAIN
 - CATEGORY_PATH: $CATEGORY_PATH
-- DOMAIN_PROJECT_PATH: $DOMAIN_VAULT_DIR/$DOMAIN
-- DOMAIN_PAPERS_PATH: $DOMAIN_VAULT_DIR/$DOMAIN/paper
-- DOMAIN_CONTENT_PATH: $DOMAIN_VAULT_DIR/$DOMAIN/content
+- DOMAIN_PROJECT_PATH: $DOMAIN_PROJECT_DIR
+- DOMAIN_PAPERS_PATH: $DOMAIN_PAPERS_DIR
+- DOMAIN_CONTENT_PATH: $DOMAIN_CONTENT_DIR
 
 硬性约束：
-- 只允许写入 \`$DOMAIN_VAULT_DIR/$DOMAIN/content\`
-- 不要写入或更新 \`$DOMAIN_VAULT_DIR/$DOMAIN/paper\`
+- 只允许写入 \`$DOMAIN_CONTENT_DIR\`
+- 不要写入或更新 \`$DOMAIN_PAPERS_DIR\`
 - content 更新必须使用 \`skills/domain-papers/scripts/update_domain_content.py\`
 - content 内同一子类按论文年份从新到旧排序；同一年内 arXiv 论文按 published_date 从新到旧排序，非 arXiv 或缺少完整日期的论文按标题排序
 - content 条目必须复用 manual 风格，包含笔记链接、年份、Venue、论文链接、首图、摘要、问题背景、核心方法、评估和借鉴意义
@@ -242,10 +295,10 @@ $SUCCESS_SPEC
 本次详细笔记阶段失败的论文如下。不要为这些论文更新 content：
 $FAILURE_SPEC
 
-当前 \`$DOMAIN_VAULT_DIR/$DOMAIN/paper\` 下的详细笔记文件清单如下，用于把成功论文映射到 note 文件名：
+当前 \`$DOMAIN_PAPERS_DIR\` 下的详细笔记文件清单如下，用于把成功论文映射到 note 文件名：
 $NOTE_SPEC
 
-当前分类已存在于 \`paper\` 目录、但尚未进入当前 content 页的详细笔记如下。
+当前分类已存在于 \`$DOMAIN_PAPERS_DIR\`、但尚未进入当前 Gallery 页的详细笔记如下。
 如果不是 \`- None\`，你必须基于这些现有详细笔记一并补全 content 条目；这一步仍然只允许更新 content，不要改动 paper：
 $MISSING_CONTENT_NOTE_SPEC"
   echo "[$(date '+%F %T')] update domain content: $DOMAIN / $CATEGORY_PATH"

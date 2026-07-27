@@ -17,6 +17,7 @@ if str(_SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPT_DIR))
 
 import update_domain_content as gallery  # noqa: E402
+from user_config import validate_domain_name  # noqa: E402
 
 
 NOTE_FIELDS = {
@@ -127,12 +128,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_domain(raw: str) -> str:
-    domain = raw.strip()
-    if not domain or domain in {".", ".."} or "\x00" in domain:
-        raise SystemExit("domain cannot be empty or a relative path")
-    if Path(domain).name != domain:
-        raise SystemExit("domain must be a single folder name")
-    return domain
+    try:
+        return validate_domain_name(raw)
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
 
 
 def load_sidecar(content_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:

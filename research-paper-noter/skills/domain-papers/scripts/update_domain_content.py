@@ -25,6 +25,7 @@ from user_config import (
     domain_project_papers_dir,
     domain_vault_path,
     markdown_root_path,
+    validate_domain_name,
 )
 
 
@@ -36,6 +37,10 @@ ENTRY_RE = re.compile(r"<!--\s*domain-paper:\s*(\{.*?\})\s*-->")
 
 def main() -> int:
     args = parse_args()
+    try:
+        domain = validate_domain_name(args.domain)
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     category_parts = split_category_path(args.category_path)
     entry = normalize_entry(
         {
@@ -54,14 +59,14 @@ def main() -> int:
             "related_work": args.related_work or "",
             "figure": args.figure or "",
             "published_date": args.published_date or "",
-            "domain": args.domain,
+            "domain": domain,
             "category_path": " / ".join(category_parts),
             "updated": date.today().isoformat(),
         }
     )
 
-    papers_dir = domain_project_papers_dir(args.domain)
-    content_dir = domain_project_content_dir(args.domain)
+    papers_dir = domain_project_papers_dir(domain)
+    content_dir = domain_project_content_dir(domain)
     papers_dir.mkdir(parents=True, exist_ok=True)
     content_dir.mkdir(parents=True, exist_ok=True)
 
@@ -74,13 +79,13 @@ def main() -> int:
     write_entries(content_dir, content_path, entries)
     rendered = render_content_page(
         previous=previous,
-        domain=args.domain,
+        domain=domain,
         category_parts=category_parts,
         entries=entries.values(),
     )
     content_path.write_text(rendered, encoding="utf-8")
 
-    index_path = update_domain_index(args.domain, content_dir)
+    index_path = update_domain_index(domain, content_dir)
     print(
         json.dumps(
             {

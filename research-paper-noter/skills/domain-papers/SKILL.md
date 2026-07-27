@@ -26,7 +26,7 @@ description: |
 显式生成并统一使用：
 
 - `MARKDOWN_ROOT = paths.markdown_root`
-- `DOMAIN_VAULT_PATH = {MARKDOWN_ROOT}/DomainPapers`
+- `DOMAIN_VAULT_PATH = {MARKDOWN_ROOT}/{domain_papers_folder}`，默认目录名为 `DomainPapers`
 - `DOMAIN_PROJECT_PATH = {DOMAIN_VAULT_PATH}/{domain}`
 - `DOMAIN_PAPERS_PATH = {DOMAIN_PROJECT_PATH}/{domain_paper_folder}`，默认 `paper`
 - `DOMAIN_CONTENT_PATH = {DOMAIN_PROJECT_PATH}/{domain_content_folder}`，默认 `content`
@@ -57,11 +57,11 @@ description: |
 确保下面两个目录存在：
 
 ```text
-{DOMAIN_PROJECT_PATH}/paper
-{DOMAIN_PROJECT_PATH}/content
+{DOMAIN_PAPERS_PATH}
+{DOMAIN_CONTENT_PATH}
 ```
 
-其中 `paper` 存放详细论文笔记，`content` 存放按用户分类维护的汇总页。
+其中 `DOMAIN_PAPERS_PATH` 存放详细论文笔记，`DOMAIN_CONTENT_PATH` 存放按用户分类维护的汇总页；默认目录名分别是 `paper` 与 `content`。
 
 ## Step 2: 生成或复用详细笔记
 

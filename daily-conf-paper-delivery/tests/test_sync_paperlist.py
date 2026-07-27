@@ -13,6 +13,16 @@ SPEC.loader.exec_module(sync_paperlist)
 
 
 class SyncPaperlistTest(unittest.TestCase):
+    def test_bundled_snapshots_are_valid(self):
+        snapshots = sorted(sync_paperlist.DATA_DIR.glob("*/*.jsonl"))
+        self.assertTrue(snapshots)
+
+        for snapshot in snapshots:
+            with self.subTest(snapshot=snapshot):
+                sync_paperlist.validate_jsonl(
+                    snapshot.read_text(encoding="utf-8"), snapshot
+                )
+
     def test_syncs_custom_conference_from_local_directory(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)

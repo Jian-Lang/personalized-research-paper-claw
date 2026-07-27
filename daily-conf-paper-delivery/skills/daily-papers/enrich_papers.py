@@ -11,10 +11,9 @@ from __future__ import annotations
 import json
 import re
 import sys
-import xml.etree.ElementTree as ET
 from http.client import IncompleteRead
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urljoin
+from urllib.parse import urljoin
 from urllib.request import Request, urlopen
 
 
@@ -85,34 +84,6 @@ def fetch_url(url: str, timeout: int = 30) -> str:
     return ""
 
 
-def find_arxiv_by_title(title: str) -> tuple[str, str]:
-    """Find an exact arXiv title match for conference papers linked elsewhere."""
-    clean_title = clean_latex_text(title)
-    if not clean_title:
-        return "", ""
-    query = quote(f'ti:"{clean_title}"')
-    url = f"https://export.arxiv.org/api/query?search_query={query}&start=0&max_results=5"
-    raw = fetch_url(url, timeout=20)
-    if not raw:
-        return "", ""
-    try:
-        root = ET.fromstring(raw)
-    except ET.ParseError:
-        return "", ""
-
-    ns = {"atom": "http://www.w3.org/2005/Atom"}
-    target_key = normalize_title_key(clean_title)
-    for entry in root.findall("atom:entry", ns):
-        entry_title = entry.findtext("atom:title", default="", namespaces=ns)
-        entry_id = entry.findtext("atom:id", default="", namespaces=ns)
-        if normalize_title_key(entry_title) != target_key:
-            continue
-        arxiv_id = arxiv_id_from_url(entry_id)
-        if arxiv_id:
-            return arxiv_id, f"https://arxiv.org/abs/{arxiv_id}"
-    return "", ""
-
-
 def normalize_arxiv_image_url(arxiv_id: str, src: str) -> str:
     src = src.strip()
     if not src:
@@ -174,18 +145,6 @@ def enrich_arxiv_assets(paper: dict) -> dict:
         or arxiv_id_from_url(paper.get("pdf", ""))
         or arxiv_id_from_url(paper.get("url", ""))
     )
-    if not arxiv_id and not paper.get("figure_url"):
-        arxiv_id, arxiv_url = find_arxiv_by_title(paper.get("title", ""))
-        if arxiv_id:
-            # Preserve the original conference/OpenReview page, but fill arXiv
-            # as the PDF source so downstream review can expose a readable paper.
-            paper.setdefault("paper_url", arxiv_url)
-            if not arxiv_id_from_url(paper.get("paper_url", "")):
-                paper["arxiv_url"] = arxiv_url
-            if not paper.get("pdf") or "openreview.net/pdf" in str(paper.get("pdf", "")):
-                paper["pdf"] = f"https://arxiv.org/pdf/{arxiv_id}"
-            paper["has_paper"] = True
-
     if arxiv_id and not paper.get("figure_url"):
         paper["figure_url"] = extract_first_arxiv_figure(arxiv_id)
     return paper

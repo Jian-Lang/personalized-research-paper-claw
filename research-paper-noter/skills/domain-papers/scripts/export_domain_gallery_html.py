@@ -27,6 +27,7 @@ if str(_SHARED_DIR) not in sys.path:
 from user_config import (  # noqa: E402
     domain_project_content_dir,
     domain_project_papers_dir,
+    validate_domain_name,
 )
 
 
@@ -43,10 +44,14 @@ TEMPLATE_FIELDS = (
 
 def main() -> int:
     args = parse_args()
+    try:
+        domain = validate_domain_name(args.domain)
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     category_parts = split_category_path(args.category_path) if args.category_path else []
     category_display = " / ".join(category_parts)
-    content_dir = domain_project_content_dir(args.domain)
-    papers_dir = domain_project_papers_dir(args.domain)
+    content_dir = domain_project_content_dir(domain)
+    papers_dir = domain_project_papers_dir(domain)
     selected_pages = load_selected_pages(content_dir, category_parts)
     entries = collect_entries(selected_pages)
     if not entries:
@@ -54,7 +59,7 @@ def main() -> int:
 
     output_path = resolve_output_path(
         content_dir=content_dir,
-        domain=args.domain,
+        domain=domain,
         category_display=category_display,
         raw_output=args.output,
     )
@@ -66,7 +71,7 @@ def main() -> int:
 
     try:
         rendered, copied_assets = render_gallery(
-            domain=args.domain,
+            domain=domain,
             category_display=category_display,
             entries=entries,
             selected_page_count=len(selected_pages),
@@ -85,7 +90,7 @@ def main() -> int:
     print(
         json.dumps(
             {
-                "domain": args.domain,
+                "domain": domain,
                 "category_path": category_display or None,
                 "source_page_count": len(selected_pages),
                 "paper_count": len(entries),

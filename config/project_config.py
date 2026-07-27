@@ -166,8 +166,21 @@ def domain_content_folder_name() -> str:
     return paths_config().get("domain_content_folder", "content")
 
 
+def validate_domain_name(domain_name: str) -> str:
+    name = str(domain_name)
+    forbidden = ("/", "\\", "\x00", "\n", "\r")
+    if (
+        not name
+        or name != name.strip()
+        or name in {".", ".."}
+        or any(char in name for char in forbidden)
+    ):
+        raise ValueError("domain must be a non-empty single folder name")
+    return name
+
+
 def domain_project_dir(domain_name: str) -> Path:
-    return domain_vault_path() / domain_name
+    return domain_vault_path() / validate_domain_name(domain_name)
 
 
 def domain_project_papers_dir(domain_name: str) -> Path:
