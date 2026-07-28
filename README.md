@@ -150,7 +150,7 @@ You define the `domain / category` hierarchy for your own paper knowledge base. 
 
 - [Codex CLI](https://github.com/openai/codex)
 - Python 3.8+
-- [Obsidian](https://obsidian.md/), strongly recommended but not required. Markdown remains the long-term source of truth; HTML can be exported for sharing.
+- [Obsidian](https://obsidian.md/), the best environment for reading and navigating these notes. Markdown remains the long-term source of truth; HTML can be exported for sharing.
 - [Zotero](https://www.zotero.org/), optional
 - Poppler, optional but recommended for extracting figures from PDFs
 

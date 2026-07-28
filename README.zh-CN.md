@@ -152,7 +152,7 @@ Personalized 模式按主题持续追加并去重；Domain Research Gallery 模�
 
 - [Codex CLI](https://github.com/openai/codex)
 - Python 3.8+
-- [Obsidian](https://obsidian.md/)，强烈推荐但不强制；长期维护的知识源是 Markdown，分享时可按需导出 HTML
+- [Obsidian](https://obsidian.md/)，最适合阅读与浏览这些笔记；长期维护的知识源是 Markdown，分享时可按需导出 HTML
 - [Zotero](https://www.zotero.org/)，可选
 - Poppler，可选但推荐，用于从 PDF 提取图片
 
