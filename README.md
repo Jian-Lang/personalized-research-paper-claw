@@ -18,24 +18,38 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ## 💥 News
 
-- **2026-07-26** — Personalized Research Paper Claw is now publicly available. [Explore the repository](https://github.com/Jian-Lang/personalized-research-paper-claw).
+- **2026-07-30** — Personalized Research Paper Claw is now publicly available. [Explore the repository](https://github.com/Jian-Lang/personalized-research-paper-claw).
+
+## 📋 TODO List
+
+- [ ] Develop more specialized note templates for major paper types, including surveys, standard method papers (the current template), and benchmarks.
 
 ## 💡 Why Personalized Research Paper Claw?
 
-> **From paper overload to a research memory that keeps growing.**
+> **The scarce resource is not papers. It is the ability to keep deciding what deserves attention, and to remember why it mattered.**
 >
-> Imagine it is 1 a.m. An experiment has just finished, dozens of paper tabs are still open, and a new conference acceptance list appears in your group chat. Hundreds or thousands of papers form an endless queue. You know only a handful are truly relevant, but the list does not know what you care about and cannot skip work that looks related while being irrelevant in practice.
+> It is eight in the morning, and you have just set your coffee on the desk. Overnight, hundreds or thousands of new entries appeared across the latest ICML, ICLR, CVPR, and ACL acceptance lists. Instead of reading every title or diving into the noisy arXiv stream, you open Obsidian and find a recommendation page already waiting for you.
 >
-> You eventually choose a few papers and promise to read them tomorrow. Days later, the PDFs are buried in Downloads, summaries remain in an old conversation, and scattered judgments live in temporary Markdown files. When it is time to write related work, you only remember that you “read something like this,” not what it solved, how it related to prior work, or why it mattered.
+> Claw remembers your topics, method-level keywords, and explicit exclusions. It also remembers where the scan stopped for each conference. It continues through the continually updated acceptance lists, keeps only the work that fits your research trajectory, and tells you what deserves immediate attention, what may be useful, and what only looks relevant at first glance.
+>
+> You skim the daily verdict and reading triage, then choose two papers. Claw does not silently “deep-read” every recommendation or fill your vault with notes nobody will maintain. Only when you explicitly say, “Read this paper,” does it act on that decision: organizing the method, experiments, figures, and key concepts into a detailed note you can revise, cite, and return to later.
+>
+> You still decide which domain the work belongs to, how deep its category should be, and whether it deserves a place in your knowledge system at all. Claw handles the repeated comparison work: what the paper inherits, which approaches it contrasts with, and what it could complement. The machine handles repetition; the researcher keeps the final judgment.
+>
+> Months later, you begin writing related work. Papers once scattered across browser tabs, chat histories, and Downloads are now organized by year, category, and research relationship inside a Domain Research Gallery. You no longer have to search for “that paper I vaguely remember reading,” because why it caught your attention, what problem it solved, and how it connected to other work are still preserved in your own Markdown knowledge base.
+>
+> When it is time to share with an advisor, labmate, or collaborator, you can export the knowledge accumulated around an entire domain into a standalone HTML reading page with one command. What you share is no longer a paper list. It is your evolving understanding of the field: its important works, its research trajectory, the relationships between competing directions, and the questions still worth pursuing.
 
-Personalized Research Paper Claw starts from these two moments:
+Personalized Research Paper Claw connects this entire research loop:
 
-- 📬 **Daily Conf Paper Delivery** remembers your topics, keywords, exclusions, and thresholds. It selects genuinely relevant work from continuously updated conference acceptance lists and delivers summaries, match reasons, and reading priorities.
-- 📝 **Research Paper Noter** takes over the papers you choose to read deeply. It creates detailed notes and, in Domain mode, organizes them into a browsable Research Gallery with one-click HTML export for flexible sharing. It also explains how each paper inherits from, contrasts with, or complements related work.
+- 📬 **Daily Conf Paper Delivery** remembers your fine-grained preferences, finds genuinely worthwhile work in continually updated conference acceptance lists, and makes important papers appear at the right time.
+- 📝 **Research Paper Noter** takes over the papers you personally choose to read deeply, turns each reading into a detailed note, and gradually organizes those notes into your own Personalized summaries and Domain Research Galleries.
 
-One component makes worthwhile papers appear on time; the other prevents what you have read from disappearing. “Personalized” does not mean silently guessing your interests: you explicitly configure recommendation criteria and category structures. The long-term knowledge source consists of ordinary Markdown files in a global notes directory that you own, with HTML generated only when you explicitly request a shareable export. We strongly recommend Obsidian for reading and maintaining these assets.
+One makes worthwhile papers appear on time; the other keeps the understanding you have already formed from disappearing.
 
-**Scope:** Personalized Research Paper Claw does not write papers or run experiments automatically. It focuses on personalized paper discovery, reading, and knowledge organization.
+Here, “Personalized” does not mean asking AI to guess your interests or make research decisions for you. You define the recommendation criteria, reading choices, and domain structure. Claw remembers those decisions and turns them into research memory that remains yours, keeps growing, and can be shared whenever needed.
+
+**Scope:** Personalized Research Paper Claw does not write papers or run experiments automatically. It focuses on personalized paper discovery, deep reading, and long-term knowledge organization.
 
 <a id="features"></a>
 
