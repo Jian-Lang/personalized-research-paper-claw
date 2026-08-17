@@ -87,24 +87,42 @@ description: |
 
 ## 3. 笔记生成
 
-**模板**: 严格遵循 `assets/paper-note-template.md`，不可自行简化。
+### 论文类型判断与模板路由
+
+写笔记前，先根据 Abstract、Introduction 和 Contributions 判断论文的**主要贡献类型**。不要根据标题中是否包含 `Bench`、用户给出的 category、Zotero 分类或保存目录直接决定模板。
+
+依次判断：
+
+1. **论文是否提出 Benchmark**：是否把新的评测数据、任务集合、能力 taxonomy、测试协议或系统化评测框架作为主要贡献，而不是只使用已有 Benchmark 做实验。
+2. **是否同时提出独立方法**：除 Benchmark 外，是否还提出新的模型、可训练评估器、Judge、数据生成算法、训练目标或推理算法，并把它作为独立贡献进行验证。
+
+复用现有 VLM、检测器、LLM Judge、传统指标、固定规则、Prompt 模板或简单指标组合，不单独算作“提出方法”。如果证据不足，优先选择更简单的类型，并在笔记中说明判断依据。
+
+| 判断结果 | `paper_type` | 模板 |
+|----------|--------------|------|
+| 未提出 Benchmark | `method` | `assets/paper-note-template.md` |
+| 提出 Benchmark，没有独立方法 | `benchmark` | `assets/benchmark-note-template.md` |
+| 提出 Benchmark，同时有独立方法 | `benchmark-method` | 先读 `assets/benchmark-note-template.md`，再应用 `assets/benchmark-method-note-template.md` |
+
+严格遵循选中的模板。混合型论文始终以 Benchmark 为主体，在 Benchmark 章节后增加配套方法章节；不要把方法模板放在前面再附带一个简略 Benchmark 小节。
 
 ### 核心质量规则
 
-1. **零遗漏**: 论文中所有 Figure、所有 Table 必须全部出现在笔记中；公式只保留理解方法必要的关键公式
+1. **类型先行**: 先完成论文类型判断并写入正确的 `paper_type`；`method` 收录全部 Figure/Table，`benchmark` 和 `benchmark-method` 只选择关键图表与代表案例
 2. **术语标注**: 正文中首次出现的重要技术术语可以用 `[[术语]]` 链接，但不要额外创建派生概念笔记
 3. **严禁 ASCII 流程图**: 用结构化 Markdown 列表 + `$数学符号$` 描述架构
 4. **公式完整性**: 每个公式必须有名称、LaTeX 公式、含义、符号说明；可使用 `[[术语|名称]]` 链接
 5. **摘要层级**: `## 一句话总结` 后单独开启 `## 论文摘要` section，再写 `- **论文摘要 / English**:` 和 `- **论文摘要 / 中文**:`；摘要不能作为“一句话总结”的子内容。英文为原始 abstract，中文为忠实翻译，不加工总结
-6. **关键图固定位置**: 如果论文有 intro / teaser / motivation / overview 图，必须在 `## 一句话总结` 下方立即重复嵌入；如果论文有 framework / architecture / method overview / pipeline 图，必须在 `## 方法详解` 下方立即重复嵌入。两张图仍然要在 `## 关键图表` 中按 Figure 编号完整出现
+6. **关键图固定位置**: intro / teaser 图放在 `## 一句话总结` 下方；`method` 的 framework 图放在 `## 方法详解` 下方；`benchmark` 的 construction pipeline 放在 `## Benchmark 详解` 下方；`benchmark-method` 还要在 `## 配套方法详解` 下方放置方法 framework 图
 7. **禁用 HTML 公式索引**: 不要输出 `### HTML 公式索引`，不要粘贴 arXiv HTML / LaTeXML 抽取出的编号数学片段列表
 8. **图片外链优先**: arXiv HTML / 项目主页 / GitHub，找不到再本地下载
+9. **Benchmark 原文可追溯**: 构建流程中的事实、数字、规则和阶段输出必须来自原文；原文未说明的复现细节明确标注，个人判断只放在批判性思考
 
 > 公式/图片/表格的详细质量规范见 `references/quality-standards.md`
 
 ### 图片获取流程（多源 fallback）
 
-**目标**: 确保笔记中包含论文的**所有 Figure**，先统计论文 Figure 总数再逐一获取。
+**目标**: `method` 统计并获取全部 Figure；`benchmark` / `benchmark-method` 先识别模板要求的关键图表与 3～5 个代表案例，只获取最终选中的图像。
 
 1. WebSearch `"{论文标题} arxiv"` 获取 arXiv ID
 2. **来源 A — arXiv HTML**（首选）：
@@ -134,14 +152,14 @@ python3 assets/download_note_images.py "{笔记完整路径}"
 
 每个公式必须包含：名称、LaTeX `$$` 块（前后留空行）、含义、符号列表。
 `$$` 块前后**必须有空行**否则 Obsidian 不渲染。超长公式用 `aligned` 拆分。
-只写关键公式，不写 `HTML 公式索引` 或从 HTML 自动抽取的零散公式列表。
+只写选中模板要求的关键公式。Benchmark 的普通已有指标不展开；混合型论文只展开理解独立方法必要的原创公式。
 
 ## 4. Obsidian 保存
 
 ### 文件命名
 
-只用**方法名/模型名**：`{方法名}.md`（如 `Pi05.md`，不加年份前缀）。
-方法名判断：标题冒号前 / Abstract 中 "We propose XXX" / 希腊字母转 ASCII。
+只用**方法名、模型名或 Benchmark 名**：`{Name}.md`（如 `Pi05.md`、`GenEval.md`，不加年份前缀）。
+名称判断：标题冒号前 / Abstract 中 "We propose XXX" / Benchmark 正式名称 / 希腊字母转 ASCII。
 不确定时保存到 `_inbox/`。
 
 ### 保存路径
@@ -157,6 +175,7 @@ python3 assets/download_note_images.py "{笔记完整路径}"
 ---
 title: "论文标题"
 method_name: "MethodName"
+paper_type: method  # method / benchmark / benchmark-method
 authors: [Author1, Author2]
 year: 2025
 venue: arXiv
@@ -186,12 +205,22 @@ Tags 判断：看 Related Work 小标题 + Abstract 关键词。第一个 tag �
 
 ## 5. 完成后自检（合并 checklist）
 
-- [ ] 所有 Figure 都在笔记中（数量与论文一致）？
+- [ ] 是否根据论文贡献而非 category / 标题完成类型判断，并写入正确的 `paper_type`？
 - [ ] 如有 intro / teaser 图，是否已出现在 `## 一句话总结` 下方？
-- [ ] 如有 framework / architecture / pipeline 图，是否已出现在 `## 方法详解` 下方？
-- [ ] 关键公式都在笔记中（变量一致、无冲突，未粘贴 HTML 公式索引）？
-- [ ] 所有 Table 完整保留（所有行列）？
 - [ ] 图片可用（外链可加载 / 本地 >10KB）？
+
+`method` 额外检查：
+- [ ] 所有 Figure / Table 是否完整，framework 图是否位于 `## 方法详解` 下方？
+- [ ] 理解方法必要的关键公式是否完整？
+
+`benchmark` / `benchmark-method` 额外检查：
+- [ ] 构建流程是否按原文逐步说明输入、操作、规则、输出和依据？
+- [ ] 原文未说明的复现细节是否明确标注，而非自行补造？
+- [ ] 是否只保留关键图表和 3～5 个代表案例，没有机械复制全部 Figure/Table？
+- [ ] 指标与评估是否保持紧凑，主要发现是否解释而非复制完整排行榜？
+
+`benchmark-method` 额外检查：
+- [ ] 是否在 Benchmark 之后完整展示独立方法，并验证其方法贡献？
 
 ## 6. 交互式功能
 

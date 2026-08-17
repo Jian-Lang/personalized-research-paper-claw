@@ -65,15 +65,17 @@ description: |
 
 ## Step 2: 生成或复用详细笔记
 
-每篇论文调用 `paper-reader` 生成详细笔记，格式严格复用 `paper-reader/assets/paper-note-template.md`。
+每篇论文调用 `paper-reader` 生成详细笔记。添加前必须由 `paper-reader` 根据论文贡献判断 `method`、`benchmark` 或 `benchmark-method`，并路由到对应模板；domain / category 只决定保存位置，不参与论文类型判断。
 
 调用约束：
 
 - 当前调用来源是 `domain-papers`
 - `TARGET_NOTES_PATH` 必须设为 `{DOMAIN_PAPERS_PATH}`
 - 笔记直接保存到 `{DOMAIN_PAPERS_PATH}`，不要按 Zotero 分类或 daily/manual 路径保存
+- 不能因为 `category_path` 包含 `Benchmarks` 就直接选 Benchmark 模板，也不能因为标题包含 `Bench` 就跳过贡献判断
 - 如果论文有 intro / teaser / motivation / overview 图，详细笔记必须在 `## 一句话总结` 下方立即重复嵌入
-- 如果论文有 framework / architecture / method overview / pipeline 图，详细笔记必须在 `## 方法详解` 下方立即重复嵌入
+- `method` 的 framework 图放在 `## 方法详解` 下方；`benchmark` 的 construction pipeline 放在 `## Benchmark 详解` 下方；`benchmark-method` 还要在 `## 配套方法详解` 下方放置方法 framework 图
+- 图表、公式和案例数量遵循 `paper-reader` 所选模板的条件质量规则
 - 如果已有同一论文的合格详细笔记，复用已有笔记，不重复生成
 - 生成后执行 paper-reader 自己定义的质量检查和图片可靠性检查
 

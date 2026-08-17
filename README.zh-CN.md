@@ -20,11 +20,12 @@
 
 ## 💥 News
 
+- **2026-08-17** — Research Paper Noter 现可根据论文贡献类型，将方法、Benchmark 以及 Benchmark + Method 工作路由到对应的专用笔记模板。
 - **2026-07-30** — Personalized Research Paper Claw 正式发布。[访问项目仓库](https://github.com/Jian-Lang/personalized-research-paper-claw)。
 
 ## 📋 TODO List
 
-- [ ] 针对不同大类的论文制定更细化的笔记模板，例如 Survey、普通方法类（当前模板）和 Benchmark 类。
+- [ ] 继续为其他论文类型开发专用笔记模板，包括 Survey。
 
 ## 💡 为什么需要 Personalized Research Paper Claw
 

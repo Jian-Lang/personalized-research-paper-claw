@@ -18,11 +18,12 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ## 💥 News
 
+- **2026-08-17** — Research Paper Noter now classifies papers by their contributions and routes method, benchmark, and benchmark-plus-method work to dedicated note templates.
 - **2026-07-30** — Personalized Research Paper Claw is now publicly available. [Explore the repository](https://github.com/Jian-Lang/personalized-research-paper-claw).
 
 ## 📋 TODO List
 
-- [ ] Develop more specialized note templates for major paper types, including surveys, standard method papers (the current template), and benchmarks.
+- [ ] Develop specialized note templates for additional paper types, including surveys.
 
 ## 💡 Why Personalized Research Paper Claw?
 

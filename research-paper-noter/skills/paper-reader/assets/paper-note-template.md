@@ -1,6 +1,7 @@
 ---
 title: "{Title}"
 method_name: "{MethodName}"
+paper_type: method
 authors: [{Authors}]
 year: {Year}
 venue: {Venue}
