@@ -20,6 +20,7 @@
 
 ## 💥 News
 
+- **2026-09-08**：新增来自 ronpay 的 ECCV 2026 论文列表（2,864 篇），已纳入仓库数据和默认会议源。当前快照暂缺摘要和 PDF 链接，ECCV 暂按标题筛选。
 - **2026-08-17** — Research Paper Noter 现可根据论文贡献类型，将方法、Benchmark 以及 Benchmark + Method 工作路由到对应的专用笔记模板。
 - **2026-07-30** — Personalized Research Paper Claw 正式发布。[访问项目仓库](https://github.com/Jian-Lang/personalized-research-paper-claw)。
 
@@ -71,7 +72,7 @@ Personalized Research Paper Claw 负责把这条研究链路连接起来：
 
 Daily Conf Paper Delivery 负责“把值得读的工作送到您面前”。它从上到下扫描仓库随附的人工智能顶会论文列表（例如 NeurIPS、ICML、ICLR、CVPR），无需在运行时联网抓取会议数据；系统按您的偏好对 title + abstract 计分，每个会议维护独立 cursor（上次扫描到列表第几篇的进度记录），每一天都从上一次记录的位置继续筛选并生成每日推荐页。
 
-当前仓库提供 **ICML 2026、ICLR 2026、CVPR 2026 和 ACL 2026**。本项目会持续为每一个新的重要会议提供经过整理的接收论文列表更新。
+当前仓库提供 **ICML 2026、ICLR 2026、CVPR 2026、ACL 2026 和 ECCV 2026**。本项目会持续为每一个新的重要会议提供经过整理的接收论文列表更新。
 
 您也可以按照[下方的自定义指南](#custom-conference-journal-lists)，接入其他领域的会议或期刊列表。
 
@@ -289,7 +290,8 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
       { "name": "ICML", "year": 2026, "daily_take": 5 },
       { "name": "ICLR", "year": 2026, "daily_take": 5 },
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
-      { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }
+      { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
+      { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }
     ],
     "scan_limit": 1000,
     "topics": [

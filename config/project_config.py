@@ -39,6 +39,7 @@ DEFAULT_CONFIG = {
             {"name": "ICLR", "year": 2026, "daily_take": 5},
             {"name": "CVPR", "year": 2026, "daily_take": 5},
             {"name": "ACL", "year": 2026, "daily_take": 5, "shuffle": True},
+            {"name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": True},
         ],
         "scan_limit": 1000,
         "topics": [],

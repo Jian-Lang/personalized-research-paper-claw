@@ -41,7 +41,7 @@ description: |
 - 排除词写在 `daily_papers.exclude_keywords`，只要 title 或 abstract 完整命中一个就记为排除并计 -100 分。
 - 推荐阈值写在 `daily_papers.min_score`。默认是 2，表示 topic 单独命中不足以入选，必须再有关键词或其他 topic 支撑。
 - 匹配会统一大小写和标点，并按完整词/短语边界判断；配置中的大小写或连字符等价重复项只计算一次。
-- 会议、年份和每个会议每天最多推荐数量写在 `daily_papers.conferences`，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "ICLR", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }]`。用户不需要配置 adapter 类型或 URL。
+- 会议、年份和每个会议每天最多推荐数量写在 `daily_papers.conferences`，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "ICLR", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }]`。用户不需要配置 adapter 类型或 URL。
 - `daily_take` 优先写在每个会议项里；旧版全局 `daily_papers.daily_take` 只作为兼容 fallback。
 - `shuffle: true` 表示同步本地 JSONL snapshot 时做稳定随机混排；ACL 默认开启，用来混合 poster / finding，避免主会先跑完再跑 Findings。
 
@@ -80,7 +80,7 @@ python3 ../daily-papers/fetch_and_score.py --days N > /tmp/daily_papers_top30.js
 
 脚本自动完成：
 - 读取 `daily_papers.conferences`，按会议名和年份解析本地 JSONL 路径
-- 当前仓库提供 ICML、ICLR、CVPR、ACL；其他会议也可按相同目录和 JSONL 格式加入
+- 当前仓库提供 ICML、ICLR、CVPR、ACL、ECCV；其他会议也可按相同目录和 JSONL 格式加入
 - 每个会议按各自 source cursor 扫描本地 JSONL snapshot，默认每个会议每天最多扫描 1000 篇；`shuffle: true` 的会议在同步 snapshot 时已经完成稳定随机混排
 - 只基于 JSONL 中的 title + abstract 做 topic / keyword 打分
 - topic 命中加 1 分；关键词命中 title 加 3 分，否则命中 abstract 加 1 分

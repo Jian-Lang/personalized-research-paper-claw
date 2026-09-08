@@ -20,7 +20,8 @@ class SyncPaperlistTest(unittest.TestCase):
         for snapshot in snapshots:
             with self.subTest(snapshot=snapshot):
                 sync_paperlist.validate_jsonl(
-                    snapshot.read_text(encoding="utf-8"), snapshot
+                    snapshot.read_text(encoding="utf-8"), snapshot,
+                    allow_missing_abstract=snapshot.name == "eccv_2026.jsonl",
                 )
 
     def test_syncs_custom_conference_from_local_directory(self):
@@ -58,6 +59,25 @@ class SyncPaperlistTest(unittest.TestCase):
     def test_rejects_paper_without_abstract(self):
         with self.assertRaisesRegex(SystemExit, "Missing abstract"):
             sync_paperlist.validate_jsonl('{"title": "Incomplete"}\n', Path("papers.jsonl"))
+
+    def test_imports_title_only_snapshot_with_explicit_opt_in(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            source = root / "ECCV" / "eccv_2026.jsonl"
+            source.parent.mkdir()
+            raw = json.dumps({"title": "ECCV paper", "abstract": "", "pdf": ""}) + "\n"
+            source.write_text(raw, encoding="utf-8")
+            original = sync_paperlist.DATA_DIR
+            sync_paperlist.DATA_DIR = root / "target"
+            try:
+                with self.assertRaisesRegex(SystemExit, "Missing abstract"):
+                    sync_paperlist.sync_file(root, {"name": "ECCV", "year": 2026})
+                target = sync_paperlist.sync_file(root, {
+                    "name": "ECCV", "year": 2026, "allow_missing_abstract": True,
+                })
+                self.assertEqual(target.read_text(encoding="utf-8"), raw)
+            finally:
+                sync_paperlist.DATA_DIR = original
 
 
 if __name__ == "__main__":

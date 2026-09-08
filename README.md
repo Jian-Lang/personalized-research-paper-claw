@@ -18,6 +18,7 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ## 💥 News
 
+- **2026-09-08**: Added the ECCV 2026 list from ronpay (2,864 papers) to the bundled data and default conference sources. This snapshot has no abstracts or PDF links yet; ECCV filtering currently uses titles only.
 - **2026-08-17** — Research Paper Noter now classifies papers by their contributions and routes method, benchmark, and benchmark-plus-method work to dedicated note templates.
 - **2026-07-30** — Personalized Research Paper Claw is now publicly available. [Explore the repository](https://github.com/Jian-Lang/personalized-research-paper-claw).
 
@@ -69,7 +70,7 @@ Here, “Personalized” does not mean asking AI to guess your interests or make
 
 Daily Conf Paper Delivery puts work worth reading in front of you. It scans the bundled, locally maintained AI conference lists, such as NeurIPS, ICML, ICLR, and CVPR, without fetching conference data from the network at runtime. It scores title + abstract using your preferences. Every conference maintains its own cursor, so each run continues from the last scanned position and creates a new daily recommendation page.
 
-The repository currently includes **ICML 2026, ICLR 2026, CVPR 2026, and ACL 2026**. Curated acceptance-list updates will continue to be added for important new conferences.
+The repository currently includes **ICML 2026, ICLR 2026, CVPR 2026, ACL 2026, and ECCV 2026**. Curated acceptance-list updates will continue to be added for important new conferences.
 
 You can also add conferences or journals from other fields by following the [custom source guide below](#custom-conference-journal-lists).
 
@@ -287,7 +288,8 @@ Minimal example:
       { "name": "ICML", "year": 2026, "daily_take": 5 },
       { "name": "ICLR", "year": 2026, "daily_take": 5 },
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
-      { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }
+      { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
+      { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }
     ],
     "scan_limit": 1000,
     "topics": [

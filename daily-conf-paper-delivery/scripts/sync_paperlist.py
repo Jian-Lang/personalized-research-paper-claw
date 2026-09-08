@@ -25,6 +25,7 @@ def load_conferences() -> list[dict]:
             {"name": "ICLR", "year": 2026, "daily_take": 5},
             {"name": "CVPR", "year": 2026, "daily_take": 5},
             {"name": "ACL", "year": 2026, "daily_take": 5},
+            {"name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": True},
         ]
     if isinstance(conferences, dict):
         conferences = [conferences]
@@ -39,7 +40,7 @@ def shuffled_jsonl(raw: str, conference: str, year: int) -> str:
     return "\n".join(lines) + "\n"
 
 
-def validate_jsonl(raw: str, source_path: Path) -> None:
+def validate_jsonl(raw: str, source_path: Path, *, allow_missing_abstract: bool = False) -> None:
     paper_count = 0
     for line_no, line in enumerate(raw.splitlines(), start=1):
         if not line.strip():
@@ -52,7 +53,7 @@ def validate_jsonl(raw: str, source_path: Path) -> None:
             raise SystemExit(f"Expected an object in {source_path}, line {line_no}")
         if not str(paper.get("title", "")).strip():
             raise SystemExit(f"Missing title in {source_path}, line {line_no}")
-        if not str(paper.get("abstract", "")).strip():
+        if not allow_missing_abstract and not str(paper.get("abstract", "")).strip():
             raise SystemExit(f"Missing abstract in {source_path}, line {line_no}")
         paper_count += 1
     if paper_count == 0:
@@ -71,7 +72,10 @@ def sync_file(source_dir: Path, conference: dict) -> Path:
         raise SystemExit(f"Missing source file: {source_path}")
 
     raw = source_path.read_text(encoding="utf-8")
-    validate_jsonl(raw, source_path)
+    validate_jsonl(
+        raw, source_path,
+        allow_missing_abstract=conference.get("allow_missing_abstract", False),
+    )
 
     target_path = DATA_DIR / rel_path
     target_path.parent.mkdir(parents=True, exist_ok=True)

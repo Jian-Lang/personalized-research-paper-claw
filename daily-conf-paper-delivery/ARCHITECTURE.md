@@ -30,7 +30,7 @@
 数据源：
 - 仓库内 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 会议接收列表 snapshot
 - snapshot 随仓库更新，也可按相同目录结构手动添加
-- 当前仓库提供 ICML、ICLR、CVPR、ACL；兼容 JSONL 可按目录约定加入其他会议
+- 当前仓库提供 ICML、ICLR、CVPR、ACL、ECCV；兼容 JSONL 可按目录约定加入其他会议
 - 每个会议由独立 cursor 控制扫描进度
 
 打分规则：
