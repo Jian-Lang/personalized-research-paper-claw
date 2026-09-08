@@ -286,7 +286,6 @@ Minimal example:
   "daily_papers": {
     "conferences": [
       { "name": "ICML", "year": 2026, "daily_take": 5 },
-      { "name": "ICLR", "year": 2026, "daily_take": 5 },
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
       { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
       { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }
