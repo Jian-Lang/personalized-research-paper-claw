@@ -20,7 +20,7 @@
 
 ## 💥 News
 
-- **2026-09-08**：新增来自 ronpay 的 ECCV 2026 论文列表（2,864 篇），已纳入仓库数据和默认会议源。当前快照暂缺摘要和 PDF 链接，ECCV 暂按标题筛选。
+- **2026-09-08**：新增来自 ronpay 的 ECCV 2026 论文列表（2,834 篇，已补回官方摘要和 PDF），已纳入仓库数据和默认会议源。当前数据源已包含官方摘要和 PDF，ECCV 按 title + abstract 筛选。
 - **2026-08-17** — Research Paper Noter 现可根据论文贡献类型，将方法、Benchmark 以及 Benchmark + Method 工作路由到对应的专用笔记模板。
 - **2026-07-30** — Personalized Research Paper Claw 正式发布。[访问项目仓库](https://github.com/Jian-Lang/personalized-research-paper-claw)。
 
@@ -290,7 +290,7 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
       { "name": "ICML", "year": 2026, "daily_take": 5 },
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
       { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
-      { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }
+      { "name": "ECCV", "year": 2026, "daily_take": 5 }
     ],
     "scan_limit": 1000,
     "topics": [

@@ -9,7 +9,7 @@
 ## 最新变更
 
 - 会议推荐配置改为每个会议显式配置 `daily_take`，配比直接写在 `daily_papers.conferences` 里。
-- 已纳入 ECCV 2026（来自 ronpay，共 2,864 篇）；默认会议源为 ICML 2026、CVPR 2026、ACL 2026、ECCV 2026。ICLR 2026 数据仍保留，但不再默认启用。ECCV 当前暂缺摘要与 PDF 链接，按标题筛选；`allow_missing_abstract: true` 显式允许导入缺摘要的快照，其他会议默认仍要求摘要。
+- 已纳入 ECCV 2026（已补回官方摘要和 PDF，共 2,834 篇）；默认会议源为 ICML 2026、CVPR 2026、ACL 2026、ECCV 2026。ICLR 2026 数据仍保留，但不再默认启用。ECCV 当前数据源已包含官方摘要和 PDF，按 title + abstract 筛选；所有导入论文都必须有摘要。
 - 推荐配比直接由各会议项里的 `daily_take` 决定；要调整配比，只改对应会议的 `daily_take`。
 - ACL 默认开启 `shuffle: true`，同步本地会议接收列表时会把 poster / finding 做稳定随机混排，避免先推荐完整主会再推荐 Findings。
 
@@ -109,7 +109,7 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
 
 | 配置项 | 说明 |
 | --- | --- |
-| `daily_papers.conferences` | 每日推荐的会议、年份和单会议推荐数量列表，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }]`；本地文件按 `<CONF>/<conf>_<year>.jsonl` 自动匹配 |
+| `daily_papers.conferences` | 每日推荐的会议、年份和单会议推荐数量列表，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }]`；本地文件按 `<CONF>/<conf>_<year>.jsonl` 自动匹配 |
 | `daily_papers.conferences[].daily_take` | 该会议每天最多推荐几篇论文；这是当前推荐的配比配置入口 |
 | `daily_papers.conferences[].shuffle` | 是否在同步本地会议接收列表时做稳定随机混排；ACL 默认开启，用来混合 poster / finding |
 | `daily_papers.daily_take` | 旧版全局 fallback；新配置建议不用它，优先写到每个会议项里 |
@@ -130,7 +130,7 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
   { "name": "ICML", "year": 2026, "daily_take": 5 },
   { "name": "CVPR", "year": 2026, "daily_take": 5 },
   { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
-  { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }
+  { "name": "ECCV", "year": 2026, "daily_take": 5 }
 ]
 ```
 

@@ -8,7 +8,7 @@ The daily paper recommendation subproject. It filters papers from local conferen
 
 ## Latest Changes
 
-- ECCV 2026 adds 2,864 papers from ronpay. The supplied snapshot has no abstracts or PDF links; filtering uses titles only. See [snapshot details](data/paperlist/ECCV/README.md).
+- ECCV 2026 includes 2,834 papers with official abstracts and PDF links; filtering uses title + abstract. See [snapshot details](data/paperlist/ECCV/README.md).
 - Recommendation quotas are now configured explicitly with `daily_take` inside each entry of `daily_papers.conferences`.
 - ACL 2026 is included. The default sources are ICML 2026, CVPR 2026, ACL 2026, and ECCV 2026. ICLR 2026 remains bundled but is no longer enabled by default.
 - Conference proportions follow each conference entry’s `daily_take`; change that value to adjust the mix.
@@ -110,8 +110,7 @@ Primary settings:
 
 | Setting | Description |
 | --- | --- |
-| `daily_papers.conferences[].allow_missing_abstract` | Explicitly allow importing a snapshot without abstracts; enabled for ECCV 2026, false by default |
-| `daily_papers.conferences` | Conference, year, and per-conference quota entries, for example `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }]`; local files are matched using `<CONF>/<conf>_<year>.jsonl` |
+| `daily_papers.conferences` | Conference, year, and per-conference quota entries, for example `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }]`; local files are matched using `<CONF>/<conf>_<year>.jsonl` |
 | `daily_papers.conferences[].daily_take` | Maximum papers recommended from that conference each day; this is the current conference-mix control |
 | `daily_papers.conferences[].shuffle` | Whether to apply stable random mixing when importing a local list; enabled for ACL to mix posters and Findings |
 | `daily_papers.daily_take` | Legacy global fallback; new configurations should prefer per-conference values |
@@ -132,7 +131,7 @@ Configure conference proportions directly here:
   { "name": "ICML", "year": 2026, "daily_take": 5 },
   { "name": "CVPR", "year": 2026, "daily_take": 5 },
   { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
-  { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }
+  { "name": "ECCV", "year": 2026, "daily_take": 5 }
 ]
 ```
 

@@ -18,7 +18,7 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ## 💥 News
 
-- **2026-09-08**: Added the ECCV 2026 list from ronpay (2,864 papers) to the bundled data and default conference sources. This snapshot has no abstracts or PDF links yet; ECCV filtering currently uses titles only.
+- **2026-09-08**: Added the ECCV 2026 list with 2,834 papers and official abstracts/PDF links to the bundled data and default conference sources. The current snapshot includes official abstracts and PDF links; ECCV filtering uses title + abstract.
 - **2026-08-17** — Research Paper Noter now classifies papers by their contributions and routes method, benchmark, and benchmark-plus-method work to dedicated note templates.
 - **2026-07-30** — Personalized Research Paper Claw is now publicly available. [Explore the repository](https://github.com/Jian-Lang/personalized-research-paper-claw).
 
@@ -288,7 +288,7 @@ Minimal example:
       { "name": "ICML", "year": 2026, "daily_take": 5 },
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
       { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
-      { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }
+      { "name": "ECCV", "year": 2026, "daily_take": 5 }
     ],
     "scan_limit": 1000,
     "topics": [

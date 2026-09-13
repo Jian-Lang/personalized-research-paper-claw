@@ -20,8 +20,7 @@
       {
         "name": "ECCV",
         "year": 2026,
-        "daily_take": 5,
-        "allow_missing_abstract": true
+        "daily_take": 5
       }
     ],
     "scan_limit": 1000,

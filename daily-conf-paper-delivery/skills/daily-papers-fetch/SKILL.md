@@ -41,7 +41,7 @@ description: |
 - 排除词写在 `daily_papers.exclude_keywords`，只要 title 或 abstract 完整命中一个就记为排除并计 -100 分。
 - 推荐阈值写在 `daily_papers.min_score`。默认是 2，表示 topic 单独命中不足以入选，必须再有关键词或其他 topic 支撑。
 - 匹配会统一大小写和标点，并按完整词/短语边界判断；配置中的大小写或连字符等价重复项只计算一次。
-- 会议、年份和每个会议每天最多推荐数量写在 `daily_papers.conferences`，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5, "allow_missing_abstract": true }]`。用户不需要配置 adapter 类型或 URL。
+- 会议、年份和每个会议每天最多推荐数量写在 `daily_papers.conferences`，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }]`。用户不需要配置 adapter 类型或 URL。
 - `daily_take` 优先写在每个会议项里；旧版全局 `daily_papers.daily_take` 只作为兼容 fallback。
 - `shuffle: true` 表示同步本地 JSONL snapshot 时做稳定随机混排；ACL 默认开启，用来混合 poster / finding，避免主会先跑完再跑 Findings。
 
@@ -97,7 +97,7 @@ python3 ../daily-papers/fetch_and_score.py --days N > /tmp/daily_papers_top30.js
 
 ### Phase 3: 批量富化（enrich_papers.py 脚本）
 
-用 `enrich_papers.py` 脚本整理已经入选的论文字段，并以 best-effort 方式补充 arXiv 链接与代表图。JSONL 已经提供 title / authors / abstract / url / pdf；脚本优先复用输入中的 arXiv id，没有时才按规范化标题查询 arXiv，并且只接受严格一致的标题匹配。
+用 `enrich_papers.py` 脚本一次性整理所有论文字段。JSONL 已经提供 title / authors / abstract / url / pdf；如果没有 arXiv id，富化脚本不会再去抓 arXiv，只补齐空的结构化字段。
 
 **先把 Phase 2 的 Top 30 结果保存到临时文件**，然后运行：
 
@@ -109,11 +109,7 @@ cat /tmp/daily_papers_top30.json | python3 ../daily-papers/enrich_papers.py /tmp
 
 脚本自动完成以下工作：
 - 对会议论文：保留 JSONL 提供的 title、authors、abstract、conference、venue、source_rank、has_paper、paper_url、pdf
-- 对已有 arXiv id 的论文：直接从 arXiv HTML 提取首张有效论文图片，必要时回退到 ar5iv
-- 对没有 arXiv id 的论文：先按标题查询 arXiv API，API 不可用时回退到 arXiv 网页搜索；两条通道都只接受严格一致的标题匹配，成功后记录 `arxiv_url` 并继续提取首图
-- 每个网络端点最多尝试 4 次，每次最多 5 秒并做退避；同一篇论文的标题查询、arXiv 与 ar5iv 请求共享 20 秒总预算
-- 同时最多富化 3 篇论文，并把成功的标题映射与首图写入 `state/arxiv-enrichment-cache.json`，后续运行优先复用缓存
-- 网络超时、arXiv 无匹配或页面无图时保留空 `figure_url`，继续输出论文，绝不能让图片富化阻断 Daily 推荐
+- 对带 arXiv id 的论文：继续按旧逻辑补充 arXiv HTML / PDF 信息
 
 **输出格式**：与输入相同的 JSON 数组，每篇论文增加以下字段：
 - `figure_url` (string): 首图 URL
@@ -130,7 +126,6 @@ cat /tmp/daily_papers_top30.json | python3 ../daily-papers/enrich_papers.py /tmp
 - `source_rank_display` (int): 论文在会议列表中的 1-based 顺序
 - `has_paper` (bool): 是否抓到 PDF / OpenReview / arXiv 等 paper 链接
 - `paper_url` (string): 非 PDF paper 链接（如果有）
-- `arxiv_url` (string): 标题严格匹配成功后补充的 arXiv 摘要页链接（如果有）
 
 ## 输出
 
