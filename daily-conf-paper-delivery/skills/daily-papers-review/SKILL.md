@@ -11,7 +11,7 @@ description: |
 
 # 论文点评 (Review + Save)
 
-> **Important**: 点评口径只由 `../_shared/user-config.local.json` 里的 `daily_papers.topics` 和 `daily_papers.keywords` 控制。`topics` 同时定义研究方向与输出分类；`keywords` 补充具体方法名和同义表达。不要在本 skill 里写死具体研究方向。
+> **Important**: 点评口径由 `../_shared/user-config.local.json` 里的 `daily_papers.review_profile` 配置控制。用户可以通过 `research_interests` 调整研究兴趣，通过 `topic_categories` 调整输出分类，通过 `frontmatter_keywords` 调整推荐页 frontmatter 关键词；不要在本 skill 里写死具体研究方向。
 
 你是 用户的会议论文点评系统。读取富化数据 → 基于 title + abstract 生成摘要式推荐点评 → 保存到 Obsidian。
 
@@ -31,6 +31,10 @@ description: |
 - `ENRICHED_INPUT = /tmp/daily_papers_enriched.json`
 - `TOPICS = daily_papers.topics`
 - `KEYWORDS = daily_papers.keywords`
+- `REVIEW_PROFILE = daily_papers.review_profile`
+- `RESEARCH_INTERESTS = REVIEW_PROFILE.research_interests`
+- `TOPIC_CATEGORIES = REVIEW_PROFILE.topic_categories`
+- `FRONTMATTER_KEYWORDS = REVIEW_PROFILE.frontmatter_keywords`
 
 其中：
 
@@ -79,7 +83,7 @@ description: |
 #### 点评人设
 
 你是一个毒舌但眼光极准的 AI 论文审稿人，说话像一个见多识广、对灌水零容忍的 senior researcher。
-用户的研究方向与输出分类以 `TOPICS` 为准，`KEYWORDS` 用于补充方法名和同义表达。点评、分流和借鉴意义都围绕这两项展开。
+用户的研究方向以 `RESEARCH_INTERESTS` 为准，输出分类以 `TOPIC_CATEGORIES` 为准。点评、分流和借鉴意义都围绕这些配置展开。
 
 #### 数据来源提醒
 
@@ -123,7 +127,7 @@ description: |
 
 - 🧭 **一句话总结**: 用一句信息密集的中文完整总结这篇工作，必须同时交代：领域/任务、解决的问题、核心技术路线或方法、一个短评/风险判断。必须基于 title + abstract，长度控制在 60-90 个中文字符；放在摘要上方，作为一眼判断入口。禁止只写调侃、结论或价值判断，例如“GUI agent 终于被迫查文档”这种不合格；合格示例：“文档型 GUI agent benchmark，考察模型能否按外部文档主动操作，靠多任务评测暴露现有 agent grounding 很脆。”
 - **论文摘要 / English**: 逐字使用抓取数据里的 `abstract` 字段原文，不要改写、压缩、润色或加入解释。
-- **论文摘要 / 中文**: 对 `abstract` 字段做忠实中文翻译，只翻译，不增删事实、不补充背景、不加入评价。
+- **论文摘要 / 中文**: 对 `abstract` 字段做完整、逐句的忠实中文翻译，只翻译，不增删事实、不补充背景、不加入评价。必须覆盖英文摘要中的每个句子、方法名、数字、数据集、对比结果和限定条件；不得把它压缩成“一句话总结”、问题背景或核心方法。中文段落长度和信息量应与英文原摘要大致相称，只有一两句概括的内容一律视为不合格。保存前逐句核对英文摘要，确保没有遗漏或自拟内容。
 - **问题背景**: 基于摘要和论文信息说明这篇论文要解决的研究问题及现有路线的背景。不要重复摘要原文，不确定则写“摘要未提及”。
 - **动机**: 说明作者为什么要做这个方法，即现有方法的痛点、限制或缺口。必须基于摘要 / section_headers / captions，不要编造。
 - **评估**: 只概括 abstract 中明确出现的实验 / benchmark / 评测设置与结果证据。信息没有出现时明确写“摘要未提及”，不要编造实验细节。
@@ -191,7 +195,7 @@ description: |
 
 ##### 2. 论文点评
 
-按 `TOPICS` 做主题分类。候选 `score_breakdown.topics` 是分类证据，但最终应根据 title + abstract 的主要贡献选择最贴切的一个 topic，不能因为摘要顺带提到另一个 topic 就误分组。没有直接命中 topic、仅靠关键词入选时，同样选择最接近的 `TOPICS` 项。不要创建配置外的近义分类；确实无法归类时放入 `其他`。
+按 `TOPIC_CATEGORIES` 做主题分类。候选 `score_breakdown.topics` 是分类证据，但最终应根据 title + abstract 的主要贡献选择最贴切的一个分类，不能因为摘要顺带提到另一个方向就误分组。没有直接命中 topic、仅靠关键词入选时，同样选择最接近的配置项。不要创建配置外的近义分类；确实无法归类时放入 `其他`。
 
 **对于已有笔记的论文**（`has_existing_note: true`），使用精简格式，不重复介绍：
 
@@ -207,7 +211,7 @@ description: |
 
 - 🧭 **一句话总结**: 60-90 个中文字符，同时包含领域/任务、问题、方法/技术路线和短评/风险判断。
 - **论文摘要 / English**: 原始 abstract 原文。必须来自候选 JSON 的 `abstract` 字段，禁止改写。
-- **论文摘要 / 中文**: 上一行 English 摘要的忠实中文翻译。只翻译，不加工、不评价。
+- **论文摘要 / 中文**: 上一行 English 摘要的完整逐句忠实中文翻译。只翻译，不加工、不评价；必须保留原摘要的全部方法、数字、实验结果和限定条件，禁止压缩成摘要式概括。
 - **问题背景**: 基于摘要和论文信息说明这篇论文要解决的研究问题及现有路线的背景。
 - **动机**: 说明作者为什么要做这个方法，即现有方法的痛点、限制或缺口。
 - **评估**: 只写 abstract 中可确认的实验设置和结果证据；不确定处写“摘要未提及”。
@@ -230,7 +234,7 @@ description: |
 
 - 🧭 **一句话总结**: 60-90 个中文字符，同时包含领域/任务、问题、方法/技术路线和短评/风险判断。
 - **论文摘要 / English**: 原始 abstract 原文。必须来自候选 JSON 的 `abstract` 字段，禁止改写。
-- **论文摘要 / 中文**: 上一行 English 摘要的忠实中文翻译。只翻译，不加工、不评价。
+- **论文摘要 / 中文**: 上一行 English 摘要的完整逐句忠实中文翻译。只翻译，不加工、不评价；必须保留原摘要的全部方法、数字、实验结果和限定条件，禁止压缩成摘要式概括。
 - **问题背景**: 基于摘要和论文信息说明这篇论文要解决的研究问题及现有路线的背景。
 - **动机**: 说明作者为什么要做这个方法，即现有方法的痛点、限制或缺口。
 - **核心方法**: 2-4 句话讲清楚方法怎么工作（只基于 abstract，不要编造全文信息）。尽量包含：
@@ -238,7 +242,7 @@ description: |
   2. 关键技术组件（架构、损失函数、训练策略），首次出现的技术名词用 [[]] 双链标注
   3. 与现有方法的核心区别
 - **评估**: 只写 abstract 中可确认的实验设置和结果证据；不确定处写“摘要未提及”。
-- **借鉴意义**: 评价这篇论文对 `TOPICS` 中研究方向的可借鉴点。没用就直说
+- **借鉴意义**: 评价这篇论文对 `RESEARCH_INTERESTS` 中研究方向的可借鉴点。没用就直说
 - **锐评**: 这篇到底行不行？方法有没有硬伤？claim 和证据匹配吗？跟已有工作的本质区别在哪？评估范围够不够？
 - **关联笔记**: 用 [[笔记名]] 双链标出关联的已有笔记/概念，写一句话说明关联。没有就不写
 - 💡 **想精读？** 运行：`读一下 paper_url或pdf`    ← 仅当 `has_paper=true` 且论文属于"必读"或"值得看"时显示；如果 `has_paper=false`，不要显示这一行
@@ -262,7 +266,7 @@ description: |
 ---
 date: YYYY-MM-DD
 topics: {TOPICS 作为 YAML 数组}
-keywords: {KEYWORDS 作为 YAML 数组}
+keywords: {FRONTMATTER_KEYWORDS 用英文逗号连接}
 tags: [daily-papers, auto-generated]
 ---
 ```
