@@ -23,10 +23,6 @@ LOCK_DIR="/tmp/daily-conf-paper-delivery.lock"
 
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
-if [[ ! " 1 3 5 " == *" $(date +%u) "* ]]; then
-  exit 0
-fi
-
 mkdir -p "$LOG_DIR"
 
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then

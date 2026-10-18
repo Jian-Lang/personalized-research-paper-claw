@@ -66,21 +66,7 @@ from pathlib import Path
 
 payload = plistlib.loads(Path(sys.argv[1]).read_bytes())
 interval = payload.get("StartCalendarInterval", {})
-intervals = interval if isinstance(interval, list) else [interval]
-times = {(item.get("Hour"), item.get("Minute")) for item in intervals}
-weekdays = {item.get("Weekday") for item in intervals}
-if len(times) == 1:
-    hour, minute = next(iter(times))
-    schedule = f"{int(hour):02d}:{int(minute):02d}"
-else:
-    schedule = "multiple times"
-if weekdays == {1, 3, 5}:
-    schedule += " Monday-Wednesday-Friday"
-elif weekdays == {1, 2, 3, 4, 5}:
-    schedule += " Monday-Friday"
-elif weekdays != {None}:
-    schedule += f" weekdays {sorted(weekdays)}"
-print(schedule)
+print(f"{int(interval.get('Hour', 0)):02d}:{int(interval.get('Minute', 0)):02d}")
 PY
 )"
     echo "Daily Conf Paper Delivery is enabled for $STATUS_TIME (system local time)."
@@ -148,10 +134,10 @@ payload = {
     "EnvironmentVariables": {
         "RESEARCH_PAPER_CLAW_MARKDOWN_ROOT": str(markdown_root_path()),
     },
-    "StartCalendarInterval": [
-        {"Weekday": weekday, "Hour": hour, "Minute": minute}
-        for weekday in (1, 3, 5)
-    ],
+    "StartCalendarInterval": {
+        "Hour": hour,
+        "Minute": minute,
+    },
     "StandardOutPath": str(logs_dir / "launchd.out.log"),
     "StandardErrorPath": str(logs_dir / "launchd.err.log"),
 }
@@ -168,6 +154,6 @@ launchctl bootout "$LAUNCH_DOMAIN/$LABEL" 2>/dev/null || true
 launchctl bootstrap "$LAUNCH_DOMAIN" "$TARGET_PLIST"
 launchctl enable "$LAUNCH_DOMAIN/$LABEL"
 
-echo "Daily Conf Paper Delivery scheduled for Monday-Wednesday-Friday at $SCHEDULE_TIME (system local time)."
+echo "Daily Conf Paper Delivery scheduled for $SCHEDULE_TIME (system local time)."
 echo "Config: $DAILY_CONFIG"
 echo "Plist: $TARGET_PLIST"
