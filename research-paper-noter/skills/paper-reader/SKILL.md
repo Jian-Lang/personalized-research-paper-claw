@@ -19,7 +19,7 @@ description: |
 
 ## Step 0: 读取共享配置
 
-先通过 `../_shared/user_config.py` 读取配置。所有笔记路径都从仓库根目录 `config/user-config.local.json` 中的全局 Markdown 根目录派生；索引与 git 开关来自 Noter 专属配置，未配置字段回退到代码默认值。
+先通过 `../_shared/user_config.py` 读取配置。所有笔记路径都从仓库根目录 `config/user-config.json` 中的全局 Markdown 根目录派生；索引与 git 开关来自 Noter 专属配置，未配置字段回退到代码默认值。
 
 显式生成并在后续统一使用这些变量：
 

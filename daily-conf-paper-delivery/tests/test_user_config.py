@@ -87,6 +87,66 @@ class ScopedAutomationTest(unittest.TestCase):
         self.assertTrue(noter["git_commit"])
         self.assertTrue(noter["git_push"])
 
+    def test_defaults_work_without_personal_overrides(self):
+        self._write(self.global_config, {"paths": {"markdown_root": "/tmp/default-notes"}})
+        self._write(self.delivery_config, {
+            "daily_papers": {"conferences": [{"name": "EMNLP", "year": 2026, "daily_take": 5}]},
+            "automation": {"daily_run_time": "09:15"},
+        })
+        self._write(self.noter_config, {"paths": {"zotero_db": "/tmp/zotero.sqlite"}})
+        self.project_config.load_user_config.cache_clear()
+
+        for scope in ("delivery", "noter"):
+            config = self.project_config.load_user_config(scope)
+            self.assertEqual(config["paths"]["markdown_root"], "/tmp/default-notes")
+            self.assertEqual(config["paths"]["zotero_db"], "/tmp/zotero.sqlite")
+        self.assertEqual(self.project_config.daily_papers_config()["conferences"][0]["daily_take"], 5)
+        self.assertEqual(self.project_config.daily_run_time(), "09:15")
+
+    def test_personal_overrides_merge_and_shared_paths_win(self):
+        self._write(self.global_config, {"paths": {"markdown_root": "/tmp/default-notes"}})
+        self._write(self.project_config.local_config_path(self.global_config), {
+            "paths": {"markdown_root": "/tmp/personal-notes"},
+        })
+        self._write(self.delivery_config, {
+            "daily_papers": {
+                "topics": ["default"], "min_score": 2,
+                "conferences": [{"name": "EMNLP", "year": 2026, "daily_take": 5}],
+            },
+            "automation": {"daily_run_time": "08:00", "git_commit": False},
+        })
+        delivery_local = self.project_config.local_config_path(self.delivery_config)
+        self._write(delivery_local, {
+            "daily_papers": {
+                "topics": ["personal"],
+                "conferences": [{"name": "EMNLP", "year": 2026, "daily_take": 2}],
+            },
+            "automation": {"daily_run_time": "07:30"},
+        })
+        self._write(self.noter_config, {
+            "paths": {"markdown_root": "/tmp/workflow-notes", "zotero_db": "/tmp/default.sqlite"},
+            "automation": {"git_commit": True},
+        })
+        self._write(self.project_config.local_config_path(self.noter_config), {
+            "paths": {"zotero_db": "/tmp/personal.sqlite"},
+        })
+        self.project_config.load_user_config.cache_clear()
+
+        delivery = self.project_config.load_user_config("delivery")
+        noter = self.project_config.load_user_config("noter")
+        self.assertEqual(delivery["daily_papers"]["topics"], ["personal"])
+        self.assertEqual(delivery["daily_papers"]["min_score"], 2)
+        self.assertEqual(delivery["daily_papers"]["conferences"], [
+            {"name": "EMNLP", "year": 2026, "daily_take": 2},
+        ])
+        self.assertEqual(delivery["automation"]["daily_run_time"], "07:30")
+        self.assertFalse(delivery["automation"]["git_commit"])
+        self.assertTrue(noter["automation"]["git_commit"])
+        for config in (delivery, noter):
+            self.assertEqual(config["paths"]["markdown_root"], "/tmp/personal-notes")
+            self.assertEqual(config["paths"]["zotero_db"], "/tmp/personal.sqlite")
+        self.assertEqual(self.project_config.editable_config_path(self.delivery_config), delivery_local)
+
 
 class MarkdownLayoutTest(unittest.TestCase):
     def setUp(self):

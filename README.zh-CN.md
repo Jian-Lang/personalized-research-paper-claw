@@ -18,8 +18,21 @@
 
 ---
 
+## 用户配置入口
+
+所有用户设置都集中在仓库根目录 [`config/`](config/README.md)，仓库直接提供可修改的默认 JSON，无需复制 example：
+
+| 文件 | 用途 |
+| --- | --- |
+| [`config/user-config.json`](config/user-config.json) | 两个功能共享的 Markdown 根目录与目录布局 |
+| [`config/delivery-config.json`](config/delivery-config.json) | Daily 的会议、每天篇数、研究兴趣、点评与定时设置 |
+| [`config/noter-config.json`](config/noter-config.json) | Noter 的 Zotero 路径、索引与 git 设置 |
+
+可直接修改默认文件；希望与仓库默认值分开保存时，在同目录创建对应的 `*.local.json`，仅填写需要覆盖的字段（这些个人文件不会提交到 git）。所有下文路径均相对于仓库根目录。
+
 ## 💥 News
 
+- **2026-10-29** — 新增 EMNLP 2026 论文列表，包含主会与 Findings 共 5,182 篇论文，均提供摘要和 PDF 链接，已纳入仓库数据与默认会议源。[数据快照说明](daily-conf-paper-delivery/data/paperlist/EMNLP/README.md)。
 - **2026-09-08**：新增来自 ronpay 的 ECCV 2026 论文列表（2,834 篇，已补回官方摘要和 PDF），已纳入仓库数据和默认会议源。当前数据源已包含官方摘要和 PDF，ECCV 按 title + abstract 筛选。
 - **2026-08-17** — Research Paper Noter 现可根据论文贡献类型，将方法、Benchmark 以及 Benchmark + Method 工作路由到对应的专用笔记模板。
 - **2026-07-30** — Personalized Research Paper Claw 正式发布。[访问项目仓库](https://github.com/Jian-Lang/personalized-research-paper-claw)。
@@ -72,7 +85,7 @@ Personalized Research Paper Claw 负责把这条研究链路连接起来：
 
 Daily Conf Paper Delivery 负责“把值得读的工作送到您面前”。它从上到下扫描仓库随附的人工智能顶会论文列表（例如 NeurIPS、ICML、ICLR、CVPR），无需在运行时联网抓取会议数据；系统按您的偏好对 title + abstract 计分，每个会议维护独立 cursor（上次扫描到列表第几篇的进度记录），每一天都从上一次记录的位置继续筛选并生成每日推荐页。
 
-当前仓库提供 **ICML 2026、ICLR 2026、CVPR 2026、ACL 2026 和 ECCV 2026**。本项目会持续为每一个新的重要会议提供经过整理的接收论文列表更新。
+当前仓库提供 **ICML 2026、ICLR 2026、CVPR 2026、ACL 2026、ECCV 2026 和 EMNLP 2026**。本项目会持续为每一个新的重要会议提供经过整理的接收论文列表更新。
 
 您也可以按照[下方的自定义指南](#custom-conference-journal-lists)，接入其他领域的会议或期刊列表。
 
@@ -216,13 +229,11 @@ ln -s "$PWD/research-paper-noter/skills/generate-mocs" "$SKILLS_DIR/generate-moc
 
 所有推荐页、详细笔记和领域 Gallery 都会以普通 Markdown 文件留在您的本地；显式导出的 HTML 也会保存在对应 domain 内。您只需要配置一个全局可写目录；第一次运行对应 Skill 时，Daily、Personalized 和 Domain 会自然形成各自的子目录，无需提前准备任何 Markdown 文件。
 
-先创建根级配置：
+根目录已提供共享默认配置，可直接修改：
 
-```bash
-cp config/user-config.example.json config/user-config.local.json
-```
+[`config/user-config.json`](config/user-config.json)
 
-编辑 `config/user-config.local.json`：
+编辑 `config/user-config.json`：
 
 ```json
 {
@@ -260,14 +271,11 @@ cp config/user-config.example.json config/user-config.local.json
 排除 medical 和 robotic。
 ```
 
-`daily-papers` Skill 会根据模板创建本地配置，保留默认会议与运行设置，并写入您的研究方向、关键词和排除项。它只完成配置，不会在这一步开始推荐。
+`daily-papers` Skill 会更新生效的 Daily 配置，保留默认会议与运行设置，并写入您的研究方向、关键词和排除项。它只完成配置，不会在这一步开始推荐。
 
-也可以手动从模板创建：
+也可以直接修改仓库提供的 Daily 默认配置：
 
-```bash
-cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
-  daily-conf-paper-delivery/skills/_shared/user-config.local.json
-```
+[`config/delivery-config.json`](config/delivery-config.json)
 
 无论使用哪种方式，第一次运行前至少确认以下配置；代码样式标出的配置项都可以直接修改：
 
@@ -290,7 +298,8 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
       { "name": "ICML", "year": 2026, "daily_take": 5 },
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
       { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
-      { "name": "ECCV", "year": 2026, "daily_take": 5 }
+      { "name": "ECCV", "year": 2026, "daily_take": 5 },
+      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }
     ],
     "scan_limit": 1000,
     "topics": [
@@ -311,7 +320,7 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
 }
 ```
 
-全局配置和 Daily 本地配置都已被 git 忽略。
+默认 JSON 随仓库提供，可直接修改；同目录可选的 `*.local.json` 个人覆盖配置已被 git 忽略。
 
 #### ▶️ 2. 启动推荐
 
@@ -409,14 +418,14 @@ cd daily-conf-paper-delivery
 
 ### 📝 Research Paper Noter 的使用
 
-Research Paper Noter 直接复用根目录的 `config/user-config.local.json`，不再维护第二套笔记根目录配置。默认目录如下：
+Research Paper Noter 直接复用根目录的 `config/user-config.json`，不再维护第二套笔记根目录配置。默认目录如下：
 
 | 目录 | 用途 |
 | --- | --- |
 | `{markdown_root}/PersonalizedPaper` | 主动阅读与累计汇总 |
 | `{markdown_root}/DomainPapers` | 按 domain/category 组织的 Research Gallery |
 
-Zotero 是可选输入源；需要时再复制 `research-paper-noter/skills/_shared/user-config.example.json`，配置数据库、附件路径以及 Noter 自己的索引与 git 行为。
+Zotero 是可选输入源；需要时修改 `config/noter-config.json`，配置数据库、附件路径以及 Noter 自己的索引与 git 行为。
 
 #### 📌 Personalized：维护主动阅读清单
 
@@ -582,7 +591,7 @@ Personalized-Research-Paper-Claw/
 ├── README.md
 ├── README.zh-CN.md
 ├── LICENSE
-├── config/                            # 全局 Markdown 根目录配置
+├── config/                            # 共享、Daily、Noter 用户配置
 │
 ├── daily-conf-paper-delivery/        # Daily Conf Paper Delivery
 │   ├── bin/                          # 手动入口与调度配置脚本
@@ -593,7 +602,7 @@ Personalized-Research-Paper-Claw/
 │   │   ├── daily-papers-fetch/       # 筛选、计分与去重
 │   │   ├── daily-papers-review/      # 摘要式点评
 │   │   ├── daily-papers-notes/       # 可选详细笔记步骤
-│   │   └── _shared/                  # 配置与公共工具
+│   │   └── _shared/                  # 配置加载器与公共代码
 │   ├── README.md
 │   ├── README.zh-CN.md
 │   └── ARCHITECTURE.md

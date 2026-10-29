@@ -11,13 +11,15 @@ description: |
 
 # 论文点评 (Review + Save)
 
-> **Important**: 点评口径由 `../_shared/user-config.local.json` 里的 `daily_papers.review_profile` 配置控制。用户可以通过 `research_interests` 调整研究兴趣，通过 `topic_categories` 调整输出分类，通过 `frontmatter_keywords` 调整推荐页 frontmatter 关键词；不要在本 skill 里写死具体研究方向。
+> **Important**: 点评口径由 `config/delivery-config.json` 里的 `daily_papers.review_profile` 配置控制。用户可以通过 `research_interests` 调整研究兴趣，通过 `topic_categories` 调整输出分类，通过 `frontmatter_keywords` 调整推荐页 frontmatter 关键词；不要在本 skill 里写死具体研究方向。
 
 你是 用户的会议论文点评系统。读取富化数据 → 基于 title + abstract 生成摘要式推荐点评 → 保存到 Obsidian。
 
 ## Step 0: 读取共享配置
 
-先通过 `../_shared/user_config.py` 读取配置。全局 Markdown 根目录来自仓库根目录的 `config/user-config.local.json`，Daily 专属配置来自 `../_shared/user-config.local.json`；未配置字段回退到代码默认值。
+下文 `config/` 路径均相对于 Skill 真实路径所在的仓库根目录；通过配置加载器读取默认 JSON 及同目录可选的 `*.local.json` 个人覆盖。
+
+先通过 `../_shared/user_config.py` 读取配置。全局 Markdown 根目录来自仓库根目录的 `config/user-config.json`，Daily 专属配置来自 `config/delivery-config.json`；未配置字段回退到代码默认值。
 
 显式生成并在后续统一使用这些变量：
 
@@ -32,9 +34,9 @@ description: |
 - `TOPICS = daily_papers.topics`
 - `KEYWORDS = daily_papers.keywords`
 - `REVIEW_PROFILE = daily_papers.review_profile`
-- `RESEARCH_INTERESTS = REVIEW_PROFILE.research_interests`
-- `TOPIC_CATEGORIES = REVIEW_PROFILE.topic_categories`
-- `FRONTMATTER_KEYWORDS = REVIEW_PROFILE.frontmatter_keywords`
+- `RESEARCH_INTERESTS = REVIEW_PROFILE.research_interests or TOPICS`
+- `TOPIC_CATEGORIES = REVIEW_PROFILE.topic_categories or TOPICS`
+- `FRONTMATTER_KEYWORDS = REVIEW_PROFILE.frontmatter_keywords or KEYWORDS`
 
 其中：
 
@@ -42,6 +44,7 @@ description: |
 - `DAILY_MOCS_PATH = {DAILY_PROJECT_PATH}/{project_mocs_folder}`
 - `DAILY_NOTES_PATH = {DAILY_PROJECT_PATH}/{project_papers_folder}`
 - `GIT_PUSH_ENABLED` 只有在 `GIT_COMMIT_ENABLED=true` 时才可能为真
+- 默认 `review_profile` 的三个数组为空，分别沿用 topics、topics、keywords；只有非空的自定义数组才覆盖它们。不要把默认空数组当作没有研究方向或没有分类。
 
 后续步骤统一使用上面的变量。
 

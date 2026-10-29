@@ -120,17 +120,16 @@ research-paper-noter/
 
 ## ⚙️ 配置
 
-所有笔记共用仓库根目录 `config/user-config.local.json` 中的 `paths.markdown_root`。如果尚未配置：
+所有笔记共用仓库根目录 `config/user-config.json` 中的 `paths.markdown_root`。如果尚未配置：
 
 ```bash
-cp config/user-config.example.json config/user-config.local.json
+# Edit the bundled default: config/user-config.json
 ```
 
-Personalized 和 Domain 目录会在各自第一次运行时自动创建，不需要提前准备。Zotero 是可选输入源；需要时再复制本项目的可选配置：
+Personalized 和 Domain 目录会在各自第一次运行时自动创建，不需要提前准备。Zotero 是可选输入源；需要时修改根目录的 Noter 默认配置：
 
 ```bash
-cp research-paper-noter/skills/_shared/user-config.example.json \
-  research-paper-noter/skills/_shared/user-config.local.json
+# Edit the bundled default: config/noter-config.json
 ```
 
 这个 Noter 专属配置只保存 Zotero 路径、索引刷新和 git 行为，不会重复配置 Markdown 根目录。

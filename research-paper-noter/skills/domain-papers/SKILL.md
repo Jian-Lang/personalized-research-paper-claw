@@ -21,7 +21,7 @@ description: |
 
 ## Step 0: 读取配置
 
-先通过 `../_shared/user_config.py` 读取配置。根级 `config/user-config.local.json` 只提供 Markdown 根目录，索引与 git 开关来自 Noter 专属配置；未配置字段回退到代码默认值。
+先通过 `../_shared/user_config.py` 读取配置。根级 `config/user-config.json` 只提供 Markdown 根目录，索引与 git 开关来自 Noter 专属配置；未配置字段回退到代码默认值。
 
 显式生成并统一使用：
 

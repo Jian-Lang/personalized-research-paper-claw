@@ -7,25 +7,18 @@ import argparse
 import hashlib
 import json
 import random
+import sys
 from pathlib import Path
 
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
-CONFIG_PATH = PROJECT_DIR / "skills" / "_shared" / "user-config.local.json"
 DATA_DIR = PROJECT_DIR / "data" / "paperlist"
+sys.path.insert(0, str(PROJECT_DIR.parent / "config"))
+from project_config import daily_papers_config  # noqa: E402
 
 
 def load_conferences() -> list[dict]:
-    if CONFIG_PATH.exists():
-        config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-        conferences = config.get("daily_papers", {}).get("conferences", [])
-    else:
-        conferences = [
-            {"name": "ICML", "year": 2026, "daily_take": 5},
-            {"name": "CVPR", "year": 2026, "daily_take": 5},
-            {"name": "ACL", "year": 2026, "daily_take": 5},
-            {"name": "ECCV", "year": 2026, "daily_take": 5},
-        ]
+    conferences = daily_papers_config().get("conferences", [])
     if isinstance(conferences, dict):
         conferences = [conferences]
     return [c for c in conferences if isinstance(c, dict)]

@@ -15,7 +15,9 @@ description: |
 
 ## Step 0: 读取共享配置
 
-先通过 `../_shared/user_config.py` 读取配置。全局 Markdown 根目录来自仓库根目录的 `config/user-config.local.json`，Daily 专属配置来自 `../_shared/user-config.local.json`；未配置字段回退到代码默认值。
+下文 `config/` 路径均相对于 Skill 真实路径所在的仓库根目录；通过配置加载器读取默认 JSON 及同目录可选的 `*.local.json` 个人覆盖。
+
+先通过 `../_shared/user_config.py` 读取配置。全局 Markdown 根目录来自仓库根目录的 `config/user-config.json`，Daily 专属配置来自 `config/delivery-config.json`；未配置字段回退到代码默认值。
 
 显式生成并在后续统一使用这些变量：
 

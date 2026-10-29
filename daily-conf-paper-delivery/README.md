@@ -91,26 +91,25 @@ ln -s "$PWD/daily-conf-paper-delivery/skills/paper-reader" "$SKILLS_DIR/paper-re
 ln -s "$PWD/daily-conf-paper-delivery/skills/generate-mocs" "$SKILLS_DIR/generate-mocs"
 
 # Configure the global Markdown root once at the repository root.
-cp config/user-config.example.json config/user-config.local.json
+# Edit the bundled default: config/user-config.json
 
 # The Daily subproject stores only conferences and research preferences.
-cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
-  daily-conf-paper-delivery/skills/_shared/user-config.local.json
+# Edit the bundled default: config/delivery-config.json
 ```
 
-Set `paths.markdown_root` in the root `config/user-config.local.json`. The first run creates `DailyPapers/mocs` and `DailyPapers/papers`; no manual `mkdir` is required.
+Set `paths.markdown_root` in the root `config/user-config.json`. The first run creates `DailyPapers/mocs` and `DailyPapers/papers`; no manual `mkdir` is required.
 
 ## ⚙️ Configuration
 
-The global Markdown root lives in the repository-level `config/user-config.local.json`. This directory’s `skills/_shared/user-config.local.json` contains only Daily-specific settings. Edit it directly or tell Codex how you want it changed.
+The global Markdown root lives in the repository-level `config/user-config.json`. The repository-level `config/delivery-config.json` contains only Daily-specific settings. Edit it directly or tell Codex how you want it changed.
 
-Copy `skills/_shared/user-config.example.json` for first-time setup. Runtime code reads only `user-config.local.json`.
+`config/delivery-config.json` is a ready-to-use default. Edit it directly; optional `config/delivery-config.local.json` overrides it.
 
 Primary settings:
 
 | Setting | Description |
 | --- | --- |
-| `daily_papers.conferences` | Conference, year, and per-conference quota entries, for example `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }]`; local files are matched using `<CONF>/<conf>_<year>.jsonl` |
+| `daily_papers.conferences` | Conference, year, and per-conference quota entries, for example `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }, { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }]`; local files are matched using `<CONF>/<conf>_<year>.jsonl` |
 | `daily_papers.conferences[].daily_take` | Maximum papers recommended from that conference each day; this is the current conference-mix control |
 | `daily_papers.conferences[].shuffle` | Whether to apply stable random mixing when importing a local list; enabled for ACL to mix posters and Findings |
 | `daily_papers.daily_take` | Legacy global fallback; new configurations should prefer per-conference values |
@@ -131,7 +130,8 @@ Configure conference proportions directly here:
   { "name": "ICML", "year": 2026, "daily_take": 5 },
   { "name": "CVPR", "year": 2026, "daily_take": 5 },
   { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
-  { "name": "ECCV", "year": 2026, "daily_take": 5 }
+  { "name": "ECCV", "year": 2026, "daily_take": 5 },
+      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }
 ]
 ```
 
@@ -152,7 +152,7 @@ These settings describe Daily’s post-run behavior. Index pages refresh by defa
 
 **Daily recommendation** reads local AI-conference JSONL and creates a single daily page in two stages:
 
-1. **Fetch and filter**: a Python script reads `conferences` and matches bundled acceptance lists using `data/paperlist/<CONF>/<conf>_<year>.jsonl`. The repository currently includes ICML, ICLR, CVPR, ACL, and ECCV. Every conference maintains its own cursor. `shuffle: true` performs stable random mixing only during import. A full topic match in title or abstract scores +1; a full keyword match in title scores +3, otherwise a full abstract match scores +1; an exclusion match scores -100. Case and punctuation are normalized, matching respects complete word or phrase boundaries, and duplicates count once. Papers must reach `min_score`. For each conference, the pipeline recommends at most its own `daily_take` and scans at most `scan_limit` entries after the cursor.
+1. **Fetch and filter**: a Python script reads `conferences` and matches bundled acceptance lists using `data/paperlist/<CONF>/<conf>_<year>.jsonl`. The repository currently includes ICML, ICLR, CVPR, ACL, ECCV, and EMNLP. Every conference maintains its own cursor. `shuffle: true` performs stable random mixing only during import. A full topic match in title or abstract scores +1; a full keyword match in title scores +3, otherwise a full abstract match scores +1; an exclusion match scores -100. Case and punctuation are normalized, matching respects complete word or phrase boundaries, and duplicates count once. Papers must reach `min_score`. For each conference, the pipeline recommends at most its own `daily_take` and scans at most `scan_limit` entries after the cursor.
 2. **Summarize and review**: Codex reads candidates and their `score_breakdown`, applies the same `topics` for reading triage and grouping, and creates a summary note for every paper. Notes contain metadata, bilingual abstracts, background, motivation, method, evaluation, takeaways, and a concise critique. All recommendations are collected in one page under `DailyPapers/`, while `.history.json` is updated. Page frontmatter topics and keywords come directly from the configuration.
 
 Curated acceptance-list updates will be provided for important new conferences. Updating the repository makes new bundled data available.

@@ -154,7 +154,7 @@ class UpdateDomainContentTest(unittest.TestCase):
             isolated_noter / "skills" / "_shared" / "user_config.py",
         )
         (
-            isolated_noter / "skills" / "_shared" / "user-config.local.json"
+            isolated_repo / "config" / "noter-config.json"
         ).write_text(
             json.dumps(
                 {

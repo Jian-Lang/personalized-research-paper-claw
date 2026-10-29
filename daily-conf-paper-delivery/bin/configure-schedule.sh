@@ -7,8 +7,14 @@ LABEL="com.personalized-research-paper-claw.daily-conf-paper-delivery"
 TARGET_DIR="$HOME/Library/LaunchAgents"
 TARGET_PLIST="$TARGET_DIR/$LABEL.plist"
 LAUNCH_DOMAIN="gui/$(id -u)"
-GLOBAL_CONFIG="$PROJECT_DIR/../config/user-config.local.json"
-DAILY_CONFIG="$PROJECT_DIR/skills/_shared/user-config.local.json"
+GLOBAL_CONFIG="$PROJECT_DIR/../config/user-config.json"
+DAILY_CONFIG="$(python3 - "$PROJECT_DIR/../config" <<'PYCONFIG'
+import sys
+sys.path.insert(0, sys.argv[1])
+from project_config import DELIVERY_CONFIG_PATH, editable_config_path
+print(editable_config_path(DELIVERY_CONFIG_PATH))
+PYCONFIG
+)"
 ACTION="install"
 REQUESTED_TIME=""
 
@@ -66,7 +72,21 @@ from pathlib import Path
 
 payload = plistlib.loads(Path(sys.argv[1]).read_bytes())
 interval = payload.get("StartCalendarInterval", {})
-print(f"{int(interval.get('Hour', 0)):02d}:{int(interval.get('Minute', 0)):02d}")
+intervals = interval if isinstance(interval, list) else [interval]
+times = {(item.get("Hour"), item.get("Minute")) for item in intervals}
+weekdays = {item.get("Weekday") for item in intervals}
+if len(times) == 1:
+    hour, minute = next(iter(times))
+    schedule = f"{int(hour):02d}:{int(minute):02d}"
+else:
+    schedule = "multiple times"
+if weekdays == {1, 3, 5}:
+    schedule += " Monday-Wednesday-Friday"
+elif weekdays == {1, 2, 3, 4, 5}:
+    schedule += " Monday-Friday"
+elif weekdays != {None}:
+    schedule += f" weekdays {sorted(weekdays)}"
+print(schedule)
 PY
 )"
     echo "Daily Conf Paper Delivery is enabled for $STATUS_TIME (system local time)."
@@ -87,13 +107,13 @@ fi
 
 if [[ ! -f "$GLOBAL_CONFIG" ]]; then
   echo "Global config not found: $GLOBAL_CONFIG" >&2
-  echo "Create it from config/user-config.example.json before enabling scheduling." >&2
+  echo "Restore config/user-config.json and configure your Markdown root first." >&2
   exit 1
 fi
 
 if [[ ! -f "$DAILY_CONFIG" ]]; then
   echo "Daily config not found: $DAILY_CONFIG" >&2
-  echo "Create it from skills/_shared/user-config.example.json and configure your interests first." >&2
+  echo "Restore config/delivery-config.json and configure your interests first." >&2
   exit 1
 fi
 

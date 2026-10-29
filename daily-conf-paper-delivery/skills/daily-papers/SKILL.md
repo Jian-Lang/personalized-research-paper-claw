@@ -31,15 +31,15 @@ description: |
 
 ## 初始化 Daily 配置
 
-从当前 Skill 的真实路径定位 `../_shared/user-config.example.json` 和 `../_shared/user-config.local.json`。
+从当前 Skill 的真实路径解析仓库根目录（`Path(skill_path).resolve().parents[3]`；`skill_path` 为 `SKILL.md`），定位 `config/delivery-config.json`。它已包含可直接使用的默认配置；如果存在 `config/delivery-config.local.json`，优先更新该个人覆盖文件。
 
-- 如果没有 local 文件，以 example 为结构创建；如果已经存在，只更新本次明确提供的字段，不覆盖整个文件。
+- 只更新本次明确提供的字段，不覆盖整个文件；个人覆盖文件中的其他字段会继续继承默认配置。
 - 从请求中提取研究方向写入 `daily_papers.topics`，提取重点词写入 `daily_papers.keywords`，提取排除方向写入 `daily_papers.exclude_keywords`。
 - 只提供研究方向时，为每个 topic 补充简洁、明确的常用关键词或同义表达，并在完成时列出实际写入内容。
-- 不要沿用 example 中示范性质的 topics、keywords 或 exclude keywords；保留默认 conferences、`min_score` 和 automation 设置。
-- 如果请求没有提供任何研究方向，先询问关注方向，不要生成带示例偏好的 local 文件。
+- 初始化个人研究方向时，替换默认的示范 topics、keywords 和 exclude keywords；保留 conferences、`min_score` 和 automation 设置。
+- 如果请求没有提供任何研究方向，先询问关注方向，不要替用户推测兴趣。
 - 使用 JSON 解析与序列化更新配置，保证结果是有效 JSON。
-- 创建或更新配置后，报告文件位置和核心偏好；除非请求同时明确要求推荐，否则不要启动论文流程。
+- 更新配置后，报告实际文件位置和核心偏好；除非请求同时明确要求推荐，否则不要启动论文流程。
 
 ## 定时管理
 
@@ -50,7 +50,7 @@ description: |
 - 关闭定时：执行 `configure-schedule.sh --remove`。
 - 开启、更新或关闭后，再执行一次 `configure-schedule.sh --status` 核验最终状态。
 - 只有请求本身明确表达开启、更新或关闭时才修改系统状态；环境要求授权时，正常请求授权。
-- 如果根级或 Daily 本地配置尚未建立，停止并引导完成配置，不要从 example 偷偷创建一套偏好。
+- 仓库已提供共享与 Daily 默认配置；直接读取它们及可选的个人覆盖配置。默认文件缺失时，停止并引导恢复 `config/user-config.json` 或 `config/delivery-config.json`。
 - 当前只支持 macOS launchd；其他系统明确说明尚未支持，不要模拟成功。
 - 定时管理不会立即补跑一次推荐。完成后告诉用户当前是启用还是关闭、每日时间，以及下一次会在何时触发。
 
@@ -58,7 +58,7 @@ description: |
 
 ## 执行原则
 
-执行流水线前，先通过 `../_shared/user_config.py` 读取仓库根目录 `config/user-config.local.json` 中的全局 Markdown 根目录，并运行 `ensure_daily_layout()`。第一次使用时只创建 `DailyPapers/mocs` 与 `DailyPapers/papers`。
+执行流水线前，先通过 `../_shared/user_config.py` 读取仓库根目录 `config/user-config.json` 中的全局 Markdown 根目录，并运行 `ensure_daily_layout()`。第一次使用时只创建 `DailyPapers/mocs` 与 `DailyPapers/papers`。
 
 1. 先识别时间范围：
    - `今日论文推荐`、`每日推荐`、`今日论文` -> 当天

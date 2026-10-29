@@ -21,6 +21,12 @@
         "name": "ECCV",
         "year": 2026,
         "daily_take": 5
+      },
+      {
+        "name": "EMNLP",
+        "year": 2026,
+        "daily_take": 5,
+        "shuffle": true
       }
     ],
     "scan_limit": 1000,

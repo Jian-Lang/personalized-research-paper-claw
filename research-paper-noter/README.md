@@ -124,17 +124,16 @@ research-paper-noter/
 
 ## ⚙️ Configuration
 
-All notes share `paths.markdown_root` from the repository-level `config/user-config.local.json`. If it is not configured yet:
+All notes share `paths.markdown_root` from the repository-level `config/user-config.json`. If it is not configured yet:
 
 ```bash
-cp config/user-config.example.json config/user-config.local.json
+# Edit the bundled default: config/user-config.json
 ```
 
-Personalized and Domain directories are created on their respective first runs. Zotero is an optional input source. When needed, copy this subproject’s optional configuration:
+Personalized and Domain directories are created on their respective first runs. Zotero is an optional input source. When needed, edit the bundled Noter configuration:
 
 ```bash
-cp research-paper-noter/skills/_shared/user-config.example.json \
-  research-paper-noter/skills/_shared/user-config.local.json
+# Edit the bundled default: config/noter-config.json
 ```
 
 The Noter-specific configuration stores only Zotero paths, index-refresh behavior, and git behavior. It does not duplicate the Markdown root setting.

@@ -30,7 +30,7 @@
 数据源：
 - 仓库内 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 会议接收列表 snapshot
 - snapshot 随仓库更新，也可按相同目录结构手动添加
-- 当前仓库提供 ICML、ICLR、CVPR、ACL、ECCV；兼容 JSONL 可按目录约定加入其他会议
+- 当前仓库提供 ICML、ICLR、CVPR、ACL、ECCV、EMNLP；兼容 JSONL 可按目录约定加入其他会议
 - 每个会议由独立 cursor 控制扫描进度
 
 打分规则：
@@ -219,7 +219,7 @@ python3 paper_daemon.py --list       # 列出所有分类
 
 ### 根级全局配置
 
-所有工作流共用仓库根目录的 `config/user-config.local.json`。它只负责全局 Markdown 根目录：
+所有工作流共用仓库根目录的 `config/user-config.json`。它只负责全局 Markdown 根目录：
 
 ```json
 {
@@ -231,7 +231,7 @@ python3 paper_daemon.py --list       # 列出所有分类
 
 ### Daily 专属配置
 
-`skills/_shared/user-config.local.json` 保存会议、topics、关键词、打分阈值，以及 Daily 自己的运行后行为和定时时间：
+`config/delivery-config.json` 保存会议、topics、关键词、打分阈值，以及 Daily 自己的运行后行为和定时时间：
 
 ```json
 {

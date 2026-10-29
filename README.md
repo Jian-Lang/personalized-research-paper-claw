@@ -16,8 +16,21 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ---
 
+## User Configuration
+
+All user settings live in the repository-level [`config/`](config/README.md) directory. Editable default JSON files are included; no example-file copying is required.
+
+| File | Purpose |
+| --- | --- |
+| [`config/user-config.json`](config/user-config.json) | Shared Markdown root and folder layout |
+| [`config/delivery-config.json`](config/delivery-config.json) | Daily conferences, quotas, interests, reviews, and scheduling |
+| [`config/noter-config.json`](config/noter-config.json) | Noter Zotero paths, indexes, and git behavior |
+
+Edit these defaults directly, or create a matching `*.local.json` in the same directory with personal overrides; personal files are ignored by git. All paths below are relative to the repository root.
+
 ## 💥 News
 
+- **2026-10-29** — Added EMNLP 2026 with 5,182 papers from the main conference and Findings, including abstracts and PDF links, to the bundled data and default conference sources. [Snapshot details](daily-conf-paper-delivery/data/paperlist/EMNLP/README.md).
 - **2026-09-08**: Added the ECCV 2026 list with 2,834 papers and official abstracts/PDF links to the bundled data and default conference sources. The current snapshot includes official abstracts and PDF links; ECCV filtering uses title + abstract.
 - **2026-08-17** — Research Paper Noter now classifies papers by their contributions and routes method, benchmark, and benchmark-plus-method work to dedicated note templates.
 - **2026-07-30** — Personalized Research Paper Claw is now publicly available. [Explore the repository](https://github.com/Jian-Lang/personalized-research-paper-claw).
@@ -70,7 +83,7 @@ Here, “Personalized” does not mean asking AI to guess your interests or make
 
 Daily Conf Paper Delivery puts work worth reading in front of you. It scans the bundled, locally maintained AI conference lists, such as NeurIPS, ICML, ICLR, and CVPR, without fetching conference data from the network at runtime. It scores title + abstract using your preferences. Every conference maintains its own cursor, so each run continues from the last scanned position and creates a new daily recommendation page.
 
-The repository currently includes **ICML 2026, ICLR 2026, CVPR 2026, ACL 2026, and ECCV 2026**. Curated acceptance-list updates will continue to be added for important new conferences.
+The repository currently includes **ICML 2026, ICLR 2026, CVPR 2026, ACL 2026, ECCV 2026, and EMNLP 2026**. Curated acceptance-list updates will continue to be added for important new conferences.
 
 You can also add conferences or journals from other fields by following the [custom source guide below](#custom-conference-journal-lists).
 
@@ -214,13 +227,11 @@ ln -s "$PWD/research-paper-noter/skills/generate-mocs" "$SKILLS_DIR/generate-moc
 
 All recommendation pages, detailed notes, and domain Galleries remain local as ordinary Markdown files. Explicit HTML exports are stored inside their corresponding domains. You configure one globally writable directory; Daily, Personalized, and Domain subdirectories are created naturally the first time each Skill runs. No Markdown files need to exist beforehand.
 
-Create the root configuration:
+The shared default configuration is included; edit it directly:
 
-```bash
-cp config/user-config.example.json config/user-config.local.json
-```
+[`config/user-config.json`](config/user-config.json)
 
-Edit `config/user-config.local.json`:
+Edit `config/user-config.json`:
 
 ```json
 {
@@ -258,14 +269,11 @@ Prioritize personalized recommendation assistants and conversational recommendat
 Exclude medical and robotic work.
 ```
 
-The `daily-papers` Skill creates the local configuration from the template, preserves default conferences and runtime settings, and writes your areas, keywords, and exclusions. It configures only; it does not start a recommendation run.
+The `daily-papers` Skill updates the effective configuration, preserves default conferences and runtime settings, and writes your areas, keywords, and exclusions. It configures only; it does not start a recommendation run.
 
-You can also create the file manually:
+You can also edit the included Daily defaults directly:
 
-```bash
-cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
-  daily-conf-paper-delivery/skills/_shared/user-config.local.json
-```
+[`config/delivery-config.json`](config/delivery-config.json)
 
 Before the first run, verify at least these fields:
 
@@ -288,7 +296,8 @@ Minimal example:
       { "name": "ICML", "year": 2026, "daily_take": 5 },
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
       { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
-      { "name": "ECCV", "year": 2026, "daily_take": 5 }
+      { "name": "ECCV", "year": 2026, "daily_take": 5 },
+      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }
     ],
     "scan_limit": 1000,
     "topics": [
@@ -309,7 +318,7 @@ Minimal example:
 }
 ```
 
-Both the global configuration and the local Daily configuration are ignored by git.
+Default JSON files are included in git; optional `config/*.local.json` personal overrides are ignored.
 
 #### ▶️ 2. Run the Recommendation
 
@@ -405,14 +414,14 @@ cd daily-conf-paper-delivery
 
 ### 📝 Using Research Paper Noter
 
-Research Paper Noter reuses the root `config/user-config.local.json`; it does not maintain another notes-root setting.
+Research Paper Noter reuses the root `config/user-config.json`; it does not maintain another notes-root setting.
 
 | Directory | Purpose |
 | --- | --- |
 | `{markdown_root}/PersonalizedPaper` | Deliberately selected reading and cumulative summaries |
 | `{markdown_root}/DomainPapers` | Research Galleries organized by domain/category |
 
-Zotero is optional. When needed, copy `research-paper-noter/skills/_shared/user-config.example.json` and configure the database, attachment paths, and Noter-specific index and git behavior.
+Zotero is optional. When needed, edit `config/noter-config.json` and configure the database, attachment paths, and Noter-specific index and git behavior.
 
 #### 📌 Personalized: Maintain Your Deliberate Reading List
 
@@ -578,7 +587,7 @@ Personalized-Research-Paper-Claw/
 ├── README.md
 ├── README.zh-CN.md
 ├── LICENSE
-├── config/                            # Global Markdown root configuration
+├── config/                            # Shared, Daily, and Noter user configuration
 │
 ├── daily-conf-paper-delivery/        # Daily Conf Paper Delivery
 │   ├── bin/                          # Manual entry points and scheduler scripts

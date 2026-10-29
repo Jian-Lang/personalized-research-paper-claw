@@ -90,26 +90,25 @@ ln -s "$PWD/daily-conf-paper-delivery/skills/paper-reader" "$SKILLS_DIR/paper-re
 ln -s "$PWD/daily-conf-paper-delivery/skills/generate-mocs" "$SKILLS_DIR/generate-mocs"
 
 # 全局 Markdown 根目录只在仓库根配置一次
-cp config/user-config.example.json config/user-config.local.json
+# Edit the bundled default: config/user-config.json
 
 # Daily 子项目只保存会议和兴趣偏好
-cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
-  daily-conf-paper-delivery/skills/_shared/user-config.local.json
+# Edit the bundled default: config/delivery-config.json
 ```
 
-编辑根级 `config/user-config.local.json` 中的 `paths.markdown_root`。第一次运行会自动创建 `DailyPapers/mocs` 和 `DailyPapers/papers`，不需要手动 `mkdir`。
+编辑根级 `config/user-config.json` 中的 `paths.markdown_root`。第一次运行会自动创建 `DailyPapers/mocs` 和 `DailyPapers/papers`，不需要手动 `mkdir`。
 
 ## ⚙️ 配置
 
-全局 Markdown 根目录位于仓库根级 `config/user-config.local.json`。本目录下的 `skills/_shared/user-config.local.json` 只保存 Daily 专属配置，您可以自行修改，也可以直接告诉 Codex 您想如何调整。
+全局 Markdown 根目录位于仓库根级 `config/user-config.json`。根目录的 `config/delivery-config.json` 只保存 Daily 专属配置，您可以自行修改，也可以直接告诉 Codex 您想如何调整。
 
-首次配置可以从 `skills/_shared/user-config.example.json` 复制；运行时只读取 `user-config.local.json`。
+`config/delivery-config.json` 是开箱可用的默认配置，可直接修改；可选的 `config/delivery-config.local.json` 会覆盖同名字段。
 
 里面主要改这几项：
 
 | 配置项 | 说明 |
 | --- | --- |
-| `daily_papers.conferences` | 每日推荐的会议、年份和单会议推荐数量列表，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }]`；本地文件按 `<CONF>/<conf>_<year>.jsonl` 自动匹配 |
+| `daily_papers.conferences` | 每日推荐的会议、年份和单会议推荐数量列表，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }, { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }]`；本地文件按 `<CONF>/<conf>_<year>.jsonl` 自动匹配 |
 | `daily_papers.conferences[].daily_take` | 该会议每天最多推荐几篇论文；这是当前推荐的配比配置入口 |
 | `daily_papers.conferences[].shuffle` | 是否在同步本地会议接收列表时做稳定随机混排；ACL 默认开启，用来混合 poster / finding |
 | `daily_papers.daily_take` | 旧版全局 fallback；新配置建议不用它，优先写到每个会议项里 |
@@ -130,7 +129,8 @@ cp daily-conf-paper-delivery/skills/_shared/user-config.example.json \
   { "name": "ICML", "year": 2026, "daily_take": 5 },
   { "name": "CVPR", "year": 2026, "daily_take": 5 },
   { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
-  { "name": "ECCV", "year": 2026, "daily_take": 5 }
+  { "name": "ECCV", "year": 2026, "daily_take": 5 },
+      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }
 ]
 ```
 
@@ -151,7 +151,7 @@ Zotero 配置主要用于后续详细笔记生成；只跑每日推荐时不需�
 
 **每日推荐**现在读取本地人工智能顶会 JSONL 列表，两步生成一页式每日论文推荐：
 
-1. **抓取**：Python 脚本读取 `conferences`，按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的约定匹配仓库内会议接收列表。当前仓库提供 ICML、ICLR、CVPR、ACL、ECCV。每个会议都有独立 cursor（上次扫描到列表第几篇的进度记录）；`shuffle: true` 只在导入列表时做稳定随机混排。topic 在 title 或 abstract 中完整命中加 1 分；keyword 在 title 中完整命中加 3 分，否则在 abstract 中完整命中加 1 分；exclude keyword 命中计 -100 分。大小写和标点会规范化，匹配按完整词/短语边界执行，重复项只计一次。分数达到 `min_score` 才推荐。每个会议每天最多推荐自己的 `daily_take` 篇，并从当前 cursor 向后最多扫描 `scan_limit` 篇（默认 1000）；达到任一上限或走到列表末尾即停止。
+1. **抓取**：Python 脚本读取 `conferences`，按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的约定匹配仓库内会议接收列表。当前仓库提供 ICML、ICLR、CVPR、ACL、ECCV、EMNLP。每个会议都有独立 cursor（上次扫描到列表第几篇的进度记录）；`shuffle: true` 只在导入列表时做稳定随机混排。topic 在 title 或 abstract 中完整命中加 1 分；keyword 在 title 中完整命中加 3 分，否则在 abstract 中完整命中加 1 分；exclude keyword 命中计 -100 分。大小写和标点会规范化，匹配按完整词/短语边界执行，重复项只计一次。分数达到 `min_score` 才推荐。每个会议每天最多推荐自己的 `daily_take` 篇，并从当前 cursor 向后最多扫描 `scan_limit` 篇（默认 1000）；达到任一上限或走到列表末尾即停止。
 2. **汇总与点评**：Codex 读候选列表及 `score_breakdown`，以同一份 `topics` 做阅读分流和主题分类，为每篇生成包含元信息、双语摘要、背景、动机、方法、评估、借鉴意义与锐评的摘要式笔记，再把当天的全部推荐集中写入同一张页面，保存到 Obsidian 的 `DailyPapers/` 目录，同时更新 `.history.json`。推荐页 frontmatter 的 topics / keywords 也直接来自这两项配置。
 
 本项目会为每一个新的重要会议提供接收论文列表更新；更新仓库后即可使用新增数据。

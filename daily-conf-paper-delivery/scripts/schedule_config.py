@@ -19,7 +19,7 @@ def set_daily_run_time(config_path: Path, run_time: str) -> bool:
         raise ValueError("daily run time must use 24-hour HH:MM format, for example 08:00")
     if not config_path.is_file():
         raise FileNotFoundError(
-            f"Daily config not found: {config_path}. Create it from user-config.example.json first."
+            f"Daily config not found: {config_path}. Restore config/delivery-config.json first."
         )
 
     with config_path.open("r", encoding="utf-8") as stream:

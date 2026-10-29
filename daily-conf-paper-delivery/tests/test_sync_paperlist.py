@@ -3,6 +3,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "sync_paperlist.py"
@@ -13,6 +14,11 @@ SPEC.loader.exec_module(sync_paperlist)
 
 
 class SyncPaperlistTest(unittest.TestCase):
+    def test_import_uses_effective_delivery_config(self):
+        conferences = [{"name": "EMNLP", "year": 2026, "daily_take": 2, "shuffle": True}]
+        with mock.patch.object(sync_paperlist, "daily_papers_config", return_value={"conferences": conferences}):
+            self.assertEqual(sync_paperlist.load_conferences(), conferences)
+
     def test_bundled_snapshots_are_valid(self):
         snapshots = sorted(sync_paperlist.DATA_DIR.glob("*/*.jsonl"))
         self.assertTrue(snapshots)

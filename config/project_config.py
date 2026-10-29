@@ -12,13 +12,19 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-GLOBAL_CONFIG_PATH = REPO_ROOT / "config" / "user-config.local.json"
-DELIVERY_CONFIG_PATH = (
-    REPO_ROOT / "daily-conf-paper-delivery" / "skills" / "_shared" / "user-config.local.json"
-)
-NOTER_CONFIG_PATH = (
-    REPO_ROOT / "research-paper-noter" / "skills" / "_shared" / "user-config.local.json"
-)
+GLOBAL_CONFIG_PATH = REPO_ROOT / "config" / "user-config.json"
+DELIVERY_CONFIG_PATH = REPO_ROOT / "config" / "delivery-config.json"
+NOTER_CONFIG_PATH = REPO_ROOT / "config" / "noter-config.json"
+
+
+def local_config_path(config_path: Path) -> Path:
+    return config_path.with_name(f"{config_path.stem}.local.json")
+
+
+def editable_config_path(config_path: Path) -> Path:
+    """Update the personal override when present, otherwise the shipped config."""
+    local_path = local_config_path(config_path)
+    return local_path if local_path.is_file() else config_path
 
 DEFAULT_CONFIG = {
     "paths": {
@@ -39,6 +45,7 @@ DEFAULT_CONFIG = {
             {"name": "CVPR", "year": 2026, "daily_take": 5},
             {"name": "ACL", "year": 2026, "daily_take": 5, "shuffle": True},
             {"name": "ECCV", "year": 2026, "daily_take": 5},
+            {"name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": True},
         ],
         "scan_limit": 1000,
         "topics": [],
@@ -76,6 +83,11 @@ def _read_json(path: Path) -> dict:
     return loaded if isinstance(loaded, dict) else {}
 
 
+def _read_config(path: Path) -> dict:
+    """Shipped JSON is directly editable; optional .local.json overrides it."""
+    return _deep_merge(_read_json(path), _read_json(local_config_path(path)))
+
+
 @lru_cache(maxsize=2)
 def load_user_config(scope: str = "delivery") -> dict:
     if scope not in {"delivery", "noter"}:
@@ -84,13 +96,12 @@ def load_user_config(scope: str = "delivery") -> dict:
     config = copy.deepcopy(DEFAULT_CONFIG)
     if scope == "delivery":
         config["automation"]["daily_run_time"] = "08:00"
-    delivery_config = _read_json(DELIVERY_CONFIG_PATH)
-    noter_config = _read_json(NOTER_CONFIG_PATH)
+    delivery_config = _read_config(DELIVERY_CONFIG_PATH)
+    noter_config = _read_config(NOTER_CONFIG_PATH)
 
-    # Preserve legacy path settings while the root Markdown path is migrated.
-    for legacy_config in (delivery_config, noter_config):
-        if isinstance(legacy_config.get("paths"), dict):
-            _deep_merge(config["paths"], legacy_config["paths"])
+    # Noter owns Zotero settings; shared paths below remain authoritative.
+    if isinstance(noter_config.get("paths"), dict):
+        _deep_merge(config["paths"], noter_config["paths"])
 
     if isinstance(delivery_config.get("daily_papers"), dict):
         _deep_merge(config["daily_papers"], delivery_config["daily_papers"])
@@ -100,7 +111,7 @@ def load_user_config(scope: str = "delivery") -> dict:
         _deep_merge(config["automation"], workflow_config["automation"])
 
     # The root config is authoritative only for the shared Markdown location.
-    global_config = _read_json(GLOBAL_CONFIG_PATH)
+    global_config = _read_config(GLOBAL_CONFIG_PATH)
     if isinstance(global_config.get("paths"), dict):
         _deep_merge(config["paths"], global_config["paths"])
     return config
