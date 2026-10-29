@@ -18,8 +18,6 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ## User Configuration
 
-All user settings live in the repository-level [`config/`](config/README.md) directory. Editable default JSON files are included; no example-file copying is required.
-
 | File | Purpose |
 | --- | --- |
 | [`config/user-config.json`](config/user-config.json) | Shared Markdown root and folder layout |
