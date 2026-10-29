@@ -18,18 +18,6 @@
 
 ---
 
-## 用户配置入口
-
-所有用户设置都集中在仓库根目录 [`config/`](config/README.md)，仓库直接提供可修改的默认 JSON，无需复制 example：
-
-| 文件 | 用途 |
-| --- | --- |
-| [`config/user-config.json`](config/user-config.json) | 两个功能共享的 Markdown 根目录与目录布局 |
-| [`config/delivery-config.json`](config/delivery-config.json) | Daily 的会议、每天篇数、研究兴趣、点评与定时设置 |
-| [`config/noter-config.json`](config/noter-config.json) | Noter 的 Zotero 路径、索引与 git 设置 |
-
-可直接修改默认文件；希望与仓库默认值分开保存时，在同目录创建对应的 `*.local.json`，仅填写需要覆盖的字段（这些个人文件不会提交到 git）。所有下文路径均相对于仓库根目录。
-
 ## 💥 News
 
 - **2026-10-29** — 新增 EMNLP 2026 论文列表，包含主会与 Findings 共 5,182 篇论文，均提供摘要和 PDF 链接，已纳入仓库数据与默认会议源。[数据快照说明](daily-conf-paper-delivery/data/paperlist/EMNLP/README.md)。
@@ -224,6 +212,18 @@ ln -s "$PWD/research-paper-noter/skills/generate-mocs" "$SKILLS_DIR/generate-moc
 <a id="usage"></a>
 
 ## 🚀 使用方式
+
+### 用户配置入口
+
+所有用户设置都集中在仓库根目录 [`config/`](config/README.md)，仓库直接提供可修改的默认 JSON，无需复制 example：
+
+| 文件 | 用途 |
+| --- | --- |
+| [`config/user-config.json`](config/user-config.json) | 两个功能共享的 Markdown 根目录与目录布局 |
+| [`config/delivery-config.json`](config/delivery-config.json) | Daily 的会议、每天篇数、研究兴趣、点评与定时设置 |
+| [`config/noter-config.json`](config/noter-config.json) | Noter 的 Zotero 路径、索引与 git 设置 |
+
+可直接修改默认文件；希望与仓库默认值分开保存时，在同目录创建对应的 `*.local.json`，仅填写需要覆盖的字段（这些个人文件不会提交到 git）。所有下文路径均相对于仓库根目录。
 
 ### 📁 预备：配置全局 Markdown 根目录
 

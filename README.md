@@ -16,16 +16,6 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ---
 
-## User Configuration
-
-| File | Purpose |
-| --- | --- |
-| [`config/user-config.json`](config/user-config.json) | Shared Markdown root and folder layout |
-| [`config/delivery-config.json`](config/delivery-config.json) | Daily conferences, quotas, interests, reviews, and scheduling |
-| [`config/noter-config.json`](config/noter-config.json) | Noter Zotero paths, indexes, and git behavior |
-
-Edit these defaults directly, or create a matching `*.local.json` in the same directory with personal overrides; personal files are ignored by git. All paths below are relative to the repository root.
-
 ## 💥 News
 
 - **2026-10-29** — Added EMNLP 2026 with 5,182 papers from the main conference and Findings, including abstracts and PDF links, to the bundled data and default conference sources. [Snapshot details](daily-conf-paper-delivery/data/paperlist/EMNLP/README.md).
@@ -220,6 +210,16 @@ ln -s "$PWD/research-paper-noter/skills/generate-mocs" "$SKILLS_DIR/generate-moc
 <a id="usage"></a>
 
 ## 🚀 Usage
+
+### User Configuration
+
+| File | Purpose |
+| --- | --- |
+| [`config/user-config.json`](config/user-config.json) | Shared Markdown root and folder layout |
+| [`config/delivery-config.json`](config/delivery-config.json) | Daily conferences, quotas, interests, reviews, and scheduling |
+| [`config/noter-config.json`](config/noter-config.json) | Noter Zotero paths, indexes, and git behavior |
+
+Edit these defaults directly, or create a matching `*.local.json` in the same directory with personal overrides; personal files are ignored by git. All paths below are relative to the repository root.
 
 ### 📁 Prerequisite: Configure the Global Markdown Root
 
