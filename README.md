@@ -71,14 +71,14 @@ Here, “Personalized” does not mean asking AI to guess your interests or make
 
 Daily Conf Paper Delivery puts work worth reading in front of you. It scans the bundled, locally maintained AI conference lists, such as NeurIPS, ICML, ICLR, and CVPR, without fetching conference data from the network at runtime. It scores title + abstract using your preferences. Every conference maintains its own cursor, so each run continues from the last scanned position and creates a new daily recommendation page.
 
-The repository currently includes **ICML 2026, ICLR 2026, CVPR 2026, ACL 2026, ECCV 2026, and EMNLP 2026**. Curated acceptance-list updates will continue to be added for important new conferences.
+The repository currently includes **ICML 2026, ICLR 2026, CVPR 2026, ACL 2026, ECCV 2026, EMNLP 2026, and NeurIPS 2026**. Curated acceptance-list updates will continue to be added for important new conferences.
 
 You can also add conferences or journals from other fields by following the [custom source guide below](#custom-conference-journal-lists).
 
 The default pipeline has two stages:
 
 1. **Filter**: score papers using topics, keywords, exclusions, and the configured threshold.
-2. **Summarize and review**: use only abstracts and existing structured metadata to assign reading priority and topic, create a summary note for each paper, and collect the day’s recommendations in one page.
+2. **Summarize and review**: read the introduction and relevant method and experiment sections of each selected paper, explain the work in plain language, and collect the day’s recommendations in one page.
 
 The recommendation page begins with a sharp daily overview and a Must read / Worth reading / Skip triage table. Each summary note contains authors, affiliations, source and paper links, a teaser figure when available, a one-sentence summary, the original English abstract and a Chinese translation, background, motivation, core method, evaluation, takeaways, and a concise critique.
 
@@ -295,7 +295,8 @@ Minimal example:
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
       { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
       { "name": "ECCV", "year": 2026, "daily_take": 5 },
-      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }
+      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true },
+      { "name": "NEURIPS", "year": 2026, "daily_take": 5 }
     ],
     "scan_limit": 1000,
     "topics": [
@@ -594,7 +595,7 @@ Personalized-Research-Paper-Claw/
 │   ├── skills/
 │   │   ├── daily-papers/             # One-request complete workflow
 │   │   ├── daily-papers-fetch/       # Filtering, scoring, and deduplication
-│   │   ├── daily-papers-review/      # Abstract-based review
+│   │   ├── daily-papers-review/      # Paper review
 │   │   ├── daily-papers-notes/       # Optional detailed-note stage
 │   │   └── _shared/                  # Shared configuration and utilities
 │   ├── README.md
@@ -620,7 +621,7 @@ Personalized-Research-Paper-Claw/
 
 ## ⚠️ Project Boundaries
 
-- Daily recommendations use title + abstract from conference lists; they are not full-paper reviews.
+- Daily recommendations filter by title and abstract. Reviews draw on the introduction, method, and experiments.
 - Detailed notes read more of the paper, but AI-generated facts, formula explanations, and evaluations still require human verification.
 - Zotero is an optional input source; Daily recommendations do not depend on it.
 - Obsidian is strongly recommended for browsing and wikilinks. Standard Markdown remains the long-term knowledge source; HTML is generated only after an explicit sharing request.

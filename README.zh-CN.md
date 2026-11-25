@@ -62,7 +62,7 @@ Personalized Research Paper Claw 负责把这条研究链路连接起来：
 
 | 核心功能 | 您提供什么 | Claw 做什么 | 最终得到什么 |
 | --- | --- | --- | --- |
-| **📬 Daily Conf Paper Delivery** | 会议、topics、keywords、排除词与阈值 | 读取会议接收列表，按 title + abstract 计分筛选并去重，为每篇生成摘要式笔记，再按阅读优先级和 topic 汇总 | 一张包含今日锐评、阅读分流和全部论文摘要式笔记的每日推荐页 `DailyPaperContent-YYYY-MM-DD.md` |
+| **📬 Daily Conf Paper Delivery** | 会议、topics、keywords、排除词与阈值 | 读取会议接收列表，按 title + abstract 计分筛选并去重，为每篇结合引言和正文写点评，再按阅读优先级和 topic 汇总 | 一张包含今日锐评、阅读分流和入选论文点评的每日推荐页 `DailyPaperContent-YYYY-MM-DD.md` |
 | **📝 Research Paper Noter** | 标题、arXiv、DOI、本地 PDF、Zotero 条目或标题列表 | 生成或复用详细笔记，维护 Personalized 汇总，或构建带工作关系的 Domain Research Gallery | 结构化论文笔记、Personalized 汇总与可浏览的领域论文 Gallery（包括便于分享的 HTML 格式） |
 
 ---
@@ -73,16 +73,16 @@ Personalized Research Paper Claw 负责把这条研究链路连接起来：
 
 Daily Conf Paper Delivery 负责“把值得读的工作送到您面前”。它从上到下扫描仓库随附的人工智能顶会论文列表（例如 NeurIPS、ICML、ICLR、CVPR），无需在运行时联网抓取会议数据；系统按您的偏好对 title + abstract 计分，每个会议维护独立 cursor（上次扫描到列表第几篇的进度记录），每一天都从上一次记录的位置继续筛选并生成每日推荐页。
 
-当前仓库提供 **ICML 2026、ICLR 2026、CVPR 2026、ACL 2026、ECCV 2026 和 EMNLP 2026**。本项目会持续为每一个新的重要会议提供经过整理的接收论文列表更新。
+当前仓库提供 **ICML 2026、ICLR 2026、CVPR 2026、ACL 2026、ECCV 2026、EMNLP 2026 和 NeurIPS 2026**。本项目会持续为每一个新的重要会议提供经过整理的接收论文列表更新。
 
 您也可以按照[下方的自定义指南](#custom-conference-journal-lists)，接入其他领域的会议或期刊列表。
 
 默认流程包含两步：
 
 1. **筛选**：按 topics、keywords、排除词和阈值计分，选出达到阈值的论文。
-2. **汇总与点评**：只根据摘要和已有结构化字段判断阅读优先级、按 topic 分类，为每篇生成摘要式笔记，并将当天的全部推荐集中写入同一张每日推荐页。
+2. **汇总与点评**：阅读入选论文的引言，结合方法和实验章节写成通俗点评，按阅读优先级和 topic 汇总到每日推荐页。
 
-推荐页首先给出今日锐评和“必读 / 值得看 / 可跳过”分流表；每篇摘要式笔记包含作者、机构、来源与论文链接、可用时的首图、一句话总结、英文原始摘要与中文翻译、问题背景、动机、核心方法、评估、借鉴意义和锐评。
+推荐页首先给出今日锐评和“必读 / 值得看 / 可跳过”分流表；每篇点评包含作者、机构、来源与论文链接、可用时的首图、一句话总结、英文原始摘要与中文翻译、问题背景、动机、核心方法、评估、借鉴意义和锐评。
 
 <a id="scoring"></a>
 
@@ -299,7 +299,8 @@ ln -s "$PWD/research-paper-noter/skills/generate-mocs" "$SKILLS_DIR/generate-moc
       { "name": "CVPR", "year": 2026, "daily_take": 5 },
       { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
       { "name": "ECCV", "year": 2026, "daily_take": 5 },
-      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }
+      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true },
+      { "name": "NEURIPS", "year": 2026, "daily_take": 5 }
     ],
     "scan_limit": 1000,
     "topics": [
@@ -330,7 +331,7 @@ ln -s "$PWD/research-paper-noter/skills/generate-mocs" "$SKILLS_DIR/generate-moc
 今日论文推荐
 ```
 
-默认流程自动完成筛选与摘要式点评，结果写入：
+默认流程自动完成筛选与论文点评，结果写入：
 
 ```text
 {markdown_root}/DailyPapers/mocs/DailyPaperContent-YYYY-MM-DD.md
@@ -600,7 +601,7 @@ Personalized-Research-Paper-Claw/
 │   ├── skills/
 │   │   ├── daily-papers/             # 一句话总入口
 │   │   ├── daily-papers-fetch/       # 筛选、计分与去重
-│   │   ├── daily-papers-review/      # 摘要式点评
+│   │   ├── daily-papers-review/      # 论文点评
 │   │   ├── daily-papers-notes/       # 可选详细笔记步骤
 │   │   └── _shared/                  # 配置加载器与公共代码
 │   ├── README.md
@@ -626,7 +627,7 @@ Personalized-Research-Paper-Claw/
 
 ## ⚠️ 项目边界
 
-- 每日推荐基于会议列表中的 title + abstract，不等于全文审稿。
+- 每日推荐通过标题和摘要筛选，点评结合论文引言、方法和实验章节。
 - 详细笔记会读取更多论文内容，但 AI 生成的信息、公式解释和评价仍需人工核验。
 - Zotero 是可选输入源；Daily 推荐不依赖 Zotero。
 - Obsidian 是强烈推荐的浏览与双链环境；长期知识源仍是标准 Markdown，HTML 只在明确要求时作为分享格式生成。

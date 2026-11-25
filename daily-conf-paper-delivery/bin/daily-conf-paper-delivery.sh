@@ -49,6 +49,6 @@ cd "$PROJECT_DIR"
     --skip-git-repo-check \
     -C "$PROJECT_DIR" \
     --add-dir "$VAULT_DIR" \
-    "今日论文推荐。严格 follow 仓库 daily-papers skill 定义的全局 Markdown 根目录、格式和按需目录规则。当前项目使用会议论文源，只运行抓取和摘要式点评，不自动生成细粒度论文笔记。"
+    "今日论文推荐。按仓库 daily-papers skill 执行会议论文抓取和点评，沿用其中的全局 Markdown 根目录、格式和按需目录规则。按 daily-papers-review skill 阅读入选论文的引言，查阅相关方法和实验章节，用通俗中文写成每日推荐页。"
   echo "[$(date '+%F %T')] done"
 } >> "$LOG_FILE" 2>&1

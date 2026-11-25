@@ -27,6 +27,11 @@
         "year": 2026,
         "daily_take": 5,
         "shuffle": true
+      },
+      {
+        "name": "NEURIPS",
+        "year": 2026,
+        "daily_take": 5
       }
     ],
     "scan_limit": 1000,

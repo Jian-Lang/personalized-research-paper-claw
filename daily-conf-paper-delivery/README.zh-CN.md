@@ -108,7 +108,7 @@ ln -s "$PWD/daily-conf-paper-delivery/skills/generate-mocs" "$SKILLS_DIR/generat
 
 | 配置项 | 说明 |
 | --- | --- |
-| `daily_papers.conferences` | 每日推荐的会议、年份和单会议推荐数量列表，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }, { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }]`；本地文件按 `<CONF>/<conf>_<year>.jsonl` 自动匹配 |
+| `daily_papers.conferences` | 每日推荐的会议、年份和单会议推荐数量列表，例如 `[{ "name": "ICML", "year": 2026, "daily_take": 5 }, { "name": "CVPR", "year": 2026, "daily_take": 5 }, { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "ECCV", "year": 2026, "daily_take": 5 }, { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }, { "name": "NEURIPS", "year": 2026, "daily_take": 5 }]`；本地文件按 `<CONF>/<conf>_<year>.jsonl` 自动匹配 |
 | `daily_papers.conferences[].daily_take` | 该会议每天最多推荐几篇论文；这是当前推荐的配比配置入口 |
 | `daily_papers.conferences[].shuffle` | 是否在同步本地会议接收列表时做稳定随机混排；ACL 默认开启，用来混合 poster / finding |
 | `daily_papers.daily_take` | 旧版全局 fallback；新配置建议不用它，优先写到每个会议项里 |
@@ -130,7 +130,8 @@ ln -s "$PWD/daily-conf-paper-delivery/skills/generate-mocs" "$SKILLS_DIR/generat
   { "name": "CVPR", "year": 2026, "daily_take": 5 },
   { "name": "ACL", "year": 2026, "daily_take": 5, "shuffle": true },
   { "name": "ECCV", "year": 2026, "daily_take": 5 },
-      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true }
+      { "name": "EMNLP", "year": 2026, "daily_take": 5, "shuffle": true },
+      { "name": "NEURIPS", "year": 2026, "daily_take": 5 }
 ]
 ```
 
@@ -151,8 +152,8 @@ Zotero 配置主要用于后续详细笔记生成；只跑每日推荐时不需�
 
 **每日推荐**现在读取本地人工智能顶会 JSONL 列表，两步生成一页式每日论文推荐：
 
-1. **抓取**：Python 脚本读取 `conferences`，按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的约定匹配仓库内会议接收列表。当前仓库提供 ICML、ICLR、CVPR、ACL、ECCV、EMNLP。每个会议都有独立 cursor（上次扫描到列表第几篇的进度记录）；`shuffle: true` 只在导入列表时做稳定随机混排。topic 在 title 或 abstract 中完整命中加 1 分；keyword 在 title 中完整命中加 3 分，否则在 abstract 中完整命中加 1 分；exclude keyword 命中计 -100 分。大小写和标点会规范化，匹配按完整词/短语边界执行，重复项只计一次。分数达到 `min_score` 才推荐。每个会议每天最多推荐自己的 `daily_take` 篇，并从当前 cursor 向后最多扫描 `scan_limit` 篇（默认 1000）；达到任一上限或走到列表末尾即停止。
-2. **汇总与点评**：Codex 读候选列表及 `score_breakdown`，以同一份 `topics` 做阅读分流和主题分类，为每篇生成包含元信息、双语摘要、背景、动机、方法、评估、借鉴意义与锐评的摘要式笔记，再把当天的全部推荐集中写入同一张页面，保存到 Obsidian 的 `DailyPapers/` 目录，同时更新 `.history.json`。推荐页 frontmatter 的 topics / keywords 也直接来自这两项配置。
+1. **抓取**：Python 脚本读取 `conferences`，按 `data/paperlist/<CONF>/<conf>_<year>.jsonl` 的约定匹配仓库内会议接收列表。当前仓库提供 ICML、ICLR、CVPR、ACL、ECCV、EMNLP、NeurIPS。每个会议都有独立 cursor（上次扫描到列表第几篇的进度记录）；`shuffle: true` 只在导入列表时做稳定随机混排。topic 在 title 或 abstract 中完整命中加 1 分；keyword 在 title 中完整命中加 3 分，否则在 abstract 中完整命中加 1 分；exclude keyword 命中计 -100 分。大小写和标点会规范化，匹配按完整词/短语边界执行，重复项只计一次。分数达到 `min_score` 才推荐。每个会议每天最多推荐自己的 `daily_take` 篇，并从当前 cursor 向后最多扫描 `scan_limit` 篇（默认 1000）；达到任一上限或走到列表末尾即停止。
+2. **汇总与点评**：Codex 阅读入选论文的引言以及相关的方法和实验章节，按 `topics` 分类，用通俗中文写清背景、动机、方法、评估和借鉴意义，再把当天的全部推荐集中写入同一张页面，保存到 Obsidian 的 `DailyPapers/` 目录，同时更新 `.history.json`。推荐页 frontmatter 的 topics / keywords 也直接来自这两项配置。
 
 本项目会为每一个新的重要会议提供接收论文列表更新；更新仓库后即可使用新增数据。
 
@@ -205,7 +206,7 @@ python3 scripts/sync_paperlist.py --source-dir /path/to/local/paperlist
 
 **可以一步跑完整流程吗？**
 
-可以。直接说 `今日论文推荐` 就行。默认内部串联抓取与摘要式点评；详细论文笔记是可选的第三步，不会自动执行。
+可以。直接说 `今日论文推荐` 就行。默认内部串联抓取与论文点评；详细论文笔记是可选的第三步，不会自动执行。
 
 **目录页会自动刷新吗？**
 
