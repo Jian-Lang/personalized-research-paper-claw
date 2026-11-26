@@ -20,6 +20,7 @@
 
 ## 💥 News
 
+- **2026-11-26** — 新增 NeurIPS 2026 论文列表，包含 9,006 篇论文，均提供摘要和 OpenReview PDF 链接，已纳入仓库数据与默认会议源。[数据快照说明](daily-conf-paper-delivery/data/paperlist/NEURIPS/README.md)。
 - **2026-10-29** — 新增 EMNLP 2026 论文列表，包含主会与 Findings 共 5,182 篇论文，均提供摘要和 PDF 链接，已纳入仓库数据与默认会议源。[数据快照说明](daily-conf-paper-delivery/data/paperlist/EMNLP/README.md)。
 - **2026-09-08**：新增来自 ronpay 的 ECCV 2026 论文列表（2,834 篇，已补回官方摘要和 PDF），已纳入仓库数据和默认会议源。当前数据源已包含官方摘要和 PDF，ECCV 按 title + abstract 筛选。
 - **2026-08-17** — Research Paper Noter 现可根据论文贡献类型，将方法、Benchmark 以及 Benchmark + Method 工作路由到对应的专用笔记模板。

@@ -18,6 +18,7 @@ Continuously receive top-conference papers that match your research trajectory, 
 
 ## 💥 News
 
+- **2026-11-26** — Added NeurIPS 2026 with 9,006 papers, including abstracts and OpenReview PDF links, to the bundled data and default conference sources. [Snapshot details](daily-conf-paper-delivery/data/paperlist/NEURIPS/README.md).
 - **2026-10-29** — Added EMNLP 2026 with 5,182 papers from the main conference and Findings, including abstracts and PDF links, to the bundled data and default conference sources. [Snapshot details](daily-conf-paper-delivery/data/paperlist/EMNLP/README.md).
 - **2026-09-08**: Added the ECCV 2026 list with 2,834 papers and official abstracts/PDF links to the bundled data and default conference sources. The current snapshot includes official abstracts and PDF links; ECCV filtering uses title + abstract.
 - **2026-08-17** — Research Paper Noter now classifies papers by their contributions and routes method, benchmark, and benchmark-plus-method work to dedicated note templates.
